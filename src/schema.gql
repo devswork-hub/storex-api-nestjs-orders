@@ -6,9 +6,9 @@ type OrderItem {
   _id: ID!
   productId: String!
   quantity: Float!
-  price: Float!
+  unitPrice: Float!
 }
 
 type Query {
-  orderItems: [OrderItem!]!
+  getOrderItems: [OrderItem!]!
 }

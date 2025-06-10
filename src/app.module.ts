@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
-import { OrdersModule } from './orders/orders.module';
 import { ApolloDriver } from '@nestjs/apollo';
+import { ConfigModule } from './app/config/config.module';
+import { OrdersModule } from './modules/orders/app/orders.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       useFactory: () => ({
-        uri: `mongodb://admin:admin@localhost:27017/orders?authSource=admin`,
-        ssl: false, // coloque true se for Atlas ou conexão segura
+        uri: `mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DB}?authSource=admin`,
+        ssl: false, // true se for Atlas ou conexão segura
       }),
     }),
     GraphQLModule.forRoot({
@@ -21,7 +21,5 @@ import { ApolloDriver } from '@nestjs/apollo';
     }),
     OrdersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

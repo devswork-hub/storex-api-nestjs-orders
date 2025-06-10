@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { OrderItemSeeder } from './orders/api/order-item.seeders';
+import { OrderItemSeeder } from './modules/orders/app/api/order-item.seeders';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
