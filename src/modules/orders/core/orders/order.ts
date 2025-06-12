@@ -3,42 +3,36 @@ import { PaymentSnapshot } from './contracts/payment-snapshot';
 import { ShippingSnapshot } from './contracts/shipping-snapshot';
 import { OrderItem } from './order-item';
 import { Currency } from './value-objects/currency';
+import { BillingAddress } from './contracts/billing-address';
+import { Discount } from './contracts/discount';
 
-export class Order {
+export type OrderContract = {
   status: OrderStatus;
   items: OrderItem[];
-
-  // Resumo financeiro
   subTotal: number;
-
-  // total: number;
+  total: number;
   currency: Currency;
-
-  // Snapshot da informação de pagamento no momento da criação do pedido
-  paymentSnapshot: PaymentSnapshot;
-
-  // Snapshot da informação de entrega no momento da criação do pedido
-  shippingSnapshot: ShippingSnapshot;
-
-  // Endereço de cobrança
-  billingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-
-  // Referências externas
+  paymentSnapshot: PaymentSnapshot; // Snapshot da informação de pagamento no momento da criação do pedido
+  shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
+  billingAddress: BillingAddress; // Endereço de cobrança
   customerId: string; // ID do cliente na API de clientes
   paymentId: string; // ID do pagamento na API de pagamentos
-
-  // Atributos opcionais
   notes?: string; // Observações feitas pelo cliente
-  discount?: {
-    couponCode: string;
-    value: number;
-    type: 'percentage' | 'fixed';
-  };
+  discount?: Discount; // Desconto aplicado ao pedido
+};
+
+export class Order implements OrderContract {
+  status: OrderStatus;
+  items: OrderItem[];
+  subTotal: number;
+  currency: Currency;
+  paymentSnapshot: PaymentSnapshot;
+  shippingSnapshot: ShippingSnapshot;
+  billingAddress: BillingAddress;
+  customerId: string;
+  paymentId: string;
+  notes?: string;
+  discount?: Discount;
 
   get total() {
     let calculatedTotal = this.subTotal;
