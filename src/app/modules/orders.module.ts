@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OrderItemSchema } from './api/graphql/order-item.schema';
-import { OrderService } from './api/order.service';
-import { OrderItemResolver } from './api/graphql/order.resolver';
-import { OrderItemSeeder } from './api/order-item.seeders';
+import { OrderItemSchema } from '../../modules/orders/api/graphql/order-item.schema';
+import { OrderItemResolver } from '../../modules/orders/api/graphql/order.resolver';
+import { OrderItemSeeder } from '../../modules/orders/api/order-item.seeders';
+import { OrderService } from '../../modules/orders/api/order.service';
 
 @Module({
   imports: [

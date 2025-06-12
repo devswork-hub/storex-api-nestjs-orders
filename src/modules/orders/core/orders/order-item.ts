@@ -1,1 +1,24 @@
-export class OrderItem {}
+export class OrderItem {
+  productId: string; // "ID do produto no sistema externo"
+  quantity: number; // "Quantidade do produto no pedido"
+  price: number; // "R$ 0,00"
+  seller?: string; // "Nome do vendedor"
+  title?: string; // "Nome do produto"
+  imageUrl?: string; // "URL da imagem do produto"
+  description?: string; // "Descrição do produto"
+  shippingId?: string; // "ID do frete associado ao item"
+  // attributes?: Record<string, string>; // "Cor: Azul, Tamanho: M"
+  // sku?: string; // "SKU do produto"
+  // weight?: number; // "Peso do produto em gramas"
+  // dimensions?: {
+  //   length: number; // "Comprimento em cm"
+  //   width: number; // "Largura em cm"
+  //   height: number; // "Altura em cm"
+  // };
+  // discount?: {
+  //   value: number; // "Valor do desconto em R$"
+  //   type: 'percentage' | 'fixed'; // "Tipo de desconto: percentual ou fixo"
+  //   couponCode?: string; // "Código do cupom de desconto"
+  //   description?: string; // "Descrição do desconto aplicado"
+  // };
+}
