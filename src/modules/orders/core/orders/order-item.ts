@@ -1,7 +1,10 @@
+import { Currency } from './value-objects/currency';
+
 export class OrderItem {
   productId: string; // "ID do produto no sistema externo"
   quantity: number; // "Quantidade do produto no pedido"
   price: number; // "R$ 0,00"
+  currency: Currency;
   seller?: string; // "Nome do vendedor"
   title?: string; // "Nome do produto"
   imageUrl?: string; // "URL da imagem do produto"

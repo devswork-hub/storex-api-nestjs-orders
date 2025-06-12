@@ -24,7 +24,7 @@ export type OrderContract = {
 export class Order implements OrderContract {
   status: OrderStatus;
   items: OrderItem[];
-  subTotal: number;
+  // subTotal: number;
   currency: Currency;
   paymentSnapshot: PaymentSnapshot;
   shippingSnapshot: ShippingSnapshot;
@@ -34,18 +34,30 @@ export class Order implements OrderContract {
   notes?: string;
   discount?: Discount;
 
-  get total() {
-    let calculatedTotal = this.subTotal;
+  get subTotal(): number {
+    return this.items.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  }
 
-    if (this.discount) {
-      if (this.discount.type === 'fixed') {
-        calculatedTotal -= this.discount.value;
-      } else if (this.discount.type === 'percentage') {
-        calculatedTotal -= calculatedTotal * (this.discount.value / 100);
-      }
-    }
+  set subTotal(value: number) {
+    this.subTotal = value;
+  }
 
-    // Garante que o total não seja negativo
-    return Math.max(0, calculatedTotal);
+  get discountAmount(): number {
+    if (!this.discount) return 0;
+    if (this.discount.type === 'fixed') return this.discount.value;
+    if (this.discount.type === 'percentage')
+      return this.subTotal * (this.discount.value / 100);
+    return 0;
+  }
+
+  get shippingTotal(): number {
+    return this.shippingSnapshot?.fee || 0;
+  }
+
+  get total(): number {
+    const total = this.subTotal - this.discountAmount + this.shippingTotal;
+    return Math.max(0, total);
   }
 }
