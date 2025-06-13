@@ -4,10 +4,20 @@ import { OrderItemSchema } from '../../modules/orders/api/graphql/order-item.sch
 import { OrderItemResolver } from '../../modules/orders/api/graphql/order.resolver';
 import { OrderItemSeeder } from '../../modules/orders/api/order-item.seeders';
 import { OrderService } from '../../modules/orders/api/order.service';
+import {
+  OrderMongoSchema,
+  OrderSchema,
+} from 'src/modules/orders/api/mongo/order.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'OrderItem', schema: OrderItemSchema }]),
+    MongooseModule.forFeature([
+      { name: 'OrderItem', schema: OrderItemSchema },
+      {
+        name: 'OrderMongoSchema',
+        schema: OrderSchema,
+      },
+    ]),
   ],
   providers: [OrderService, OrderItemResolver, OrderItemSeeder],
   exports: [OrderItemSeeder],

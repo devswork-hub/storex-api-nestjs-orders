@@ -19,7 +19,7 @@ export class OrderItem {
   @Field(() => Float)
   quantity: number;
 
-  @Prop({ required: true, min: 0 })
+  @Prop({ required: false, min: 0 })
   @Field(() => Float)
   unitPrice: number;
 }

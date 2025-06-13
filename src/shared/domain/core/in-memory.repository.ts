@@ -1,4 +1,4 @@
-import { RepositoryContract } from './interfaces/repository.interface';
+import { RepositoryContract } from '../interfaces/repository.interface';
 
 export class InMemoryBaseRepository<M extends Record<string, any>>
   implements RepositoryContract<M>

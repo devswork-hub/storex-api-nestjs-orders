@@ -9,6 +9,15 @@ type OrderItem {
   unitPrice: Float!
 }
 
+type OrderMongoSchema {
+  status: String!
+  total: Float!
+  customerId: String!
+  paymentId: String!
+  notes: String!
+}
+
 type Query {
   getOrderItems: [OrderItem!]!
+  getOrders: [OrderMongoSchema!]!
 }

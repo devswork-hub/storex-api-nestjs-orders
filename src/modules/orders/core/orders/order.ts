@@ -24,7 +24,6 @@ export type OrderContract = {
 export class Order implements OrderContract {
   status: OrderStatus;
   items: OrderItem[];
-  // subTotal: number;
   currency: Currency;
   paymentSnapshot: PaymentSnapshot;
   shippingSnapshot: ShippingSnapshot;
@@ -33,6 +32,30 @@ export class Order implements OrderContract {
   paymentId: string;
   notes?: string;
   discount?: Discount;
+
+  constructor(
+    status: OrderStatus,
+    items: OrderItem[],
+    currency: Currency,
+    paymentSnapshot: PaymentSnapshot,
+    shippingSnapshot: ShippingSnapshot,
+    billingAddress: BillingAddress,
+    customerId: string,
+    paymentId: string,
+    notes?: string,
+    discount?: Discount,
+  ) {
+    this.status = status;
+    this.items = items;
+    this.currency = currency;
+    this.paymentSnapshot = paymentSnapshot;
+    this.shippingSnapshot = shippingSnapshot;
+    this.billingAddress = billingAddress;
+    this.customerId = customerId;
+    this.paymentId = paymentId;
+    this.notes = notes;
+    this.discount = discount || undefined; // Optional discount
+  }
 
   get subTotal(): number {
     return this.items.reduce((total, item) => {
