@@ -13,3 +13,9 @@ export class Currency {
     return amount * rate;
   }
 }
+
+export enum CurrencyEnum {
+  BRL = 'BRL',
+  EUR = 'EUR',
+  USD = 'USD',
+}

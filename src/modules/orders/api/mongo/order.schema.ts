@@ -4,10 +4,7 @@ import {
   Currency,
   CurrencyEnum,
 } from '../../core/orders/value-objects/currency';
-import {
-  OrderStatus,
-  OrderStatusEnum,
-} from '../../core/orders/value-objects/order-status';
+import { OrderStatus, OrderStatusEnum } from '../../../order/order-status';
 import { ChangeTo } from 'src/app/utils/type';
 import { BillingAddressSubdocument } from './subdocuments/billing-address';
 import { PaymentSubdocument } from './subdocuments/payment.subdocument';

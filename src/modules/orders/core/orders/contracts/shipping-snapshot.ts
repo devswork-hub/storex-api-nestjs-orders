@@ -1,4 +1,4 @@
-import { ShippingStatus } from '../value-objects/shipping-status';
+import { ShippingStatus } from '../../../../order/shipping-status';
 
 export type ShippingSnapshot = {
   shippingId?: string; // ID externo do frete na API de envio
