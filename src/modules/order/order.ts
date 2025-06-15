@@ -1,11 +1,13 @@
-import { BillingAddress } from '../orders/core/orders/contracts/billing-address';
-import { Discount } from '../orders/core/orders/contracts/discount';
-import { PaymentSnapshot } from '../orders/core/orders/contracts/payment-snapshot';
-import { ShippingSnapshot } from '../orders/core/orders/contracts/shipping-snapshot';
-import { OrderStatus } from './order-status';
 import { BaseModel, BaseModelProps } from 'src/shared/domain/base/model.base';
 import { OrderItem } from './order-item';
 import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+import {
+  BillingAddress,
+  Discount,
+  OrderStatus,
+  PaymentSnapshot,
+  ShippingSnapshot,
+} from './order.constants';
 
 export type OrderModelContract = {
   status: OrderStatus;

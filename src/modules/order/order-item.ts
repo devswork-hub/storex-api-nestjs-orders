@@ -23,6 +23,7 @@ export class OrderItem extends BaseModel implements OrderItemContract {
   imageUrl?: string;
   description?: string;
   shippingId?: string;
+  static create: any;
 
   constructor(props: OrderItemContract) {
     super(props);
