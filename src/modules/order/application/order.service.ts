@@ -17,10 +17,24 @@ export class OrderService {
   ) {}
 
   async finAllOrdersTest(): Promise<OrderMongoSchema[]> {
-    console.log('🔍 Buscando pedidos no MongoDB...');
     const data = await this.findAllUseCase.execute();
-    data.map((d) => ({ ...d, currency: CurrencyEnum.BRL }));
-    return data;
+    const result: OrderMongoSchema[] = data.map((order) => {
+      return {
+        status: order.status,
+        items: order.items.map((item) => new OrderItem(item)), // transforma os items
+        subTotal: Number(order.subTotal.toString()),
+        total: Number(order.total.toString()),
+        paymentSnapshot: order.paymentSnapshot,
+        shippingSnapshot: order.shippingSnapshot,
+        billingAddress: order.billingAddress,
+        customerId: order.customerId,
+        paymentId: order.paymentId,
+        notes: order.notes,
+        discount: order.discount,
+      };
+    });
+
+    return result;
   }
 
   async findAll(): Promise<OrderItem[]> {

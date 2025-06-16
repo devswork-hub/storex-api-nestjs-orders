@@ -1,16 +1,20 @@
-export type MoneyType = 'BRL' | 'EUR' | 'USD';
-
 export class Currency {
-  private exchangeRates: Record<MoneyType, number>;
+  constructor(public readonly code: CurrencyEnum) {}
 
-  constructor(exchangeRates: Record<MoneyType, number>) {
-    this.exchangeRates = exchangeRates;
+  getLocale(): string {
+    const locales: Record<CurrencyEnum, string> = {
+      BRL: 'pt-BR',
+      USD: 'en-US',
+      EUR: 'de-DE',
+    };
+    return locales[this.code] ?? 'pt-BR';
   }
 
-  convert(amount: number, from: MoneyType, to: MoneyType): number {
-    if (from === to) return amount;
-    const rate = this.exchangeRates[to] / this.exchangeRates[from];
-    return amount * rate;
+  format(amount: number): string {
+    return new Intl.NumberFormat(this.getLocale(), {
+      style: 'currency',
+      currency: this.code,
+    }).format(amount);
   }
 }
 

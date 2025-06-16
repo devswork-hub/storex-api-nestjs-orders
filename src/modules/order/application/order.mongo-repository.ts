@@ -3,9 +3,14 @@ import { OrderRepositoryContract } from '../persistence/order.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { OrderMongoSchema } from './mongo/order.schema';
-import { OrderModelContract } from '../order';
+import { OrderModel, OrderModelContract } from '../order';
 import { OrderItem } from './graphql/order-item.schema';
 import { UUID } from '@/src/shared/domain/value-objects/uuid.vo';
+import {
+  Currency,
+  CurrencyEnum,
+} from '@/src/shared/domain/value-objects/currency.vo';
+import { Money } from '@/src/shared/domain/value-objects/money.vo';
 
 @Injectable()
 export class OrderMongoRepository implements OrderRepositoryContract {
@@ -18,12 +23,21 @@ export class OrderMongoRepository implements OrderRepositoryContract {
 
   async findAll(): Promise<OrderModelContract[]> {
     const docs = await this.orderModel.find().exec();
-    // this.create({
+    // const order = OrderModel.create({
     //   status: 'PENDING',
-    //   items: [],
-    //   subTotal: 0,
-    //   total: 0,
-    //   currency: undefined,
+    //   items: [
+    //     {
+    //       productId: 'p-001',
+    //       quantity: 0,
+    //       price: new Money(200, new Currency(CurrencyEnum.BRL)),
+    //     },
+    //     {
+    //       productId: 'p-002',
+    //       quantity: 0,
+    //       price: new Money(100, new Currency(CurrencyEnum.BRL)),
+    //     },
+    //   ],
+    //   currency: new Currency(CurrencyEnum.BRL),
     //   paymentSnapshot: {
     //     method: 'credit_card',
     //     status: '',
@@ -49,7 +63,28 @@ export class OrderMongoRepository implements OrderRepositoryContract {
     //   customerId: new UUID().toString(),
     //   paymentId: new UUID().toString(),
     // });
-    console.log(OrderMongoRepository.name + ' => ', docs);
+
+    // const o = {
+    //   ...order,
+    //   currency: order.currency.code, // ou objeto { code: 'BRL' }
+    //   items: order.items.map((item) => ({
+    //     ...item,
+    //     price: {
+    //       amount: item.price.amount,
+    //       currency: item.price.currency.code,
+    //     },
+    //   })),
+    //   subTotal: order.subTotal.amount,
+    //   total: order.total.amount,
+    //   // demais props complexas (paymentSnapshot, shippingSnapshot, etc) se tiverem classes, faça a mesma transformação
+    // };
+    // console.log(o);
+    // await this.orderModel.create(o);
+
+    // await this.orderModel.create({ ...order });
+
+    // console.log(docs[0]);
+    // console.log(OrderMongoRepository.name + ' => ', docs);
     // aqui você faria o mapeamento de `OrderMongoSchema` para `OrderModelContract`
     return docs as unknown as OrderModelContract[];
   }

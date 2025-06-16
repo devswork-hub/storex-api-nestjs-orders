@@ -1,11 +1,7 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { OrderItem } from './order-item.schema';
+import { Query, Resolver } from '@nestjs/graphql';
 import { OrderService } from '../order.service';
 import { OrderMongoSchema } from '../mongo/order.schema';
-import {
-  CreateOrderDTO,
-  CreateOrderService,
-} from '../../usecases/create-order.usecase';
+import { CreateOrderService } from '../../usecases/create-order.usecase';
 import { OrderOuput } from '../order.output';
 
 @Resolver(() => OrderOuput)

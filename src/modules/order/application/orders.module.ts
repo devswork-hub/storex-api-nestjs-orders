@@ -52,11 +52,7 @@ import { orderProviders } from './order.providers';
   ],
   exports: [...orderProviders],
 })
-export class OrdersModule {
-  constructor() {
-    console.log(OrderMongoSchema.name);
-  }
-}
+export class OrdersModule {}
 
 // orders
 //   - app

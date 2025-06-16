@@ -1,3 +1,5 @@
+import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+
 export type OrderStatus =
   | 'PENDING'
   | 'PAID'
@@ -26,6 +28,7 @@ export type Discount = {
   couponCode: string;
   value: number;
   type: 'percentage' | 'fixed';
+  currency: Currency;
 };
 
 export type PaymentSnapshot = {

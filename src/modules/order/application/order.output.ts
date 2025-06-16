@@ -9,9 +9,12 @@ import {
   BillingAddress,
   Discount,
 } from '../order.constants';
+import { ChangeTo } from '@/src/app/utils/type';
+
+type Output = ChangeTo<OrderModelContract, { subTotal: number; total: number }>;
 
 @ObjectType()
-export class OrderOuput implements OrderModelContract {
+export class OrderOuput implements Output {
   status: OrderStatus;
   items: OrderItem[];
   subTotal: number;

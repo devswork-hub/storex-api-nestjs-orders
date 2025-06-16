@@ -1,11 +1,14 @@
-import { BaseModel, BaseModelProps } from '@/src/shared/domain/base/model.base';
-import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+import { BaseModel, BaseModelProps } from '../../shared/domain/base/model.base';
+import { Currency } from '../../shared/domain/value-objects/currency.vo';
+import { Money } from '../../shared/domain/value-objects/money.vo';
+import { Discount } from './order.constants';
+import { calculateDiscountAmount } from './utils/discount-calculator';
 
 export type OrderItemContract = {
   productId: string; // "ID do produto no sistema externo"
   quantity: number; // "Quantidade do produto no pedido"
-  price: number; // "R$ 0,00"
-  currency: Currency;
+  price: Money; // "R$ 0,00"
+  discount?: Discount;
   seller?: string; // "Nome do vendedor"
   title?: string; // "Nome do produto"
   imageUrl?: string; // "URL da imagem do produto"
@@ -16,18 +19,39 @@ export type OrderItemContract = {
 export class OrderItem extends BaseModel implements OrderItemContract {
   productId: string;
   quantity: number;
-  price: number;
-  currency: Currency;
+  price: Money;
+  discount?: Discount;
   seller?: string;
   title?: string;
   imageUrl?: string;
   description?: string;
   shippingId?: string;
-  static create: any;
 
   constructor(props: OrderItemContract) {
     super(props);
     Object.assign(this, props);
+  }
+
+  getTotalPrice(): Money {
+    return this.price.multiply(this.quantity);
+  }
+
+  getDiscountAmount(): Money {
+    const discountValue = calculateDiscountAmount(
+      this.price.amount * this.quantity,
+      this.discount, // supondo que o item tenha desconto no mesmo formato
+      this.price.currency,
+    );
+    return new Money(discountValue, this.price.currency);
+  }
+
+  getTotalWithDiscount(): Money {
+    const total = this.getTotalPrice();
+    const discount = this.getDiscountAmount();
+    return new Money(
+      Math.max(0, total.amount - discount.amount),
+      this.price.currency,
+    );
   }
 
   // attributes?: Record<string, string>; // "Cor: Azul, Tamanho: M"
