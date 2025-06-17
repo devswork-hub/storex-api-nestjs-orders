@@ -56,6 +56,6 @@ describe('OrderModel', () => {
     });
     // console.log(order.subTotal);
     // console.log(order.total);
-    // console.log(JSON.stringify(order, null, 2));
+    console.log(JSON.stringify(order, null, 2));
   });
 });

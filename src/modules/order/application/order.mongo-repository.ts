@@ -3,14 +3,8 @@ import { OrderRepositoryContract } from '../persistence/order.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { OrderMongoSchema } from './mongo/order.schema';
-import { OrderModel, OrderModelContract } from '../order';
-import { OrderItem } from './graphql/order-item.schema';
-import { UUID } from '@/src/shared/domain/value-objects/uuid.vo';
-import {
-  Currency,
-  CurrencyEnum,
-} from '@/src/shared/domain/value-objects/currency.vo';
-import { Money } from '@/src/shared/domain/value-objects/money.vo';
+import { OrderModelContract } from '../order';
+import { OrderItem } from './graphql/schemas/order-item.schema';
 
 @Injectable()
 export class OrderMongoRepository implements OrderRepositoryContract {

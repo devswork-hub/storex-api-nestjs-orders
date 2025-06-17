@@ -7,7 +7,7 @@ import { OrderRepositoryContract } from '@/src/modules/order/persistence/order.r
 import { OrderService } from '@/src/modules/order/application/order.service';
 import { OrderItemResolver } from '@/src/modules/order/application/graphql/order.resolver';
 import { OrderItemSeeder } from '@/src/modules/order/application/order-item.seeders';
-import { OrderItemSchema } from '@/src/modules/order/application/graphql/order-item.schema';
+import { OrderItemSchema } from '@/src/modules/order/application/graphql/schemas/order-item.schema';
 import {
   OrderMongoSchema,
   OrderSchema,

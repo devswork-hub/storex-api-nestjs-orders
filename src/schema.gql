@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Representa o objeto de valor, Money"""
+type MoneyOutput {
+  amount: Float!
+  currency: String!
+}
+
+type DiscountSubdocument {
+  couponCode: String!
+  value: Float!
+  type: String!
+}
+
 type BillingAddressSubdocument {
   street: String!
   city: String!
@@ -24,12 +36,6 @@ type ShippingSubdocument {
   fee: Float!
   deliveryDate: String!
   recipient: String!
-}
-
-type DiscountSubdocument {
-  couponCode: String!
-  value: Float!
-  type: String!
 }
 
 type OrderMongoSchema {

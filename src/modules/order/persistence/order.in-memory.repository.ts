@@ -1,5 +1,5 @@
 import { InMemoryBaseRepository } from 'src/shared/domain/base/in-memory-repository.base';
-import { OrderModel, OrderModelContract } from '../order';
+import { OrderModelContract } from '../order';
 import { OrderRepositoryContract } from './order.repository';
 
 export class OrderInMemoryRepository

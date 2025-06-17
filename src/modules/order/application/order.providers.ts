@@ -5,7 +5,7 @@ import { CreateOrderService } from '../usecases/create-order.usecase';
 import { FindAllOrderService } from '../usecases/find-all-orders.service';
 import { Model } from 'mongoose';
 import { OrderMongoSchema } from './mongo/order.schema';
-import { OrderItem } from './graphql/order-item.schema';
+import { OrderItem } from './graphql/schemas/order-item.schema';
 
 export const repositories = {
   // Token principal usado para injeção do repositório de pedidos.
