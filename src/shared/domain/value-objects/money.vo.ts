@@ -1,5 +1,10 @@
-import { Currency, CurrencyEnum } from './currency.vo';
+import { Currency } from './currency.vo';
 import { ExchangeRateProvider } from './exchange-rate.provider';
+
+export type MoneyPrice = {
+  amount: number;
+  currency: Currency;
+};
 
 export class Money {
   constructor(

@@ -1,5 +1,5 @@
 import { BaseModel, BaseModelProps } from '../../shared/domain/base/model.base';
-import { Currency } from '../../shared/domain/value-objects/currency.vo';
+// import { Currency } from '../../shared/domain/value-objects/currency.vo';
 import { Money } from '../../shared/domain/value-objects/money.vo';
 import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';

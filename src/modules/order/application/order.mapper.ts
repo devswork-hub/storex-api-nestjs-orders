@@ -1,10 +1,10 @@
 import { OrderModelContract } from '../order';
 import { OrderItemContract } from '../order-item';
 import { OrderOuput } from './graphql/order.output';
-import { DiscountSubdocument } from './mongo/subdocuments/discount';
-import { PaymentSubdocument } from './mongo/subdocuments/payment.subdocument';
-import { ShippingSubdocument } from './mongo/subdocuments/shipping';
-import { BillingAddressSubdocument } from './mongo/subdocuments/billing-address';
+import { DiscountOutput } from './graphql/outputs/discount.output';
+import { PaymentOutput } from './graphql/outputs/payment.output';
+import { ShippingOutput } from './graphql/outputs/shipping.output';
+import { BillingAddressOutput } from './graphql/outputs/billing-address.output';
 import { OrderItemOutput } from './graphql/order-item.output';
 
 export class OrderMapper {
@@ -53,18 +53,19 @@ export class OrderMapper {
 
   private static mapDiscount(
     discount?: OrderModelContract['discount'],
-  ): DiscountSubdocument | undefined {
+  ): DiscountOutput | undefined {
     if (!discount) return undefined;
     return {
       value: discount.value,
       type: discount.type,
       couponCode: discount.couponCode,
+      currency: discount.currency.code,
     };
   }
 
   private static mapPayment(
     payment: OrderModelContract['paymentSnapshot'],
-  ): PaymentSubdocument {
+  ): PaymentOutput {
     return {
       method: payment.method,
       status: payment.status,
@@ -75,7 +76,7 @@ export class OrderMapper {
 
   private static mapShipping(
     snapshot: OrderModelContract['shippingSnapshot'],
-  ): ShippingSubdocument {
+  ): ShippingOutput {
     return {
       ...snapshot,
     };
@@ -83,7 +84,7 @@ export class OrderMapper {
 
   private static mapBillingAddress(
     address: OrderModelContract['billingAddress'],
-  ): BillingAddressSubdocument {
+  ): BillingAddressOutput {
     return {
       ...address,
     };

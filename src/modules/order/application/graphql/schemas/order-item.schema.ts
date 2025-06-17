@@ -3,9 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { OrderItemContract } from '../../../order-item';
 import { ChangeTo } from '@/src/app/utils/type';
-import { MoneyOutput } from '../../mongo/money.output';
-import { DiscountSubdocument } from '../../mongo/subdocuments/discount';
-import { OrderModel } from '../../../order';
+import { MoneyOutput } from '../outputs/money.output';
+import { DiscountOutput } from '../outputs/discount.output';
 
 /**
  * Representa um item de um pedido, tanto no MongoDB (via Mongoose) quanto na API GraphQL.
@@ -18,7 +17,7 @@ export class OrderItem
       OrderItemContract,
       {
         price: MoneyOutput;
-        discount: DiscountSubdocument;
+        discount: DiscountOutput;
       }
     >
 {
@@ -36,7 +35,7 @@ export class OrderItem
 
   @Prop()
   @Field({ nullable: false })
-  discount?: DiscountSubdocument;
+  discount?: DiscountOutput;
 
   @Prop()
   @Field({ nullable: false })
@@ -81,10 +80,6 @@ export class OrderItem
   @Prop()
   @Field({ nullable: false })
   deletedAt?: Date;
-
-  static toEntity(schema: OrderItem) {
-    // return new OrderItem();
-  }
 }
 
 // Define o tipo do documento Mongoose (com métodos, etc.)

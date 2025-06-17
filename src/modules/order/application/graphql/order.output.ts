@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { PaymentSubdocument } from '../mongo/subdocuments/payment.subdocument';
-import { ShippingSubdocument } from '../mongo/subdocuments/shipping';
-import { BillingAddressSubdocument } from '../mongo/subdocuments/billing-address';
-import { DiscountSubdocument } from '../mongo/subdocuments/discount';
+import { PaymentOutput } from './outputs/payment.output';
+import { ShippingOutput } from './outputs/shipping.output';
+import { BillingAddressOutput } from './outputs/billing-address.output';
+import { DiscountOutput } from './outputs/discount.output';
 import { OrderItemOutput } from './order-item.output';
 
 @ObjectType()
@@ -22,14 +22,14 @@ export class OrderOuput {
   @Field()
   currency: string;
 
-  @Field(() => PaymentSubdocument)
-  paymentSnapshot: PaymentSubdocument;
+  @Field(() => PaymentOutput)
+  paymentSnapshot: PaymentOutput;
 
-  @Field(() => ShippingSubdocument)
-  shippingSnapshot: ShippingSubdocument;
+  @Field(() => ShippingOutput)
+  shippingSnapshot: ShippingOutput;
 
-  @Field(() => BillingAddressSubdocument)
-  billingAddress: BillingAddressSubdocument;
+  @Field(() => BillingAddressOutput)
+  billingAddress: BillingAddressOutput;
 
   @Field()
   customerId: string;
@@ -40,8 +40,8 @@ export class OrderOuput {
   @Field({ nullable: true })
   notes?: string;
 
-  @Field(() => DiscountSubdocument, { nullable: true })
-  discount?: DiscountSubdocument;
+  @Field(() => DiscountOutput, { nullable: true })
+  discount?: DiscountOutput;
 
   @Field({ nullable: true })
   id?: string;

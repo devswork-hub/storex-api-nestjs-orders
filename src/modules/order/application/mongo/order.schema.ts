@@ -1,27 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 // import { OrderStatus, OrderStatusEnum } from '../../../order/order-status';
 import { ChangeTo } from 'src/app/utils/type';
-import { BillingAddressSubdocument } from './subdocuments/billing-address';
-import { PaymentSubdocument } from './subdocuments/payment.subdocument';
-import { ShippingSubdocument } from './subdocuments/shipping';
+import { BillingAddressOutput } from '../graphql/outputs/billing-address.output';
+import { PaymentOutput } from '../graphql/outputs/payment.output';
+import { ShippingOutput } from '../graphql/outputs/shipping.output';
 import { HydratedDocument } from 'mongoose';
-import { DiscountSubdocument } from './subdocuments/discount';
+import { DiscountOutput } from '../graphql/outputs/discount.output';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { OrderModelContract } from '../../order';
 import { OrderItem } from '../../order-item';
 import { OrderStatus, OrderStatusEnum } from '../../order.constants';
-import {
-  Currency,
-  CurrencyEnum,
-} from '@/src/shared/domain/value-objects/currency.vo';
+import { CurrencyOutput } from '../graphql/outputs/currency.output';
 
 export type Change = ChangeTo<
   OrderModelContract,
   {
-    paymentSnapshot: PaymentSubdocument;
-    shippingSnapshot: ShippingSubdocument;
-    billingAddress: BillingAddressSubdocument;
-    discount?: DiscountSubdocument;
+    currency: CurrencyOutput;
+    paymentSnapshot: PaymentOutput;
+    shippingSnapshot: ShippingOutput;
+    billingAddress: BillingAddressOutput;
+    discount?: DiscountOutput;
   }
 >;
 
@@ -47,21 +45,22 @@ export class OrderMongoSchema {
   @Prop({ required: true })
   total: number;
 
-  // @Field()
+  @Field()
   // @Prop({ required: true, enum: CurrencyEnum, default: CurrencyEnum.BRL })
-  // currency: Currency;
+  @Prop()
+  currency: CurrencyOutput;
 
   @Field()
   @Prop({ required: true })
-  paymentSnapshot: PaymentSubdocument;
+  paymentSnapshot: PaymentOutput;
 
   @Field()
   @Prop({ required: true })
-  shippingSnapshot: ShippingSubdocument;
+  shippingSnapshot: ShippingOutput;
 
   @Field()
   @Prop({ required: true })
-  billingAddress: BillingAddressSubdocument;
+  billingAddress: BillingAddressOutput;
 
   @Field()
   @Prop({ required: true })
@@ -77,7 +76,7 @@ export class OrderMongoSchema {
 
   @Field()
   @Prop({ required: false })
-  discount?: DiscountSubdocument;
+  discount?: DiscountOutput;
 }
 
 // Define o tipo do documento Mongoose (com métodos, etc.)

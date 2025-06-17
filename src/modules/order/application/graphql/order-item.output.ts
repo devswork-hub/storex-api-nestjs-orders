@@ -1,7 +1,9 @@
-// order-item.output.ts
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DiscountSubdocument } from '../mongo/subdocuments/discount';
-import { MoneyOutput } from '../mongo/money.output';
+import { DiscountOutput } from './outputs/discount.output';
+import { MoneyOutput } from './outputs/money.output';
+import { ChangeTo } from '@/src/app/utils/type';
+
+type OutputType = ChangeTo<OrderItemOutput, {}>;
 
 @ObjectType()
 export class OrderItemOutput {
@@ -14,8 +16,8 @@ export class OrderItemOutput {
   @Field(() => MoneyOutput)
   price: MoneyOutput;
 
-  @Field(() => DiscountSubdocument, { nullable: true })
-  discount?: DiscountSubdocument;
+  @Field(() => DiscountOutput, { nullable: true })
+  discount?: DiscountOutput;
 
   @Field({ nullable: true })
   seller?: string;

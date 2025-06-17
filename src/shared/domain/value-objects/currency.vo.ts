@@ -1,3 +1,7 @@
+export type CurrencyType = {
+  code: string;
+};
+
 export class Currency {
   constructor(public readonly code: CurrencyEnum) {}
 
