@@ -7,9 +7,9 @@ import { ShippingOutput } from '../graphql/outputs/shipping.output';
 import { HydratedDocument } from 'mongoose';
 import { DiscountOutput } from '../graphql/outputs/discount.output';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { OrderModelContract } from '../../order';
-import { OrderItem } from '../../order-item';
-import { OrderStatus, OrderStatusEnum } from '../../order.constants';
+import { OrderModelContract } from '../../domain/order';
+import { OrderItem } from '../../domain/order-item';
+import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 import { CurrencyOutput } from '../graphql/outputs/currency.output';
 
 export type Change = ChangeTo<

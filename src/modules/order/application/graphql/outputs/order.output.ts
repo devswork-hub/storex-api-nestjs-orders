@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { PaymentOutput } from './outputs/payment.output';
-import { ShippingOutput } from './outputs/shipping.output';
-import { BillingAddressOutput } from './outputs/billing-address.output';
-import { DiscountOutput } from './outputs/discount.output';
+import { PaymentOutput } from './payment.output';
+import { ShippingOutput } from './shipping.output';
+import { BillingAddressOutput } from './billing-address.output';
+import { DiscountOutput } from './discount.output';
 import { OrderItemOutput } from './order-item.output';
 
 @ObjectType()

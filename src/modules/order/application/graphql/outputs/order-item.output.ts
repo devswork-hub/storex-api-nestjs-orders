@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DiscountOutput } from './outputs/discount.output';
-import { MoneyOutput } from './outputs/money.output';
+import { DiscountOutput } from './discount.output';
+import { MoneyOutput } from './money.output';
 import { ChangeTo } from '@/src/app/utils/type';
 
 type OutputType = ChangeTo<OrderItemOutput, {}>;

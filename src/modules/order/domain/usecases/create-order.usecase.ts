@@ -13,3 +13,12 @@ export class CreateOrderService implements BaseUseCaseContract<Input, Output> {
     return await this.repository.createOne(order);
   }
 }
+
+// export const createOrderService = (
+//   repository: OrderRepositoryContract,
+// ): CreateOrderService => {
+//   if (!repository || typeof repository.createOne !== 'function') {
+//     throw new Error('Invalid repository provided');
+//   }
+//   return new CreateOrderService(repository);
+// };

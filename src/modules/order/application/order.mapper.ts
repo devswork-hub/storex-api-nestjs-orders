@@ -1,11 +1,11 @@
-import { OrderModelContract } from '../order';
-import { OrderItemContract } from '../order-item';
-import { OrderOuput } from './graphql/order.output';
+import { OrderModelContract } from '../domain/order';
+import { OrderItemContract } from '../domain/order-item';
+import { OrderOuput } from './graphql/outputs/order.output';
 import { DiscountOutput } from './graphql/outputs/discount.output';
 import { PaymentOutput } from './graphql/outputs/payment.output';
 import { ShippingOutput } from './graphql/outputs/shipping.output';
 import { BillingAddressOutput } from './graphql/outputs/billing-address.output';
-import { OrderItemOutput } from './graphql/order-item.output';
+import { OrderItemOutput } from './graphql/outputs/order-item.output';
 
 export class OrderMapper {
   static fromEntitytoGraphQLOrderOutput(order: OrderModelContract): OrderOuput {

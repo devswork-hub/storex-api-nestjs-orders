@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { OrderItemContract } from '../../../order-item';
+import { OrderItemContract } from '../../../domain/order-item';
 import { ChangeTo } from '@/src/app/utils/type';
 import { MoneyOutput } from '../outputs/money.output';
 import { DiscountOutput } from '../outputs/discount.output';
