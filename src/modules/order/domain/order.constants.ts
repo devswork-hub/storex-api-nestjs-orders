@@ -36,8 +36,15 @@ export enum DiscountTypeEnum {
   FIXED = 'fixed',
 }
 
+export enum PaymentMethodEnum {
+  CREDIT_CARD = 'credit_card',
+  BOLETO = 'boleto',
+  PIX = 'pix',
+  BANK_TRANSFER = 'bank_transfer',
+}
+
 export type PaymentSnapshot = {
-  method: 'credit_card' | 'boleto' | 'pix' | 'bank_transfer';
+  method: PaymentMethodEnum;
   status: 'paid' | 'pending' | 'failed' | string; // Status da transação no momento
   amount: number; // Valor total do pagamento
   transactionId?: string; // ID da transação no provedor de pagamento

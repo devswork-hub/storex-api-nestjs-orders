@@ -47,7 +47,6 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   constructor(props: OrderModelInput) {
     const id = OrderID.generate(OrderID).getValue();
     super({ ...props, id });
-    // Desestruturação ignorando `subTotal` e `total`
     Object.assign(this, props);
     this.validateCurrencyEntry();
   }

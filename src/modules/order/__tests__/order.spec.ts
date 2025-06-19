@@ -2,9 +2,9 @@ import {
   Currency,
   CurrencyEnum,
 } from '../../../shared/domain/value-objects/currency.vo';
-import { OrderModel } from '../order';
 import { Money } from '../../../shared/domain/value-objects/money.vo';
-import { OrderItem } from '../order-item';
+import { OrderModel } from '../domain/order';
+import { OrderItem } from '../domain/order-item';
 
 describe('OrderModel', () => {
   it('return OrderModel', () => {
@@ -30,7 +30,7 @@ describe('OrderModel', () => {
       },
       currency: new Currency(CurrencyEnum.BRL),
       paymentSnapshot: {
-        method: 'credit_card',
+        method: null,
         status: '',
         amount: 0,
         transactionId: '',

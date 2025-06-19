@@ -9,6 +9,9 @@ import { OrderItemSchema, OrderItemDocument } from './order-item.schema';
 
 @Schema({ timestamps: true })
 export class OrderMongoEntity {
+  @Prop({ type: String, required: true })
+  _id: string;
+
   @Prop({ required: true, enum: OrderStatusEnum })
   status: string;
 

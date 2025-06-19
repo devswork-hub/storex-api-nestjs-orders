@@ -58,15 +58,15 @@ export class OrderResolver {
     return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
   }
 
-  @Mutation(() => OrderOuput)
-  async updateOrder(
-    @Args('id') id: string,
-    @Args('data') data: UpdateOrderInput,
-  ): Promise<OrderOuput> {
-    const domainInput = OrderMapper.toDomainInput({ ...data, id });
-    // const updated = await this.updateOrderService.execute({});
-    return OrderMapper.fromEntitytoGraphQLOrderOutput(null);
-  }
+  // @Mutation(() => OrderOuput)
+  // async updateOrder(
+  //   @Args('id') id: string,
+  //   @Args('data') data: UpdateOrderInput,
+  // ): Promise<OrderOuput> {
+  //   const domainInput = OrderMapper.toDomainInput({ ...data, id });
+  //   // const updated = await this.updateOrderService.execute({});
+  //   return OrderMapper.fromEntitytoGraphQLOrderOutput(null);
+  // }
 
   @Mutation(() => Boolean)
   async deleteOrder(@Args('id') id: string): Promise<boolean> {

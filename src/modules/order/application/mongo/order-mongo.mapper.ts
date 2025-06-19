@@ -9,6 +9,7 @@ export class OrderMongoMapper {
   static toPersistence(order: OrderModelContract): any {
     return {
       ...order,
+      _id: order.id,
       currency: order.currency.code,
       subTotal: order.subTotal.amount,
       total: order.total.amount,
@@ -31,6 +32,7 @@ export class OrderMongoMapper {
   static toDomain(raw: any): OrderModelContract {
     return OrderModel.create({
       ...raw,
+      id: raw._id,
       currency: new Currency(raw.currency),
       items: raw.items.map((i) => ({
         ...i,

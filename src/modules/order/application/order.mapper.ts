@@ -1,4 +1,8 @@
-import { OrderModelContract, OrderModelInput } from '../domain/order';
+import {
+  OrderModel,
+  OrderModelContract,
+  OrderModelInput,
+} from '../domain/order';
 import { OrderItemContract } from '../domain/order-item';
 import { OrderOuput } from './graphql/outputs/order.output';
 import { DiscountOutput } from './graphql/outputs/discount.output';
@@ -6,27 +10,36 @@ import { PaymentOutput } from './graphql/outputs/payment.output';
 import { ShippingOutput } from './graphql/outputs/shipping.output';
 import { BillingAddressOutput } from './graphql/outputs/billing-address.output';
 import { OrderItemOutput } from './graphql/outputs/order-item.output';
+import { CreateOrderInput } from './graphql/inputs/order.input';
+import {
+  Currency,
+  CurrencyEnum,
+} from '@/src/shared/domain/value-objects/currency.vo';
+import { Money } from '@/src/shared/domain/value-objects/money.vo';
+import {
+  OrderStatus,
+  PaymentMethodEnum,
+  ShippingStatus,
+} from '../domain/order.constants';
 
 export class OrderMapper {
-  static toDomainInput(input: any): OrderModelInput {
+  static toDomainInput(input: CreateOrderInput): OrderModelInput {
     return {
-      ...input,
-      currency: {
-        code: input.currency,
-      },
+      status: input.status as OrderStatus,
+      currency: new Currency(input.currency as CurrencyEnum),
       items: input.items.map(
-        (item: any): OrderItemContract => ({
+        (item): OrderItemContract => ({
           ...item,
-          price: {
-            amount: item.price.amount,
-            currency: { code: item.price.currency },
-          },
+          price: new Money(
+            item.price.amount,
+            new Currency(item.price.currency as CurrencyEnum),
+          ),
           discount: item.discount
             ? {
                 couponCode: item.discount.couponCode,
                 value: item.discount.value,
                 type: item.discount.type,
-                currency: { code: item.discount.currency },
+                currency: new Currency(item.discount.currency as CurrencyEnum),
               }
             : undefined,
         }),
@@ -36,12 +49,21 @@ export class OrderMapper {
             couponCode: input.discount.couponCode,
             value: input.discount.value,
             type: input.discount.type,
-            currency: { code: input.discount.currency },
+            currency: new Currency(input.discount.currency as CurrencyEnum),
           }
         : undefined,
-      paymentSnapshot: input.paymentSnapshot, // Assumindo que já vem no formato correto
-      shippingSnapshot: input.shippingSnapshot, // idem
-      billingAddress: input.billingAddress, // idem
+      paymentSnapshot: {
+        ...input.paymentSnapshot,
+        method: input.paymentSnapshot.method as PaymentMethodEnum,
+      },
+      shippingSnapshot: {
+        ...input.shippingSnapshot,
+        status: input.shippingSnapshot.status as ShippingStatus,
+      },
+      billingAddress: input.billingAddress,
+      customerId: input.customerId,
+      paymentId: input.paymentId,
+      notes: input.notes,
     };
   }
 
