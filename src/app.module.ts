@@ -12,7 +12,8 @@ import { PersistenceModule } from './app/persistence/persistence.module';
     PersistenceModule,
     GraphQLModule.forRoot({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: true,
+      // autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     OrdersModule,
   ],

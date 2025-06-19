@@ -1,0 +1,16 @@
+query FindOrderById {
+  findOrderById(id: "5afa53bc-f26e-4cb5-8ed8-3868909d972e") {
+    id
+    status
+    customerId
+    items {
+      productId
+      quantity
+      price {
+        amount
+        currency
+      }
+    }
+    total
+  }
+}

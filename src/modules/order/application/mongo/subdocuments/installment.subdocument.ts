@@ -1,12 +1,14 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ _id: false })
-@ObjectType()
 export class InstallmentSubdocument {
-  @Field() @Prop() number: number;
-  @Field() @Prop() value: number;
-  @Field() @Prop() interestRate?: number;
-  @Field() @Prop() totalValue?: number;
-  @Field() @Prop() dueDate?: string;
+  @Prop() number: number;
+  @Prop() value: number;
+  @Prop() interestRate?: number;
+  @Prop() totalValue?: number;
+  @Prop() dueDate?: string;
 }
+
+export const InstallmentSchema = SchemaFactory.createForClass(
+  InstallmentSubdocument,
+);

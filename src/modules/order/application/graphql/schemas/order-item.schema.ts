@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { OrderItemContract } from '../../../domain/order-item';
@@ -22,63 +22,48 @@ export class OrderItem
     >
 {
   @Prop({ required: [true, '"productId" is required'] })
-  @Field({ nullable: false })
   productId: string;
 
   @Prop({ required: [true, '"quantity" is required'] })
-  @Field({ nullable: false })
   quantity: number;
 
   @Prop({ required: [true, '"price" is required'] })
-  @Field({ nullable: false })
   price: MoneyOutput;
 
   @Prop()
-  @Field({ nullable: false })
   discount?: DiscountOutput;
 
   @Prop()
-  @Field({ nullable: false })
   seller?: string;
 
   @Prop()
-  @Field({ nullable: false })
   title?: string;
 
   @Prop()
-  @Field({ nullable: false })
   imageUrl?: string;
 
   @Prop()
-  @Field({ nullable: false })
   description?: string;
 
   @Prop()
-  @Field({ nullable: false })
   shippingId?: string;
 
   @Prop()
-  @Field({ nullable: false })
   id?: string;
 
   @Prop()
-  @Field(() => Boolean, { nullable: false })
   active?: boolean;
 
   @Prop()
-  @Field(() => String, { nullable: false })
   createdAt?: Date;
 
   @Prop()
-  @Field({ nullable: false })
   updatedAt?: Date;
 
   @Prop()
-  @Field({ nullable: false })
   deleted?: boolean;
 
   @Prop()
-  @Field({ nullable: false })
   deletedAt?: Date;
 }
 

@@ -1,0 +1,10 @@
+mutation UpdateOrder {
+  updateOrder(
+    id: "order-123"
+    input: { status: "PAID", notes: "Atualizado para entrega expressa" }
+  ) {
+    id
+    status
+    notes
+  }
+}

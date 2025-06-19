@@ -1,0 +1,47 @@
+import {
+  OrderModel,
+  OrderModelContract,
+} from '@/src/modules/order/domain/order';
+import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+import { Money } from '@/src/shared/domain/value-objects/money.vo';
+
+export class OrderMongoMapper {
+  static toPersistence(order: OrderModelContract): any {
+    return {
+      ...order,
+      currency: order.currency.code,
+      subTotal: order.subTotal.amount,
+      total: order.total.amount,
+      items: order.items.map((i) => ({
+        ...i,
+        price: {
+          amount: i.price.amount,
+          currency: i.price.currency.code,
+        },
+      })),
+      discount: order.discount
+        ? {
+            ...order.discount,
+            currency: order.discount.currency.code,
+          }
+        : undefined,
+    };
+  }
+
+  static toDomain(raw: any): OrderModelContract {
+    return OrderModel.create({
+      ...raw,
+      currency: new Currency(raw.currency),
+      items: raw.items.map((i) => ({
+        ...i,
+        price: new Money(i.price.amount, new Currency(i.price.currency)),
+      })),
+      discount: raw.discount
+        ? {
+            ...raw.discount,
+            currency: new Currency(raw.discount.currency),
+          }
+        : undefined,
+    });
+  }
+}

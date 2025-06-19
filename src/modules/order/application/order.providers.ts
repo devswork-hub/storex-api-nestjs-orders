@@ -1,11 +1,11 @@
-import { OrderRepositoryContract } from '../persistence/order.repository';
-import { OrderInMemoryRepository } from '../persistence/order.in-memory.repository';
 import { OrderMongoRepository } from './order.mongo-repository';
-import { CreateOrderService } from '../usecases/create-order.usecase';
-import { FindAllOrderService } from '../usecases/find-all-orders.service';
 import { Model } from 'mongoose';
-import { OrderMongoSchema } from './mongo/order.schema';
 import { OrderItem } from './graphql/schemas/order-item.schema';
+import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
+import { OrderMongoEntity } from './mongo/order.document';
+import { CreateOrderService } from '../domain/usecases/create-order.service';
+import { OrderRepositoryContract } from '../domain/persistence/order.repository';
+import { FindAllOrderService } from '../domain/usecases/find-all-order.service';
 
 export const repositories = {
   // Token principal usado para injeção do repositório de pedidos.
@@ -26,15 +26,13 @@ export const repositories = {
     provide: OrderMongoRepository, // Token igual à classe (também pode ser usado em injeções)
     useFactory: (
       // Recebe as instâncias dos models via injeção (ver inject abaixo)
-      orderModel: Model<OrderMongoSchema>,
-      orderItemModel: Model<OrderItem>,
+      orderModel: Model<OrderMongoEntity>,
     ) => {
       // Retorna uma nova instância do repositório com os modelos injetados
-      return new OrderMongoRepository(orderModel, orderItemModel);
+      return new OrderMongoRepository(orderModel);
     },
     inject: [
-      'OrderMongoSchemaModel', // Esse nome precisa bater com o nome passado no MongooseModule.forFeature
-      'OrderItem', // Idem aqui
+      'OrderMongoEntity', // Esse nome precisa bater com o nome passado no MongooseModule.forFeature
     ],
   },
 };

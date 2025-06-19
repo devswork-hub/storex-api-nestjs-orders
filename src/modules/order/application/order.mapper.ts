@@ -1,4 +1,4 @@
-import { OrderModelContract } from '../domain/order';
+import { OrderModelContract, OrderModelInput } from '../domain/order';
 import { OrderItemContract } from '../domain/order-item';
 import { OrderOuput } from './graphql/outputs/order.output';
 import { DiscountOutput } from './graphql/outputs/discount.output';
@@ -8,7 +8,45 @@ import { BillingAddressOutput } from './graphql/outputs/billing-address.output';
 import { OrderItemOutput } from './graphql/outputs/order-item.output';
 
 export class OrderMapper {
+  static toDomainInput(input: any): OrderModelInput {
+    return {
+      ...input,
+      currency: {
+        code: input.currency,
+      },
+      items: input.items.map(
+        (item: any): OrderItemContract => ({
+          ...item,
+          price: {
+            amount: item.price.amount,
+            currency: { code: item.price.currency },
+          },
+          discount: item.discount
+            ? {
+                couponCode: item.discount.couponCode,
+                value: item.discount.value,
+                type: item.discount.type,
+                currency: { code: item.discount.currency },
+              }
+            : undefined,
+        }),
+      ),
+      discount: input.discount
+        ? {
+            couponCode: input.discount.couponCode,
+            value: input.discount.value,
+            type: input.discount.type,
+            currency: { code: input.discount.currency },
+          }
+        : undefined,
+      paymentSnapshot: input.paymentSnapshot, // Assumindo que já vem no formato correto
+      shippingSnapshot: input.shippingSnapshot, // idem
+      billingAddress: input.billingAddress, // idem
+    };
+  }
+
   static fromEntitytoGraphQLOrderOutput(order: OrderModelContract): OrderOuput {
+    console.log('passei aqui', this.toOrderItemOutput);
     return {
       id: order.id,
       status: order.status,
@@ -31,7 +69,9 @@ export class OrderMapper {
     };
   }
 
-  private static toOrderItemOutput(item: OrderItemContract): OrderItemOutput {
+  // Aqui precisa ser static também
+  static toOrderItemOutput(item: OrderItemContract): OrderItemOutput {
+    console.log('Mapeando item:', item?.id);
     return {
       id: item.id,
       productId: item.productId,
@@ -51,7 +91,8 @@ export class OrderMapper {
     };
   }
 
-  private static mapDiscount(
+  // Esses métodos privados também, pois são chamados com this.
+  static mapDiscount(
     discount?: OrderModelContract['discount'],
   ): DiscountOutput | undefined {
     if (!discount) return undefined;
@@ -63,7 +104,7 @@ export class OrderMapper {
     };
   }
 
-  private static mapPayment(
+  static mapPayment(
     payment: OrderModelContract['paymentSnapshot'],
   ): PaymentOutput {
     return {
@@ -74,7 +115,7 @@ export class OrderMapper {
     };
   }
 
-  private static mapShipping(
+  static mapShipping(
     snapshot: OrderModelContract['shippingSnapshot'],
   ): ShippingOutput {
     return {
@@ -82,7 +123,7 @@ export class OrderMapper {
     };
   }
 
-  private static mapBillingAddress(
+  static mapBillingAddress(
     address: OrderModelContract['billingAddress'],
   ): BillingAddressOutput {
     return {

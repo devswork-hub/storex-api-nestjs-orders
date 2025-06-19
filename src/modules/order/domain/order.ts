@@ -1,5 +1,5 @@
 import { OrderItem, OrderItemContract } from './order-item';
-import { Currency } from '../../shared/domain/value-objects/currency.vo';
+import { Currency } from '../../../shared/domain/value-objects/currency.vo';
 import {
   BillingAddress,
   Discount,
@@ -7,8 +7,11 @@ import {
   PaymentSnapshot,
   ShippingSnapshot,
 } from './order.constants';
-import { BaseModel, BaseModelProps } from '../../shared/domain/base/model.base';
-import { Money } from '../../shared/domain/value-objects/money.vo';
+import {
+  BaseModel,
+  BaseModelProps,
+} from '../../../shared/domain/base/model.base';
+import { Money } from '@/src/shared/domain/value-objects/money.vo';
 import { calculateDiscountAmount } from './utils/discount-calculator';
 import { OrderID } from './order-id';
 
@@ -95,7 +98,6 @@ export class OrderModel extends BaseModel implements OrderModelContract {
 
   private validateCurrencyEntry() {
     const hasInvalidCurrency = this.items.some((item) => {
-      console.log(item.price.currency.code, this.currency.code);
       return item.price.currency.code !== this.currency.code;
     });
 

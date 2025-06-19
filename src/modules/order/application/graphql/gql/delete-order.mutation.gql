@@ -1,0 +1,6 @@
+mutation DeleteOrder {
+  deleteOrder(id: "order-123") {
+    id
+    status
+  }
+}

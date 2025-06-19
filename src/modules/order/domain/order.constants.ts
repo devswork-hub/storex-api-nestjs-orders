@@ -31,6 +31,11 @@ export type Discount = {
   currency: Currency;
 };
 
+export enum DiscountTypeEnum {
+  PERCENTAGE = 'percentage',
+  FIXED = 'fixed',
+}
+
 export type PaymentSnapshot = {
   method: 'credit_card' | 'boleto' | 'pix' | 'bank_transfer';
   status: 'paid' | 'pending' | 'failed' | string; // Status da transação no momento

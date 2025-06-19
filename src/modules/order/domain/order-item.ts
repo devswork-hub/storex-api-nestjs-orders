@@ -1,8 +1,9 @@
-import { BaseModel, BaseModelProps } from '../../shared/domain/base/model.base';
 // import { Currency } from '../../shared/domain/value-objects/currency.vo';
-import { Money } from '../../shared/domain/value-objects/money.vo';
+
+import { Money } from '@/src/shared/domain/value-objects/money.vo';
 import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';
+import { BaseModel, BaseModelProps } from '@/src/shared/domain/base/model.base';
 
 export type OrderItemContract = {
   productId: string; // "ID do produto no sistema externo"
@@ -33,7 +34,8 @@ export class OrderItem extends BaseModel implements OrderItemContract {
   }
 
   getTotalPrice(): Money {
-    return this.price.multiply(this.quantity);
+    return new Money(this.price.amount * this.quantity, this.price.currency);
+    // return this.price.multiply(this.quantity);
   }
 
   getDiscountAmount(): Money {
