@@ -1,6 +1,6 @@
 import { ZodValidator } from '@/src/shared/domain/validation/zod-validator';
 import { z } from 'zod';
-import { CreateOrderInput } from './create-order.input';
+import { CreateOrderInput } from '../../../application/graphql/inputs/order.input';
 
 export const MoneyInputSchema = z.object({
   amount: z.number().positive('Amount must be greater than 0'),
@@ -81,6 +81,6 @@ export class CreateOrderValidation {
   private validator = new ZodValidator(CreateOrderSchema);
 
   validate(command: CreateOrderInput) {
-    return this.validator.validate(command); // lança ValidationException se inválido
+    return this.validator.validate(command);
   }
 }

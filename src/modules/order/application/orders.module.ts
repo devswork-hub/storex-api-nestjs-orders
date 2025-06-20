@@ -12,9 +12,7 @@
 
 import { Module, Provider } from '@nestjs/common';
 import { OrderMongoRepository } from './order.mongo-repository';
-import { CreateOrderService } from '../domain/usecases/create-order.service';
 import { UpdateOrderService } from '../domain/usecases/update-order.service';
-import { DeleteOrderService } from '../domain/usecases/delete-order.service';
 import { FindOneOrderService } from '../domain/usecases/find-one-order.service';
 import { FindAllOrderService } from '../domain/usecases/find-all-order.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -22,6 +20,8 @@ import { OrderMongoEntity, OrderSchema } from './mongo/order.document';
 import { OrderItemSchema } from './mongo/order-item.schema';
 import { orderProviders } from './order.providers';
 import { OrderResolver } from './graphql/order.resolver';
+import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';
+import { DeleteOrderService } from '../domain/usecases/delete-order/delete-order.service';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',

@@ -22,7 +22,7 @@ class DiscountInput {
   @Field()
   type: 'percentage' | 'fixed';
 
-  @Field()
+  @Field(() => String)
   currency: string;
 }
 

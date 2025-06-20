@@ -2,12 +2,14 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { OrderOuput } from './outputs/order.output';
 import { OrderMapper } from '../order.mapper';
-import { CreateOrderService } from '../../domain/usecases/create-order.service';
-import { UpdateOrderService } from '../../domain/usecases/update-order.service';
-import { DeleteOrderService } from '../../domain/usecases/delete-order.service';
 import { FindOneOrderService } from '../../domain/usecases/find-one-order.service';
 import { FindAllOrderService } from '../../domain/usecases/find-all-order.service';
 import { CreateOrderInput, UpdateOrderInput } from './inputs/order.input';
+import { CreateOrderService } from '../../domain/usecases/create-order/create-order.service';
+import { UpdateOrderService } from '../../domain/usecases/update-order.service';
+import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
+import { OrderID } from '../../domain/order-id';
+import { CreateOrderValidation } from '../../domain/usecases/create-order/create-order.validation';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -45,7 +47,7 @@ export class OrderResolver {
   }
   @Query(() => OrderOuput, { nullable: true })
   async findOrderById(@Args('id') id: string): Promise<OrderOuput | null> {
-    const order = await this.findOneOrderService.execute(id);
+    const order = await this.findOneOrderService.execute(new OrderID(id));
     return order ? OrderMapper.fromEntitytoGraphQLOrderOutput(order) : null;
   }
 
@@ -53,7 +55,10 @@ export class OrderResolver {
   async createOrder(
     @Args('input') data: CreateOrderInput,
   ): Promise<OrderOuput> {
-    const domainInput = OrderMapper.toDomainInput(data);
+    const validations = new CreateOrderValidation();
+    validations.validate(data); // ✅ Valida antes de mapear para domínio
+
+    const domainInput = OrderMapper.toDomainInput(data); // depois transforma
     const created = await this.createOrderService.execute(domainInput);
     return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
   }
@@ -70,7 +75,7 @@ export class OrderResolver {
 
   @Mutation(() => Boolean)
   async deleteOrder(@Args('id') id: string): Promise<boolean> {
-    await this.deleteOrderService.execute(id);
+    await this.deleteOrderService.execute(new OrderID(id));
     return true;
   }
 }

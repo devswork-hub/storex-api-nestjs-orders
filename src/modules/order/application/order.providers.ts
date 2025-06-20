@@ -3,9 +3,9 @@ import { Model } from 'mongoose';
 import { OrderItem } from './graphql/schemas/order-item.schema';
 import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
 import { OrderMongoEntity } from './mongo/order.document';
-import { CreateOrderService } from '../domain/usecases/create-order.service';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { FindAllOrderService } from '../domain/usecases/find-all-order.service';
+import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';
 
 export const repositories = {
   // Token principal usado para injeção do repositório de pedidos.

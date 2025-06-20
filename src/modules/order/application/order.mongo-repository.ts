@@ -7,6 +7,10 @@ import { OrderRepositoryContract } from '../domain/persistence/order.repository'
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
 
+type FindByOptions = {
+  orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };
+};
+
 @Injectable()
 export class OrderMongoRepository implements OrderRepositoryContract {
   constructor(
@@ -50,8 +54,18 @@ export class OrderMongoRepository implements OrderRepositoryContract {
 
   async findBy(
     query: Partial<OrderModelContract>,
+    options?: FindByOptions,
   ): Promise<OrderModelContract[]> {
-    const docs = await this.orderModel.find(query);
-    return docs.map((d) => OrderMongoMapper.toDomain(d.toObject()));
+    const queryBuilder = this.orderModel.find(query);
+
+    if (options?.orderBy) {
+      const sort: Record<string, 1 | -1> = {
+        [options.orderBy.field]: options.orderBy.direction === 'asc' ? 1 : -1,
+      };
+      queryBuilder.sort(sort);
+    }
+
+    const docs = await queryBuilder.exec();
+    return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
   }
 }
