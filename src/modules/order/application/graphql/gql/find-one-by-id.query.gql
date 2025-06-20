@@ -1,11 +1,16 @@
 query FindOrderById {
-  findOrderById(id: "5afa53bc-f26e-4cb5-8ed8-3868909d972e") {
+  findOrderById(id: "6c315560-4f52-4655-bc6b-caae694e3912") {
     id
     status
     customerId
+
     items {
       productId
       quantity
+      seller
+      title
+      description
+      id
       price {
         amount
         currency

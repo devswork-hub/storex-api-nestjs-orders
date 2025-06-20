@@ -34,8 +34,8 @@ export class OrderItem extends BaseModel implements OrderItemContract {
   }
 
   getTotalPrice(): Money {
-    return new Money(this.price.amount * this.quantity, this.price.currency);
-    // return this.price.multiply(this.quantity);
+    // return new Money(this.price.amount * this.quantity, this.price.currency);
+    return this.price.multiply(this.quantity);
   }
 
   getDiscountAmount(): Money {

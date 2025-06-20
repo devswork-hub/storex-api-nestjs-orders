@@ -5,6 +5,3 @@ export class OrderID extends Identifier<OrderID> {
     super(value);
   }
 }
-
-// const id = OrderID.generate(OrderID);
-// id.getValue();
