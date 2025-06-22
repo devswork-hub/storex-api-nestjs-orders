@@ -1,7 +1,7 @@
 import { OrderMongoRepository } from './order.mongo-repository';
 import { Model } from 'mongoose';
 import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
-import { OrderMongoEntity } from './mongo/order.document';
+import { OrderMongoEntity } from './mongo/documents/order.document';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { FindAllOrderService } from '../domain/usecases/find-all-order.service';
 import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';

@@ -1,8 +1,14 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { DiscountTypeEnum } from '../../../domain/order.constants';
+import { Discount, DiscountTypeEnum } from '../../../domain/order.constants';
+import { ChangeTo } from '@/src/app/utils/type';
+
+export type DiscountSubdocumentProps = ChangeTo<
+  Discount,
+  { type: string; currency: string }
+>;
 
 @Schema({ _id: false })
-export class DiscountSubdocument {
+export class DiscountSubdocument implements DiscountSubdocumentProps {
   @Prop({ required: true })
   couponCode: string;
 

@@ -1,4 +1,4 @@
-import { OrderItem, OrderItemContract } from './order-item';
+import { OrderItemModel, OrderItemModelContract } from './order-item';
 import { Currency } from '../../../shared/domain/value-objects/currency.vo';
 import {
   BillingAddress,
@@ -19,9 +19,7 @@ export type OrderModelInput = Omit<OrderModelContract, 'subTotal' | 'total'>;
 
 export type OrderModelContract = {
   status: OrderStatus;
-  items: OrderItemContract[];
-  subTotal: Money;
-  total: Money;
+  items: OrderItemModelContract[];
   currency: Currency;
   paymentSnapshot: PaymentSnapshot; // Snapshot da informação de pagamento no momento da criação do pedido
   shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
@@ -34,7 +32,7 @@ export type OrderModelContract = {
 
 export class OrderModel extends BaseModel implements OrderModelContract {
   status: OrderStatus;
-  items: OrderItem[];
+  items: OrderItemModel[];
   currency: Currency;
   paymentSnapshot: PaymentSnapshot;
   shippingSnapshot: ShippingSnapshot;
@@ -59,22 +57,6 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   }
 
   get discountAmount(): Money {
-    // if (!this.discount) return new Money(0, this.currency);
-    // if (this.discount.type === 'fixed') {
-    //   if (
-    //     this.discount.currency &&
-    //     this.discount.currency.code !== this.currency.code
-    //   ) {
-    //     throw new Error('Desconto em moeda diferente do pedido');
-    //   }
-    //   return new Money(this.discount.value, this.currency);
-    // }
-    // if (this.discount.type === 'percentage')
-    //   return new Money(
-    //     this.subTotal.amount * (this.discount.value / 100),
-    //     this.currency,
-    //   );
-    // return new Money(0, this.currency);
     const discountValue = calculateDiscountAmount(
       this.subTotal.amount,
       this.discount,
@@ -105,10 +87,18 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     }
   }
 
+  addItem(item: OrderItemModelContract): void {
+    const newItem = new OrderItemModel(item);
+    if (newItem.price.currency.code !== this.currency.code) {
+      throw new Error('Item currency must match the order currency');
+    }
+    this.items.push(newItem);
+  }
+
   static create(props: OrderModelInput): OrderModel {
     return new OrderModel({
       ...props,
-      items: props.items.map((item) => new OrderItem(item)),
+      items: props.items.map((item) => new OrderItemModel(item)),
     });
   }
 }

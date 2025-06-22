@@ -5,7 +5,7 @@ import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';
 import { BaseModel, BaseModelProps } from '@/src/shared/domain/base/model.base';
 
-export type OrderItemContract = {
+export type OrderItemModelContract = {
   productId: string; // "ID do produto no sistema externo"
   quantity: number; // "Quantidade do produto no pedido"
   price: Money; // "R$ 0,00"
@@ -17,7 +17,10 @@ export type OrderItemContract = {
   shippingId?: string; // "ID do frete associado ao item"
 } & BaseModelProps;
 
-export class OrderItem extends BaseModel implements OrderItemContract {
+export class OrderItemModel
+  extends BaseModel
+  implements OrderItemModelContract
+{
   productId: string;
   quantity: number;
   price: Money;
@@ -28,7 +31,7 @@ export class OrderItem extends BaseModel implements OrderItemContract {
   description?: string;
   shippingId?: string;
 
-  constructor(props: OrderItemContract) {
+  constructor(props: OrderItemModelContract) {
     super(props);
     Object.assign(this, props);
   }

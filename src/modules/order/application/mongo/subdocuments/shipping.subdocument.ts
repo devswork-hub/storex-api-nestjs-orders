@@ -1,9 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import {
+  ShippingSnapshot,
+  ShippingStatus,
+} from '../../../domain/order.constants';
 
 @Schema({ _id: false })
-export class ShippingSubdocument {
+export class ShippingSubdocument implements ShippingSnapshot {
   @Prop() shippingId?: string;
-  @Prop() status: string;
+  @Prop() status: ShippingStatus;
   @Prop() carrier: string;
   @Prop() service: string;
   @Prop() fee?: number;

@@ -1,11 +1,15 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument } from 'mongoose';
-import { OrderStatusEnum } from '../../domain/order.constants';
-import { DiscountSubdocument } from './subdocuments/discount.subdocument';
-import { PaymentSubdocument } from './subdocuments/payment.subdocument';
-import { ShippingSubdocument } from './subdocuments/shipping.subdocument';
-import { BillingAddressSubdocument } from './subdocuments/billing-address.subdocument';
-import { OrderItemSchema, OrderItemDocument } from './order-item.schema';
+import { HydratedDocument } from 'mongoose';
+import { OrderStatusEnum } from '../../../domain/order.constants';
+import { DiscountSubdocument } from '../subdocuments/discount.subdocument';
+import { PaymentSubdocument } from '../subdocuments/payment.subdocument';
+import { ShippingSubdocument } from '../subdocuments/shipping.subdocument';
+import { BillingAddressSubdocument } from '../subdocuments/billing-address.subdocument';
+import { OrderItemSubdocument, OrderItemSchema } from './order-item.document';
+
+export type OrderMongoEntityProps = Omit<OrderDocument, 'id'> & {
+  _id: string;
+};
 
 @Schema({ timestamps: true })
 export class OrderMongoEntity {
@@ -16,7 +20,7 @@ export class OrderMongoEntity {
   status: string;
 
   @Prop({ type: [OrderItemSchema], required: true })
-  items: (typeof OrderItemSchema)[];
+  items: OrderItemSubdocument[];
 
   @Prop({ required: true })
   currency: string;

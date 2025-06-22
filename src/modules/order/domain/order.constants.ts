@@ -43,6 +43,12 @@ export enum PaymentMethodEnum {
   BANK_TRANSFER = 'bank_transfer',
 }
 
+export enum PaymentStatusEnum {
+  PAID = 'paid',
+  PENDING = 'pending',
+  FAILED = 'failed',
+}
+
 export type PaymentSnapshot = {
   method: PaymentMethodEnum;
   status: 'paid' | 'pending' | 'failed' | string; // Status da transação no momento

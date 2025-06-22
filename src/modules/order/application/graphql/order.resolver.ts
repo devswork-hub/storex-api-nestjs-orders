@@ -39,12 +39,10 @@ export class OrderResolver {
   async findAllOrders() {
     try {
       const orders = await this.findAllOrdersService.execute();
-      console.log('Orders:', orders.length);
       return orders.map((order) =>
         OrderMapper.fromEntitytoGraphQLOrderOutput(order),
       );
     } catch (error) {
-      console.error('Erro ao mapear orders:', error);
       throw error;
     }
   }

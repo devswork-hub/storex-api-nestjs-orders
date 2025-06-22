@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { OrderMongoEntity } from './mongo/order.document';
+import { OrderMongoEntity } from './mongo/documents/order.document';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
@@ -35,7 +35,6 @@ export class OrderMongoRepository implements OrderRepositoryContract {
   }
 
   async update(entity: OrderModelContract): Promise<void> {
-    console.log(JSON.stringify(entity, null, 2));
     await this.orderModel.updateOne(
       { _id: entity.id },
       OrderMongoMapper.toPersistence(entity),

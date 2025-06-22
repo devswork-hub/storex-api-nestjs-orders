@@ -1,12 +1,12 @@
 import { Currency } from './currency.vo';
 import { ExchangeRateProvider } from './exchange-rate.provider';
 
-export type MoneyPrice = {
+export type MoneyProps = {
   amount: number;
   currency: Currency;
 };
 
-export class Money {
+export class Money implements MoneyProps {
   constructor(
     public readonly amount: number,
     public readonly currency: Currency,

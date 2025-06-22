@@ -1,9 +1,10 @@
 import {
+  OrderModel,
   // OrderModel,
   OrderModelContract,
   OrderModelInput,
 } from '../domain/order';
-import { OrderItemContract } from '../domain/order-item';
+import { OrderItemModelContract } from '../domain/order-item';
 import { OrderOuput } from './graphql/outputs/order.output';
 import { DiscountOutput } from './graphql/outputs/discount.output';
 import { PaymentOutput } from './graphql/outputs/payment.output';
@@ -28,7 +29,7 @@ export class OrderMapper {
       status: input.status as OrderStatus,
       currency: new Currency(input.currency as CurrencyEnum),
       items: input.items.map(
-        (item): OrderItemContract => ({
+        (item): OrderItemModelContract => ({
           ...item,
           price: new Money(
             item.price.amount,
@@ -67,8 +68,8 @@ export class OrderMapper {
     };
   }
 
-  static fromEntitytoGraphQLOrderOutput(order: OrderModelContract): OrderOuput {
-    console.log('passei aqui', this.toOrderItemOutput);
+  static fromEntitytoGraphQLOrderOutput(data: OrderModelContract): OrderOuput {
+    const order = OrderModel.create(data);
     return {
       id: order.id,
       status: order.status,
@@ -92,8 +93,7 @@ export class OrderMapper {
   }
 
   // Aqui precisa ser static também
-  static toOrderItemOutput(item: OrderItemContract): OrderItemOutput {
-    console.log('Mapeando item:', item?.id);
+  static toOrderItemOutput(item: OrderItemModelContract): OrderItemOutput {
     return {
       id: item.id,
       productId: item.productId,

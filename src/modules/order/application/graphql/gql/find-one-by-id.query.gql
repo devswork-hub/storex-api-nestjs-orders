@@ -1,5 +1,5 @@
 query FindOrderById {
-  findOrderById(id: "6c315560-4f52-4655-bc6b-caae694e3912") {
+  findOrderById(id: "8b0cdc31-9953-457f-b89d-6311be4ad65c") {
     id
     status
     customerId

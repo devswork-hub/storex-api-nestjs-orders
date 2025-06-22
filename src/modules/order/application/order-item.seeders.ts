@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { OrderItemDocument } from './mongo/order-item.schema';
+import { OrderItemSubdocument } from './mongo/documents/order-item.document';
 
 @Injectable()
 export class OrderItemSeeder {
   constructor(
-    @InjectModel(OrderItemDocument.name)
-    private readonly orderItemModel: Model<OrderItemDocument>,
+    @InjectModel(OrderItemSubdocument.name)
+    private readonly orderItemModel: Model<OrderItemSubdocument>,
   ) {}
 
   async seed() {
