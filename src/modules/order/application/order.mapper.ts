@@ -1,5 +1,5 @@
 import {
-  OrderModel,
+  // OrderModel,
   OrderModelContract,
   OrderModelInput,
 } from '../domain/order';
@@ -10,7 +10,7 @@ import { PaymentOutput } from './graphql/outputs/payment.output';
 import { ShippingOutput } from './graphql/outputs/shipping.output';
 import { BillingAddressOutput } from './graphql/outputs/billing-address.output';
 import { OrderItemOutput } from './graphql/outputs/order-item.output';
-import { CreateOrderInput } from './graphql/inputs/order.input';
+import { CreateOrderGraphQLInput } from './graphql/inputs/order.inputs';
 import {
   Currency,
   CurrencyEnum,
@@ -23,7 +23,7 @@ import {
 } from '../domain/order.constants';
 
 export class OrderMapper {
-  static toDomainInput(input: CreateOrderInput): OrderModelInput {
+  static toDomainInput(input: CreateOrderGraphQLInput): OrderModelInput {
     return {
       status: input.status as OrderStatus,
       currency: new Currency(input.currency as CurrencyEnum),
@@ -34,14 +34,14 @@ export class OrderMapper {
             item.price.amount,
             new Currency(item.price.currency as CurrencyEnum),
           ),
-          discount: item.discount
-            ? {
-                couponCode: item.discount.couponCode,
-                value: item.discount.value,
-                type: item.discount.type,
-                currency: new Currency(item.discount.currency as CurrencyEnum),
-              }
-            : undefined,
+          ...(item.discount && {
+            discount: {
+              couponCode: item.discount.couponCode,
+              value: item.discount.value,
+              type: item.discount.type,
+              currency: new Currency(item.discount.currency as CurrencyEnum),
+            },
+          }),
         }),
       ),
       discount: input.discount

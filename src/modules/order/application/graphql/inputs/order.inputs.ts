@@ -137,7 +137,7 @@ class ShippingSnapshotInput {
 
 // === CREATE ORDER INPUT ===
 @InputType()
-export class CreateOrderInput {
+export class CreateOrderGraphQLInput {
   @Field()
   status: string;
 
@@ -171,7 +171,7 @@ export class CreateOrderInput {
 
 // === UPDATE ORDER INPUT ===
 @InputType()
-export class UpdateOrderInput {
+export class UpdateOrderGraphQLInput {
   @Field(() => ID)
   id: string;
 

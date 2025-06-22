@@ -35,6 +35,7 @@ export class OrderMongoRepository implements OrderRepositoryContract {
   }
 
   async update(entity: OrderModelContract): Promise<void> {
+    console.log(JSON.stringify(entity, null, 2));
     await this.orderModel.updateOne(
       { _id: entity.id },
       OrderMongoMapper.toPersistence(entity),

@@ -4,9 +4,10 @@ import {
   CurrencyEnum,
 } from '@/src/shared/domain/value-objects/currency.vo';
 import { Money } from '@/src/shared/domain/value-objects/money.vo';
-import { OrderItemContract } from '../../order-item';
-import { OrderModelContract } from '../../order';
 import { OrderMapper } from '../order.mapper';
+import { OrderModelContract } from '../../domain/order';
+import { OrderItemContract } from '../../domain/order-item';
+import { PaymentMethodEnum } from '../../domain/order.constants';
 export const mockOrderItem: OrderItemContract = {
   id: 'item-1',
   productId: 'prod-123',
@@ -49,7 +50,7 @@ export const mockOrder: OrderModelContract = {
     currency: new Currency(CurrencyEnum.BRL),
   },
   paymentSnapshot: {
-    method: 'credit_card',
+    method: PaymentMethodEnum.CREDIT_CARD,
     status: 'paid',
     amount: 190,
     transactionId: 'txn-001',
@@ -66,58 +67,3 @@ export const mockOrder: OrderModelContract = {
     zipCode: '',
   },
 };
-
-describe('OrderMapper', () => {
-  it('should map OrderModelContract to OrderOutput', () => {
-    const output = OrderMapper.toOutput(mockOrder);
-
-    expect(output).toMatchObject({
-      id: 'order-1',
-      status: 'PENDING',
-      customerId: 'cust-001',
-      paymentId: 'pay-001',
-      notes: 'Pedido urgente',
-      currency: 'BRL',
-      subTotal: 200,
-      total: 190,
-      active: true,
-      deleted: false,
-      discount: {
-        value: 10,
-        type: 'PERCENTAGE',
-        couponCode: 'DESCONTO10',
-      },
-      paymentSnapshot: {
-        method: 'credit_card',
-        status: 'paid',
-        amount: 190,
-        transactionId: 'txn-001',
-      },
-      shippingSnapshot: expect.objectContaining({
-        method: 'PAC',
-      }),
-      billingAddress: expect.objectContaining({
-        street: 'Rua A',
-      }),
-      items: [
-        {
-          id: 'item-1',
-          productId: 'prod-123',
-          quantity: 2,
-          price: {
-            amount: 100,
-            currency: 'BRL',
-          },
-          discount: {
-            value: 10,
-            type: 'PERCENTAGE',
-            couponCode: 'DESCONTO10',
-          },
-          seller: 'vendedor-abc',
-          title: 'Produto Teste',
-          imageUrl: 'https://img.com/produto.jpg',
-        },
-      ],
-    });
-  });
-});

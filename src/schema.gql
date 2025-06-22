@@ -100,11 +100,11 @@ type Query {
 }
 
 type Mutation {
-  createOrder(input: CreateOrderInput!): OrderOuput!
+  createOrder(input: CreateOrderGraphQLInput!): OrderOuput!
   deleteOrder(id: String!): Boolean!
 }
 
-input CreateOrderInput {
+input CreateOrderGraphQLInput {
   status: String!
   items: [OrderItemInput!]!
   currency: String!

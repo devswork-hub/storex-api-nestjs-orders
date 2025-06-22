@@ -103,27 +103,4 @@ describe('OrderItem', () => {
     const totalComDesconto = item.getTotalWithDiscount();
     expect(totalComDesconto.amount).toBe(0);
   });
-
-  // it('deve lançar erro se moeda do desconto for diferente da do item', () => {
-  //   const otherCurrency = new Currency(CurrencyEnum.USD);
-
-  //   const item = new OrderItem({
-  //     id: '6',
-  //     productId: 'p6',
-  //     quantity: 1,
-  //     price: new Money(100, currency),
-  //     discount: {
-  //       type: 'fixed',
-  //       value: 10,
-  //       currency: otherCurrency,
-  //       couponCode: 'WRONGCURRENCY',
-  //     },
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   });
-
-  //   expect(() => item.getDiscountAmount()).toThrowError(
-  //     'Desconto em moeda diferente do pedido',
-  //   );
-  // });
 });

@@ -6,6 +6,19 @@ import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
 import { Money } from '@/src/shared/domain/value-objects/money.vo';
 
 export class OrderMongoMapper {
+  static fromPersistence(raw: any): OrderModel {
+    return OrderModel.create({
+      ...raw,
+      items: raw.items.map((item) => ({
+        ...item,
+        price: new Money(
+          item.price.amount,
+          new Currency(item.price.currency.code),
+        ),
+      })),
+    });
+  }
+
   static toPersistence(order: OrderModelContract): any {
     return {
       ...order,
@@ -15,10 +28,7 @@ export class OrderMongoMapper {
       total: order.total.amount,
       items: order.items.map((i) => ({
         ...i,
-        price: {
-          amount: i.price.amount,
-          currency: i.price.currency.code,
-        },
+        price: new Money(i.price.amount, new Currency(i.price.currency.code)),
       })),
       discount: order.discount
         ? {

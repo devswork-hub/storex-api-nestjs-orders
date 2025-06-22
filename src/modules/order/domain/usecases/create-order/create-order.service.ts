@@ -7,7 +7,9 @@ import { ValidationException } from '@/src/shared/domain/validation/validation-e
 type Input = CreateOrderInput;
 type Output = OrderModelContract;
 
-export class CreateOrderService implements BaseUseCaseContract<Input, Output> {
+export class CreateOrderService
+  implements BaseUseCaseContract<CreateOrderInput, Output>
+{
   constructor(private readonly repository: OrderRepositoryContract) {}
 
   async execute(dto: Input): Promise<Output> {

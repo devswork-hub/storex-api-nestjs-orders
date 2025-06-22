@@ -4,7 +4,10 @@ import { OrderOuput } from './outputs/order.output';
 import { OrderMapper } from '../order.mapper';
 import { FindOneOrderService } from '../../domain/usecases/find-one-order.service';
 import { FindAllOrderService } from '../../domain/usecases/find-all-order.service';
-import { CreateOrderInput, UpdateOrderInput } from './inputs/order.input';
+import {
+  CreateOrderGraphQLInput,
+  // UpdateOrderGraphQLInput,
+} from './inputs/order.inputs';
 import { CreateOrderService } from '../../domain/usecases/create-order/create-order.service';
 import { UpdateOrderService } from '../../domain/usecases/update-order.service';
 import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
@@ -53,7 +56,7 @@ export class OrderResolver {
 
   @Mutation(() => OrderOuput)
   async createOrder(
-    @Args('input') data: CreateOrderInput,
+    @Args('input') data: CreateOrderGraphQLInput,
   ): Promise<OrderOuput> {
     const validations = new CreateOrderValidation();
     validations.validate(data); // ✅ Valida antes de mapear para domínio

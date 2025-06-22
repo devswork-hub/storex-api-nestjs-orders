@@ -54,8 +54,5 @@ describe('OrderModel', () => {
       customerId: '',
       paymentId: '',
     });
-    // console.log(order.subTotal);
-    // console.log(order.total);
-    console.log(JSON.stringify(order, null, 2));
   });
 });

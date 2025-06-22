@@ -1,6 +1,5 @@
 import { OrderMongoRepository } from './order.mongo-repository';
 import { Model } from 'mongoose';
-import { OrderItem } from './graphql/schemas/order-item.schema';
 import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
 import { OrderMongoEntity } from './mongo/order.document';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
