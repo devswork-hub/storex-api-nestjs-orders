@@ -95,6 +95,16 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     this.items.push(newItem);
   }
 
+  // static create(props: OrderModelInput): OrderModel {
+  // TODO: Isso seria usado pra resolver o problema do DeleteOrderService,
+  //   return new OrderModel({
+  //     ...props,
+  //     items: props.items.map((item) =>
+  //       item instanceof OrderItemModel ? item : new OrderItemModel(item),
+  //     ),
+  //   });
+  // }
+
   static create(props: OrderModelInput): OrderModel {
     return new OrderModel({
       ...props,
