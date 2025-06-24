@@ -104,7 +104,7 @@ export class OrderMongoRepository implements OrderRepositoryContract {
       return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
     } catch (error) {
       throw new RepositoryException(
-        `Fail to find orders by query: ${JSON.stringify(query)}`,
+        `Fail to find orders by query: ${JSON.stringify(query, null, 2)}`,
         error,
       );
     }
