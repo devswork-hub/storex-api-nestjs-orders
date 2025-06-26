@@ -2,44 +2,71 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type InstallmentOutput {
-  number: Float!
-  value: Float!
-  interestRate: Float!
-  totalValue: Float!
-  dueDate: String!
-}
-
-type PaymentOutput {
-  method: String!
-  status: String!
-  amount: Float!
-  transactionId: String!
-  installments: [InstallmentOutput!]
-}
-
-type ShippingOutput {
-  shippingId: String!
-  status: String!
-  carrier: String!
-  service: String!
-  fee: Float!
-  deliveryDate: String!
-  recipient: String!
+input BillingAddressInput {
+  city: String!
+  state: String!
+  street: String!
+  zipCode: String!
 }
 
 type BillingAddressOutput {
-  street: String!
   city: String!
   state: String!
+  street: String!
   zipCode: String!
+}
+
+input CreateOrderGraphQLInput {
+  billingAddress: BillingAddressInput!
+  currency: String!
+  customerId: String!
+  discount: DiscountInput
+  items: [OrderItemInput!]!
+  notes: String
+  paymentId: String!
+  paymentSnapshot: PaymentSnapshotInput!
+  shippingSnapshot: ShippingSnapshotInput!
+  status: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DiscountInput {
+  couponCode: String!
+  currency: String!
+  type: String!
+  value: Float!
 }
 
 """Representa uma composição do Order"""
 type DiscountOutput {
   couponCode: String!
-  value: Float!
+  currency: String!
   type: String!
+  value: Float!
+}
+
+input InstallmentInput {
+  dueDate: String
+  interestRate: Float
+  number: Float!
+  totalValue: Float
+  value: Float!
+}
+
+type InstallmentOutput {
+  dueDate: String!
+  interestRate: Float!
+  number: Float!
+  totalValue: Float!
+  value: Float!
+}
+
+input MoneyInput {
+  amount: Float!
   currency: String!
 }
 
@@ -49,127 +76,100 @@ type MoneyOutput {
   currency: String!
 }
 
-type OrderItemOutput {
-  productId: String!
-  quantity: Float!
-  price: MoneyOutput!
-  discount: DiscountOutput
-  seller: String
-  title: String
-  imageUrl: String
-  description: String
-  shippingId: String
-  id: String
-  active: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  deleted: Boolean
-  deletedAt: DateTime
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type OrderOuput {
-  status: String!
-  items: [OrderItemOutput!]!
-  subTotal: Float!
-  total: Float!
-  currency: String!
-  paymentSnapshot: PaymentOutput!
-  shippingSnapshot: ShippingOutput!
-  billingAddress: BillingAddressOutput!
-  customerId: String!
-  paymentId: String!
-  notes: String
-  discount: DiscountOutput
-  id: String
-  active: Boolean
-  createdAt: DateTime
-  updatedAt: DateTime
-  deleted: Boolean
-  deletedAt: DateTime
-}
-
-type Query {
-  healthCheck: String!
-  findAllOrders: [OrderOuput!]!
-  findOrderById(id: String!): OrderOuput
-}
-
 type Mutation {
   createOrder(input: CreateOrderGraphQLInput!): OrderOuput!
   deleteOrder(id: String!): Boolean!
 }
 
-input CreateOrderGraphQLInput {
-  status: String!
-  items: [OrderItemInput!]!
-  currency: String!
-  paymentSnapshot: PaymentSnapshotInput!
-  shippingSnapshot: ShippingSnapshotInput!
-  billingAddress: BillingAddressInput!
-  customerId: String!
-  paymentId: String!
-  notes: String
-  discount: DiscountInput
-}
-
 input OrderItemInput {
+  description: String
+  discount: DiscountInput
+  imageUrl: String
+  price: MoneyInput!
   productId: String!
   quantity: Float!
-  price: MoneyInput!
-  discount: DiscountInput
   seller: String
-  title: String
-  imageUrl: String
-  description: String
   shippingId: String
+  title: String
 }
 
-input MoneyInput {
+type OrderItemOutput {
+  active: Boolean
+  createdAt: DateTime
+  deleted: Boolean
+  deletedAt: DateTime
+  description: String
+  discount: DiscountOutput
+  id: String
+  imageUrl: String
+  price: MoneyOutput!
+  productId: String!
+  quantity: Float!
+  seller: String
+  shippingId: String
+  title: String
+  updatedAt: DateTime
+}
+
+type OrderOuput {
+  active: Boolean
+  billingAddress: BillingAddressOutput!
+  createdAt: DateTime
+  currency: String!
+  customerId: String!
+  deleted: Boolean
+  deletedAt: DateTime
+  discount: DiscountOutput
+  id: String
+  items: [OrderItemOutput!]!
+  notes: String
+  paymentId: String!
+  paymentSnapshot: PaymentOutput!
+  shippingSnapshot: ShippingOutput!
+  status: String!
+  subTotal: Float!
+  total: Float!
+  updatedAt: DateTime
+}
+
+type PaymentOutput {
   amount: Float!
-  currency: String!
-}
-
-input DiscountInput {
-  couponCode: String!
-  value: Float!
-  type: String!
-  currency: String!
+  installments: [InstallmentOutput!]
+  method: String!
+  status: String!
+  transactionId: String!
 }
 
 input PaymentSnapshotInput {
+  amount: Float!
+  installments: [InstallmentInput!]
   method: String!
   status: String!
-  amount: Float!
   transactionId: String
-  installments: [InstallmentInput!]
 }
 
-input InstallmentInput {
-  number: Float!
-  value: Float!
-  interestRate: Float
-  totalValue: Float
-  dueDate: String
+type Query {
+  findAllOrders: [OrderOuput!]!
+  findOrderById(id: String!): OrderOuput
+  healthCheck: String!
+}
+
+type ShippingOutput {
+  carrier: String!
+  deliveryDate: String!
+  fee: Float!
+  recipient: String!
+  service: String!
+  shippingId: String!
+  status: String!
 }
 
 input ShippingSnapshotInput {
+  carrier: String!
+  deliveryDate: String
+  fee: Float
+  recipient: String
+  service: String!
   shippingId: String
   status: String!
-  carrier: String!
-  service: String!
-  fee: Float
-  deliveryDate: String
-  recipient: String
-}
-
-input BillingAddressInput {
-  street: String!
-  city: String!
-  state: String!
-  zipCode: String!
 }

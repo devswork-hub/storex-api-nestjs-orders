@@ -12,6 +12,7 @@ import { DomainsModule } from '../modules/domain-modules.module';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
     }),
     PersistenceModule,
     DomainsModule,

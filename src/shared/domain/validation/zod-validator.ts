@@ -1,4 +1,4 @@
-import { z, ZodSchema, ZodError } from 'zod';
+import { z, ZodSchema, ZodError, ZodFormattedError } from 'zod';
 import { ValidationException } from './validation-exception';
 
 export class ZodValidator<T extends ZodSchema<any>> {
@@ -18,5 +18,22 @@ export class ZodValidator<T extends ZodSchema<any>> {
       }
       throw error;
     }
+  }
+
+  private formatErrors(
+    formattedError: ZodFormattedError<any>,
+  ): Record<string, string[]> {
+    const errors: Record<string, string[]> = {};
+
+    for (const [key, value] of Object.entries(formattedError)) {
+      if (key === '_errors') continue;
+
+      const field = value as { _errors?: string[] };
+      if (field?._errors && field._errors.length > 0) {
+        errors[key] = field._errors;
+      }
+    }
+
+    return errors;
   }
 }
