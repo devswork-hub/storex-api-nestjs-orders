@@ -4,16 +4,33 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('Before...');
-    const now = Date.now();
-    return next
-      .handle()
-      .pipe(tap(() => console.log(`After... ${Date.now() - now}ms`)));
+    const gqlCtx = GqlExecutionContext.create(context);
+    const info = gqlCtx.getInfo();
+    const ctx = gqlCtx.getContext();
+
+    // info.fieldName: nome da query ou mutation
+    // ctx.req: pode ter a requisição HTTP original (depende da configuração do GraphQLModule)
+
+    const operationName = info.fieldName;
+    const operationType = info.operation.operation; // query, mutation, subscription
+
+    console.log(
+      `GraphQL ${operationType.toUpperCase()} ${operationName} requested`,
+    );
+
+    return next.handle().pipe(
+      tap(() => {
+        console.log(
+          `GraphQL ${operationType.toUpperCase()} ${operationName} resolved`,
+        );
+      }),
+    );
   }
 }

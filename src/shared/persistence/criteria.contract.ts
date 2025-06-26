@@ -1,4 +1,3 @@
-export interface CriteriaContract<Criteria> {
-  apply(context: Criteria): Criteria;
+export interface CriteriaContract<T> {
+  apply(items: T[]): T[];
 }
-  

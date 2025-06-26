@@ -13,6 +13,8 @@ import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-or
 import { OrderID } from '../../domain/order-id';
 import { CreateOrderValidation } from '../../domain/usecases/create-order/create-order.validation';
 import { OrderMapper } from '../order.mapper';
+import { UseInterceptors } from '@nestjs/common';
+import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -35,6 +37,7 @@ export class OrderResolver {
   //   return orders.map(OrderMapper.fromEntitytoGraphQLOrderOutput);
   // }
 
+  @UseInterceptors(LoggingInterceptor)
   @Query(() => [OrderOuput])
   async findAllOrders() {
     try {
