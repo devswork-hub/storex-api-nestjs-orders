@@ -37,10 +37,11 @@ export class OrderMongoEntity {
   @Prop({ required: true })
   customerId: string;
 
-  @Prop({ required: true })
+  @Prop()
   paymentId: string;
 
-  @Prop() notes?: string;
+  @Prop({ max: 100 })
+  notes?: string;
 
   @Prop({ type: DiscountSubdocument })
   discount?: DiscountSubdocument;
@@ -50,6 +51,14 @@ export class OrderMongoEntity {
   @Prop() updatedAt?: Date;
   @Prop() deleted?: boolean;
   @Prop() deletedAt?: Date;
+
+  // TODO: Verificar se isso eh viavel no futuro
+  // @Prop({
+  //   validate: function (value) {
+  //     return new Date(value) <= new Date();
+  //   },
+  // })
+  // deletedAt?: Date;
 }
 
 export type OrderDocument = HydratedDocument<OrderMongoEntity>;

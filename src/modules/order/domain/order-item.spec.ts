@@ -3,13 +3,13 @@ import {
   Currency,
   CurrencyEnum,
 } from '../../../shared/domain/value-objects/currency.vo';
-import { OrderItem } from '../domain/order-item';
+import { OrderItemModel } from './order-item';
 
-describe('OrderItem', () => {
+describe('OrderItemModel', () => {
   const currency = new Currency(CurrencyEnum.BRL);
 
   it('deve calcular o total sem desconto', () => {
-    const item = new OrderItem({
+    const item = new OrderItemModel({
       id: '1',
       productId: 'p1',
       quantity: 2,
@@ -24,7 +24,7 @@ describe('OrderItem', () => {
   });
 
   it('deve calcular o desconto fixo corretamente', () => {
-    const item = new OrderItem({
+    const item = new OrderItemModel({
       id: '2',
       productId: 'p2',
       quantity: 1,
@@ -45,7 +45,7 @@ describe('OrderItem', () => {
   });
 
   it('deve calcular o desconto percentual corretamente', () => {
-    const item = new OrderItem({
+    const item = new OrderItemModel({
       id: '3',
       productId: 'p3',
       quantity: 2,
@@ -65,7 +65,7 @@ describe('OrderItem', () => {
   });
 
   it('deve calcular o total com desconto', () => {
-    const item = new OrderItem({
+    const item = new OrderItemModel({
       id: '4',
       productId: 'p4',
       quantity: 3,
@@ -85,7 +85,7 @@ describe('OrderItem', () => {
   });
 
   it('deve impedir desconto maior que o total', () => {
-    const item = new OrderItem({
+    const item = new OrderItemModel({
       id: '5',
       productId: 'p5',
       quantity: 1,

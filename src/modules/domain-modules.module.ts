@@ -4,4 +4,4 @@ import { OrdersModule } from './order/application/orders.module';
 @Module({
   imports: [OrdersModule],
 })
-export class DomainsModulesModule {}
+export class DomainsModule {}

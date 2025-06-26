@@ -1,7 +1,6 @@
 // src/modules/order/graphql/order.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { OrderOuput } from './outputs/order.output';
-import { OrderMapper } from '../order.mapper';
 import { FindOneOrderService } from '../../domain/usecases/find-one-order.service';
 import { FindAllOrderService } from '../../domain/usecases/find-all-order.service';
 import {
@@ -13,6 +12,7 @@ import { UpdateOrderService } from '../../domain/usecases/update-order.service';
 import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
 import { OrderID } from '../../domain/order-id';
 import { CreateOrderValidation } from '../../domain/usecases/create-order/create-order.validation';
+import { OrderMapper } from '../order.mapper';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {

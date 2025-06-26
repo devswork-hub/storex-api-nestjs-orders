@@ -1,6 +1,5 @@
 import {
   OrderModel,
-  // OrderModel,
   OrderModelContract,
   OrderModelInput,
 } from '../domain/order';

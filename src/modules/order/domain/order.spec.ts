@@ -3,20 +3,20 @@ import {
   CurrencyEnum,
 } from '../../../shared/domain/value-objects/currency.vo';
 import { Money } from '../../../shared/domain/value-objects/money.vo';
-import { OrderModel } from '../domain/order';
-import { OrderItem } from '../domain/order-item';
+import { OrderModel } from './order';
+import { OrderItemModel } from './order-item';
 
 describe('OrderModel', () => {
   it('return OrderModel', () => {
     const order = OrderModel.create({
       status: 'PENDING',
       items: [
-        new OrderItem({
+        new OrderItemModel({
           productId: 'product-1',
           quantity: 1,
           price: new Money(100, new Currency(CurrencyEnum.BRL)),
         }),
-        new OrderItem({
+        new OrderItemModel({
           productId: 'product-1',
           quantity: 1,
           price: new Money(100, new Currency(CurrencyEnum.BRL)),

@@ -58,10 +58,30 @@
 
 ### Referencias
 
-- https://freedium.cfd/https://medium.com/@bhavyshekhaliya/crud-operations-with-mongodb-nestjs-graphql-656029fd0b25
-- https://medium.com/@bhavyshekhaliya/list/73dca9e4116a
-- https://medium.com/@bhavyshekhaliya/list/99bd343e816a
-- https://www.ayoubkhial.com/blog/crafting-an-efficient-data-layer-with-nestjs-mongoose
+- `Frontend`
+
+  - https://github.com/kyprogramming/shoes-store/tree/master
+  - https://github.com/ethanniser/NextFaster/blob/main/src/lib/actions.ts
+  - https://github.com/dkrasnovdev/nextjs-app-router-keycloak-example
+  - https://daisyui.com/docs/colors/
+
+- ===================================
+- https://github.com/desenvolvedor-io/dev-store/blob/main/src/services/DevStore.Orders.Domain/Orders/OrderItem.cs
+- https://github.com/thepracticaldeveloper/kafka-spring-boot-example/blob/master/src/main/java/io/tpd/kafkaexample/HelloKafkaController.java
+- https://github.com/deyvisonborges/mach-catalog-graphql/blob/main/.k8s/secrets.yaml
+- https://github.com/deyvisonborges/fullcycle-codeflix-catalog-api-nestjs/blob/main/package-lock.json
+- https://github.com/iluwatar/java-design-patterns
+- https://github.com/tomoyane/springboot-bestpractice/tree/master/src
+
+- `Kafka`
+
+  - https://mosy.tech/spring-boot-kafka-config/
+
+- `Others`
+  - https://freedium.cfd/https://medium.com/@bhavyshekhaliya/crud-operations-with-mongodb-nestjs-graphql-656029fd0b25
+  - https://medium.com/@bhavyshekhaliya/list/73dca9e4116a
+  - https://medium.com/@bhavyshekhaliya/list/99bd343e816a
+  - https://www.ayoubkhial.com/blog/crafting-an-efficient-data-layer-with-nestjs-mongoose
 
 #### Domain
 

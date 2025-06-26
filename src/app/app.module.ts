@@ -4,7 +4,7 @@ import { join } from 'path';
 import { ApolloDriver } from '@nestjs/apollo';
 import { ConfigModule } from './config/config.module';
 import { PersistenceModule } from './persistence/persistence.module';
-import { DomainsModulesModule } from '../modules/domain-modules.module';
+import { DomainsModule } from '../modules/domain-modules.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { DomainsModulesModule } from '../modules/domain-modules.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     PersistenceModule,
-    DomainsModulesModule,
+    DomainsModule,
   ],
 })
 export class AppModule {}

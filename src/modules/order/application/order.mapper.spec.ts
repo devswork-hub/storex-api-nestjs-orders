@@ -1,14 +1,12 @@
-// mocks.ts
 import {
   Currency,
   CurrencyEnum,
 } from '@/src/shared/domain/value-objects/currency.vo';
 import { Money } from '@/src/shared/domain/value-objects/money.vo';
-import { OrderMapper } from '../order.mapper';
-import { OrderModelContract } from '../../domain/order';
-import { OrderItemContract } from '../../domain/order-item';
-import { PaymentMethodEnum } from '../../domain/order.constants';
-export const mockOrderItem: OrderItemContract = {
+import { OrderModelContract } from '../domain/order';
+import { OrderItemModelContract } from '../domain/order-item';
+import { PaymentMethodEnum } from '../domain/order.constants';
+export const mockOrderItem: OrderItemModelContract = {
   id: 'item-1',
   productId: 'prod-123',
   quantity: 2,
@@ -35,8 +33,6 @@ export const mockOrder: OrderModelContract = {
   paymentId: 'pay-001',
   notes: 'Pedido urgente',
   currency: new Currency(CurrencyEnum.BRL),
-  subTotal: new Money(200, new Currency(CurrencyEnum.BRL)),
-  total: new Money(190, new Currency(CurrencyEnum.BRL)),
   createdAt: new Date('2024-01-01'),
   updatedAt: new Date('2024-01-02'),
   active: true,

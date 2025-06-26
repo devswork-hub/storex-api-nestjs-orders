@@ -6,6 +6,8 @@ import {
 } from '../subdocuments/money.subdocument';
 import { OrderItemModelContract } from '../../../domain/order-item';
 import { ChangeTo } from '@/src/app/utils/type';
+import { OrderMongoEntity } from './order.document';
+import { Schema as MongooseSchema } from 'mongoose';
 
 export type OrderItemMongoEntityProps = ChangeTo<
   Omit<OrderItemModelContract, 'id'> & { _id: string },
@@ -19,6 +21,14 @@ export type OrderItemMongoEntityProps = ChangeTo<
 export class OrderItemSubdocument implements OrderItemMongoEntityProps {
   @Prop()
   _id: string;
+
+  // TODO: verificar se isso eh viavel no futuro
+  // @Prop({
+  //   type: MongooseSchema.Types.ObjectId,
+  //   ref: OrderMongoEntity.name,
+  //   required: true,
+  // })
+  // orderId?: string;
 
   @Prop({ required: true })
   productId: string;
