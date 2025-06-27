@@ -13,6 +13,7 @@ import { DomainsModule } from '../modules/domain-modules.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      introspection: true,
     }),
     PersistenceModule,
     DomainsModule,

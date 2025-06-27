@@ -1,3 +1,27 @@
+### Sobre esse projeto
+
+- Inclui
+  - [ ] Documentacao do proprio GraphQL
+
+### API Terms
+
+- Resource
+- Request
+- Response
+- Response Code
+- Payload
+- Pagination
+- Method
+- Query Parameters
+- Authentication
+- Rate Limiting
+- API Integration
+- API Gateway
+- API Lifecycle
+- CRUD
+- Cache
+- Client
+
 ### Includes
 
 - ⬜️| Nope

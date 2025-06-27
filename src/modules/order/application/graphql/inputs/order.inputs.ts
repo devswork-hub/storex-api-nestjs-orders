@@ -1,59 +1,70 @@
 import { InputType, Field, Float, ID } from '@nestjs/graphql';
 
 // Reutilizável: Money input
-@InputType()
+@InputType({
+  description: 'Representa um valor monetário com moeda e quantia.',
+})
 class MoneyInput {
-  @Field(() => Float)
+  @Field(() => Float, { description: 'Quantia monetária (ex: 99.99).' })
   amount: number;
 
-  @Field()
+  @Field({ description: 'Código da moeda (ex: BRL, USD).' })
   currency: string;
 }
 
 // Reutilizável: Discount input
-@InputType()
+@InputType({ description: 'Informações de desconto aplicável à compra.' })
 class DiscountInput {
-  @Field()
+  @Field({ description: 'Código do cupom de desconto.' })
   couponCode: string;
 
-  @Field(() => Float)
+  @Field(() => Float, { description: 'Valor do desconto aplicado.' })
   value: number;
 
-  @Field()
+  @Field({ description: 'Tipo do desconto (percentage ou fixed).' })
   type: 'percentage' | 'fixed';
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Moeda usada no desconto.' })
   currency: string;
 }
 
 // Reutilizável: Order Item input
-@InputType()
+@InputType({ description: 'Item que compõe o pedido.' })
 class OrderItemInput {
-  @Field()
+  @Field({ description: 'ID do produto.' })
   productId: string;
 
-  @Field()
+  @Field({ description: 'Quantidade desejada do produto.' })
   quantity: number;
 
-  @Field(() => MoneyInput)
+  @Field(() => MoneyInput, { description: 'Preço unitário do produto.' })
   price: MoneyInput;
 
-  @Field(() => DiscountInput, { nullable: true })
+  @Field(() => DiscountInput, {
+    nullable: true,
+    description: 'Desconto aplicado ao item, se houver.',
+  })
   discount?: DiscountInput;
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    description: 'Identificador do vendedor, se aplicável.',
+  })
   seller?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Título do produto.' })
   title?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'URL da imagem do produto.' })
   imageUrl?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, description: 'Descrição do produto.' })
   description?: string;
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    description: 'ID do envio (caso item tenha logística individual).',
+  })
   shippingId?: string;
 }
 
@@ -136,36 +147,52 @@ class ShippingSnapshotInput {
 }
 
 // === CREATE ORDER INPUT ===
-@InputType()
+@InputType({
+  description: 'Dados necessários para a criação de um novo pedido.',
+})
 export class CreateOrderGraphQLInput {
-  @Field()
+  @Field({ description: 'Status inicial do pedido (ex: pending, paid).' })
   status: string;
 
-  @Field(() => [OrderItemInput])
+  @Field(() => [OrderItemInput], {
+    description: 'Lista de itens que compõem o pedido.',
+  })
   items: OrderItemInput[];
 
-  @Field()
+  @Field({ description: 'Moeda utilizada no pedido.' })
   currency: string;
 
-  @Field(() => PaymentSnapshotInput)
+  @Field(() => PaymentSnapshotInput, {
+    description: 'Informações do pagamento no momento da compra.',
+  })
   paymentSnapshot: PaymentSnapshotInput;
 
-  @Field(() => ShippingSnapshotInput)
+  @Field(() => ShippingSnapshotInput, {
+    description: 'Detalhes da logística e envio do pedido.',
+  })
   shippingSnapshot: ShippingSnapshotInput;
 
-  @Field(() => BillingAddressInput)
+  @Field(() => BillingAddressInput, {
+    description: 'Endereço de cobrança do cliente.',
+  })
   billingAddress: BillingAddressInput;
 
-  @Field()
+  @Field({ description: 'ID do cliente responsável pela compra.' })
   customerId: string;
 
-  @Field()
+  @Field({ description: 'ID do pagamento associado.' })
   paymentId: string;
 
-  @Field({ nullable: true })
+  @Field({
+    nullable: true,
+    description: 'Observações adicionais fornecidas pelo cliente ou sistema.',
+  })
   notes?: string;
 
-  @Field(() => DiscountInput, { nullable: true })
+  @Field(() => DiscountInput, {
+    nullable: true,
+    description: 'Desconto geral aplicado ao pedido.',
+  })
   discount?: DiscountInput;
 }
 
