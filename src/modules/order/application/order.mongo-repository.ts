@@ -6,7 +6,7 @@ import { OrderMongoEntity } from './mongo/documents/order.document';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
-import { RepositoryException } from '../shared/exceptions/repository.exception';
+import { RepositoryException } from '../../../shared/domain/exceptions/repository.exception';
 
 type FindByOptions = {
   orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };

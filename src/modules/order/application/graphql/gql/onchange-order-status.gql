@@ -1,0 +1,6 @@
+subscription OnOrderUpdated($orderId: String!) {
+  orderUpdated(orderId: $orderId) {
+    orderId
+    status
+  }
+}

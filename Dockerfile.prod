@@ -1,6 +1,6 @@
 # MULTISTAGEBUILDER
 ## DEVELOPMENT
-FROM node:21-slim as development
+FROM node:24-slim as development
 
 USER node
 
@@ -18,7 +18,7 @@ COPY --chown=node:node . .
 CMD ["tail", "-f", "/dev/null"]
 
 ## BUILDER
-FROM node:21-slim as builder
+FROM node:24-slim as builder
 
 USER node
 
@@ -34,7 +34,7 @@ ENV NODE_ENV production
 RUN npm install --only=production --force
 
 ## PRODUCTION
-FROM node:21-slim as production
+FROM node:24-slim as production
 USER node
 RUN mkdir /home/node/app
 WORKDIR /home/node/app

@@ -1,5 +1,13 @@
 // src/modules/order/graphql/order.resolver.ts
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Subscription,
+  ObjectType,
+  Field,
+} from '@nestjs/graphql';
 import { OrderOuput } from './outputs/order.output';
 import { FindOneOrderService } from '../../domain/usecases/find-one-order.service';
 import { FindAllOrderService } from '../../domain/usecases/find-all-order.service';
@@ -15,6 +23,7 @@ import { CreateOrderValidation } from '../../domain/usecases/create-order/create
 import { OrderMapper } from '../order.mapper';
 import { UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
+import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -82,4 +91,23 @@ export class OrderResolver {
     await this.deleteOrderService.execute(new OrderID(id));
     return true;
   }
+
+  @Subscription(() => OrderStatusUpdateType, {
+    name: 'orderUpdated',
+    filter: (payload, variables) => {
+      return payload.orderUpdated.orderId === variables.orderId;
+    },
+  })
+  async orderUpdated(@Args('orderId') orderId: string) {
+    // return this.pubSub.asyncIterator(`orderUpdated.${orderId}`);
+  }
+}
+
+@ObjectType()
+export class OrderStatusUpdateType {
+  @Field()
+  orderId: string;
+
+  @Field(() => OrderStatusEnum)
+  status: OrderStatus;
 }

@@ -25,6 +25,8 @@ import { orderProviders } from './order.providers';
 import { OrderResolver } from './graphql/order.resolver';
 import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';
 import { DeleteOrderService } from '../domain/usecases/delete-order/delete-order.service';
+import { DomainSeeders } from './domain.seeders';
+import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -72,6 +74,8 @@ export const OrderUseCasesProviders: Provider[] = [
     OrderRepositoryProvider, // 'OrderRepositoryContract'
     ...OrderUseCasesProviders, // casos de uso usam 'OrderRepositoryContract' no inject
     OrderResolver,
+    DomainSeeders,
+    OrdersSeeder,
   ],
   exports: [OrderRepositoryProvider, ...OrderUseCasesProviders],
 })
