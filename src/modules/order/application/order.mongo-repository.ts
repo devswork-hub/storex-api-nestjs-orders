@@ -7,6 +7,8 @@ import { OrderRepositoryContract } from '../domain/persistence/order.repository'
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
 import { RepositoryException } from '../../../shared/domain/exceptions/repository.exception';
+import { SearchResult } from '@/src/shared/persistence/search-result';
+import { SearchParams } from '@/src/shared/persistence/search-params';
 
 type FindByOptions = {
   orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };
@@ -126,5 +128,46 @@ export class OrderMongoRepository implements OrderRepositoryContract {
     throw new RepositoryException(
       'Method findPaginated is not implemented in OrderMongoRepository',
     );
+  }
+
+  async search(
+    params: SearchParams<Partial<OrderModelContract>>,
+  ): Promise<SearchResult<OrderModelContract>> {
+    try {
+      const filter = params.filter ?? {};
+      const sortField = params.sortField ?? 'createdAt'; // default
+      const sortDir = params.sortDir === 'asc' ? 1 : -1;
+
+      const skip = (params.page - 1) * params.perPage;
+      const limit = params.perPage;
+
+      const queryBuilder = this.orderModel
+        .find(filter)
+        .sort({ [sortField]: sortDir })
+        .skip(skip)
+        .limit(limit);
+
+      const [docs, total] = await Promise.all([
+        queryBuilder.exec(),
+        this.orderModel.countDocuments(filter),
+      ]);
+
+      const items = docs.map((doc) =>
+        OrderMongoMapper.toDomain(doc.toObject()),
+      );
+
+      return new SearchResult({
+        items,
+        total,
+        currentPage: params.page,
+        perPage: params.perPage,
+        lastPage: Math.ceil(total / params.perPage),
+      });
+    } catch (error) {
+      throw new RepositoryException(
+        `Fail to search orders with params: ${JSON.stringify(params)}`,
+        error,
+      );
+    }
   }
 }

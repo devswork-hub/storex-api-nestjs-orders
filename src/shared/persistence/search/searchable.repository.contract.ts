@@ -18,6 +18,11 @@ export type CursorPagination = {
 
 export type PaginationOptions = OffsetPagination | CursorPagination;
 
+export interface SimpleSearchResult<T> {
+  items: T[];
+  total: number;
+}
+
 /**
  * Common structure for all paginated results.
  */
@@ -49,7 +54,10 @@ export interface CursorSearchResult<M> extends BaseSearchResult<M> {
 /**
  * Unified result type combining both pagination strategies.
  */
-export type SearchResult<M> = OffsetSearchResult<M> | CursorSearchResult<M>;
+export type SearchResult<M> =
+  | OffsetSearchResult<M>
+  | CursorSearchResult<M>
+  | SimpleSearchResult<M>;
 
 /**
  * Full set of search options.
