@@ -1,5 +1,10 @@
 export type SortDirection = 'asc' | 'desc';
 
+export enum SortDirectionEnum {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export type SearchParamsProps<T = Record<string, any>> = {
   filter?: T;
   page?: number;

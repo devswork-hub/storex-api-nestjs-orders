@@ -25,6 +25,25 @@ import { UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 import { PaginationOutput } from './outputs/pagination.output';
+import {
+  CursorPaginatedOrderResult,
+  OffsetPaginatedOrderResult,
+  PaginatedOrderResult,
+} from './outputs/search.output';
+import {
+  CursorPaginationInput,
+  OffsetPaginationInput,
+  OrderFilterInput,
+  OrderSortInput,
+  PaginationInput,
+} from './inputs/search.input';
+import { OrderMongoRepository } from '../order.mongo-repository';
+import { OrderModelContract } from '../../domain/order';
+import {
+  CursorSearchResult,
+  OffsetSearchResult,
+  SearchResult,
+} from '@/src/shared/persistence/search/searchable.repository.contract';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -34,6 +53,7 @@ export class OrderResolver {
     private readonly deleteOrderService: DeleteOrderService,
     private readonly findOneOrderService: FindOneOrderService,
     private readonly findAllOrdersService: FindAllOrderService,
+    private readonly repo: OrderMongoRepository,
   ) {}
 
   @Query(() => String, { name: 'healthCheck' })
@@ -103,18 +123,113 @@ export class OrderResolver {
     // return this.pubSub.asyncIterator(`orderUpdated.${orderId}`);
   }
 
-  @Query(() => [PaginationOutput])
-  async findPaginatedOrders(
-    @Args('page', { type: () => Number, nullable: true, defaultValue: 1 })
-    page: number,
-    @Args('limit', { type: () => Number, nullable: true, defaultValue: 10 })
-    limit: number,
-  ): Promise<PaginationOutput[]> {
-    const orders = await this.findAllOrdersService.execute({ page, limit });
-    return orders.map((order) =>
-      OrderMapper.fromEntitytoGraphQLOrderOutput(order),
-    );
+  // @Query(() => [PaginationOutput])
+  // async findPaginatedOrders(
+  //   @Args('page', { type: () => Number, nullable: true, defaultValue: 1 })
+  //   page: number,
+  //   @Args('limit', { type: () => Number, nullable: true, defaultValue: 10 })
+  //   limit: number,
+  // ): Promise<PaginationOutput[]> {
+  //   const orders = await this.findAllOrdersService.execute({ page, limit });
+  //   return orders.map((order) =>
+  //     OrderMapper.fromEntitytoGraphQLOrderOutput(order),
+  //   );
+  // }
+
+  @Query(() => PaginatedOrderResult, { name: 'searchOrders' })
+  async searchOrders(
+    @Args('filter', { nullable: true }) filter?: OrderFilterInput,
+    @Args('pagination', { nullable: true }) pagination?: PaginationInput,
+    @Args('sort', { nullable: true }) sort?: OrderSortInput,
+  ): Promise<typeof PaginatedOrderResult> {
+    const paginationType = pagination?.type ?? 'offset';
+
+    const paginationWithType =
+      paginationType === 'cursor'
+        ? { type: 'cursor' as const, ...pagination?.cursor }
+        : { type: 'offset' as const, ...pagination?.offset };
+
+    const mappedFilter = filter?.status
+      ? {
+          ...filter,
+          status: OrderStatusEnum[
+            filter.status as keyof typeof OrderStatusEnum
+          ] as OrderStatus,
+        }
+      : filter;
+
+    const allowedFields = [
+      'items',
+      'status',
+      'currency',
+      'paymentSnapshot',
+      'shippingSnapshot',
+      'billingAddress',
+      'customerId',
+      'paymentId',
+      'notes',
+      'discount',
+      'id',
+      'createdAt',
+      'updatedAt',
+    ] as const;
+
+    const mappedSort =
+      sort && allowedFields.includes(sort.field as any)
+        ? {
+            field: sort.field as (typeof allowedFields)[number],
+            direction: sort.direction,
+          }
+        : undefined;
+
+    const result = await this.repo.search({
+      filter: mappedFilter as Partial<OrderModelContract>,
+      pagination: paginationWithType,
+      sort: mappedSort,
+    });
+
+    // if ('type' in result && result.type === 'offset') {
+    //   // Agora o TS sabe que é OffsetSearchResult
+    //   return {
+    //     ...result,
+    //     items: result.items.map(OrderMapper.fromEntitytoGraphQLOrderOutput),
+    //   };
+    // }
+
+    // if ('type' in result && result.type === 'cursor') {
+    //   return {
+    //     ...result,
+    //     items: result.items.map(OrderMapper.fromEntitytoGraphQLOrderOutput),
+    //   };
+    // }
+    // const typed = result as
+    //   | OffsetSearchResult<OrderModelContract>
+    //   | CursorSearchResult<OrderModelContract>;
+
+    // if (typed.type === 'offset') {
+    //   return {
+    //     ...typed,
+    //     items: typed.items.map(OrderMapper.fromEntitytoGraphQLOrderOutput),
+    //   };
+    // }
+
+    if (isOffset(result)) {
+      return {
+        ...result,
+        items: result.items.map(OrderMapper.fromEntitytoGraphQLOrderOutput),
+      };
+    }
+
+    // fallback só se quiser
+    throw new Error('Unknown pagination type');
   }
+}
+function isOffset<T>(res: SearchResult<T>): res is OffsetSearchResult<T> {
+  return 'type' in res && res.type === 'offset';
+}
+
+function isCursor<T>(res: SearchResult<T>): res is CursorSearchResult<T> {
+  return 'type' in res && res.type === 'cursor';
 }
 
 @ObjectType()

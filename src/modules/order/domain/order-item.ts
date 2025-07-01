@@ -1,6 +1,6 @@
 // import { Currency } from '../../shared/domain/value-objects/currency.vo';
 
-import { Money } from '@/src/shared/domain/value-objects/money.vo';
+import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';
 import { BaseModel, BaseModelProps } from '@/src/shared/domain/base/model.base';

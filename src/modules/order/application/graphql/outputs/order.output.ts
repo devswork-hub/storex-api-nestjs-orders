@@ -1,9 +1,15 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { PaymentOutput } from './payment.output';
 import { ShippingOutput } from './shipping.output';
 import { BillingAddressOutput } from './billing-address.output';
 import { DiscountOutput } from './discount.output';
 import { OrderItemOutput } from './order-item.output';
+import { OrderStatusEnum } from '../../../domain/order.constants';
+
+registerEnumType(OrderStatusEnum, {
+  name: 'OrderStatus',
+  description: 'Possible order statuses',
+});
 
 @ObjectType()
 export class OrderOuput {

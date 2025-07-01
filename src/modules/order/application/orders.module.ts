@@ -71,6 +71,7 @@ export const OrderUseCasesProviders: Provider[] = [
     ]),
   ],
   providers: [
+    OrderMongoRepository,
     OrderRepositoryProvider, // 'OrderRepositoryContract'
     ...OrderUseCasesProviders, // casos de uso usam 'OrderRepositoryContract' no inject
     OrderResolver,

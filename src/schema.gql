@@ -49,6 +49,19 @@ input CreateOrderGraphQLInput {
   status: String!
 }
 
+type CursorPaginatedOrderResult {
+  hasNextPage: Boolean!
+  items: [OrderOuput!]!
+  nextCursor: String
+  total: Float!
+  type: String!
+}
+
+input CursorPaginationInput {
+  after: String
+  limit: Int = 10
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -111,6 +124,25 @@ type MoneyOutput {
 type Mutation {
   createOrder(input: CreateOrderGraphQLInput!): OrderOuput!
   deleteOrder(id: String!): Boolean!
+}
+
+type OffsetPaginatedOrderResult {
+  currentPage: Float!
+  items: [OrderOuput!]!
+  lastPage: Float!
+  perPage: Float!
+  total: Float!
+  type: String!
+}
+
+input OffsetPaginationInput {
+  limit: Int
+  page: Int = 1
+}
+
+input OrderFilterInput {
+  customerId: String
+  status: String
 }
 
 """Item que compõe o pedido."""
@@ -182,6 +214,34 @@ type OrderOuput {
   updatedAt: DateTime
 }
 
+input OrderSortInput {
+  direction: SortDirection!
+  field: String!
+}
+
+"""Possible order statuses"""
+enum OrderStatus {
+  AWAITING_SHIPMENT
+  CANCELLED
+  DELIVERED
+  PAID
+  PENDING
+  SHIPPED
+}
+
+type OrderStatusUpdateType {
+  orderId: String!
+  status: OrderStatus!
+}
+
+union PaginatedOrderResult = CursorPaginatedOrderResult | OffsetPaginatedOrderResult
+
+input PaginationInput {
+  cursor: CursorPaginationInput
+  offset: OffsetPaginationInput
+  type: String!
+}
+
 type PaymentOutput {
   amount: Float!
   installments: [InstallmentOutput!]
@@ -202,6 +262,7 @@ type Query {
   findAllOrders: [OrderOuput!]!
   findOrderById(id: String!): OrderOuput
   healthCheck: String!
+  searchOrders(filter: OrderFilterInput, pagination: PaginationInput, sort: OrderSortInput): PaginatedOrderResult!
 }
 
 type ShippingOutput {
@@ -222,4 +283,13 @@ input ShippingSnapshotInput {
   service: String!
   shippingId: String
   status: String!
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+type Subscription {
+  orderUpdated(orderId: String!): OrderStatusUpdateType!
 }

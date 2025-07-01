@@ -7,8 +7,10 @@ import { OrderRepositoryContract } from '../domain/persistence/order.repository'
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
 import { RepositoryException } from '../../../shared/domain/exceptions/repository.exception';
-import { SearchResult } from '@/src/shared/persistence/search-result';
-import { SearchParams } from '@/src/shared/persistence/search-params';
+import {
+  SearchOptions,
+  SearchResult,
+} from '@/src/shared/persistence/search/searchable.repository.contract';
 
 type FindByOptions = {
   orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };
@@ -125,30 +127,42 @@ export class OrderMongoRepository implements OrderRepositoryContract {
       page,
       limit,
     };
-    throw new RepositoryException(
-      'Method findPaginated is not implemented in OrderMongoRepository',
-    );
   }
 
   async search(
-    params: SearchParams<Partial<OrderModelContract>>,
+    options: SearchOptions<Partial<OrderModelContract>>,
   ): Promise<SearchResult<OrderModelContract>> {
     try {
-      const filter = params.filter ?? {};
-      const sortField = params.sortField ?? 'createdAt'; // default
-      const sortDir = params.sortDir === 'asc' ? 1 : -1;
+      const filter = options.filter ?? {};
+      const sortField = options.sort?.field ?? 'createdAt';
+      const sortDir = options.sort?.direction === 'asc' ? 1 : -1;
+      const pagination = options.pagination;
 
-      const skip = (params.page - 1) * params.perPage;
-      const limit = params.perPage;
+      const query = this.orderModel.find(filter).sort({ [sortField]: sortDir });
 
-      const queryBuilder = this.orderModel
-        .find(filter)
-        .sort({ [sortField]: sortDir })
-        .skip(skip)
-        .limit(limit);
+      let skip = 0;
+      let limit = 10;
+
+      // 📄 Offset pagination
+      if (pagination?.type === 'offset') {
+        const page = pagination.page ?? 1;
+        limit = pagination.limit ?? 10;
+        skip = (page - 1) * limit;
+
+        query.skip(skip).limit(limit);
+      }
+
+      // 🔗 Cursor pagination
+      if (pagination?.type === 'cursor') {
+        limit = pagination.limit ?? 10;
+        if (pagination.after) {
+          query.find({ _id: { $gt: pagination.after }, ...filter });
+        }
+        query.limit(limit);
+      }
 
       const [docs, total] = await Promise.all([
-        queryBuilder.exec(),
+        query.exec(),
         this.orderModel.countDocuments(filter),
       ]);
 
@@ -156,16 +170,46 @@ export class OrderMongoRepository implements OrderRepositoryContract {
         OrderMongoMapper.toDomain(doc.toObject()),
       );
 
-      return new SearchResult({
+      // 📄 Retorno offset
+      if (pagination?.type === 'offset') {
+        const currentPage = pagination.page ?? 1;
+        return {
+          type: 'offset',
+          items,
+          total,
+          currentPage,
+          perPage: limit,
+          lastPage: Math.ceil(total / limit),
+        };
+      }
+
+      // 🔗 Retorno cursor
+      if (pagination?.type === 'cursor') {
+        const hasNextPage = items.length === limit;
+        const nextCursor = hasNextPage
+          ? String(docs[docs.length - 1]?._id)
+          : null;
+        return {
+          type: 'cursor',
+          items,
+          total,
+          hasNextPage,
+          nextCursor,
+        };
+      }
+
+      // 🔙 Fallback (sem paginação)
+      return {
+        type: 'offset',
         items,
         total,
-        currentPage: params.page,
-        perPage: params.perPage,
-        lastPage: Math.ceil(total / params.perPage),
-      });
+        currentPage: 1,
+        perPage: items.length,
+        lastPage: 1,
+      };
     } catch (error) {
       throw new RepositoryException(
-        `Fail to search orders with params: ${JSON.stringify(params)}`,
+        `Fail to search orders with options: ${JSON.stringify(options)}`,
         error,
       );
     }

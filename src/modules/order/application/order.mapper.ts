@@ -83,11 +83,11 @@ export class OrderMapper {
       active: order.active,
       deleted: order.deleted,
       deletedAt: order.deletedAt,
-      items: order.items.map((item) => this.toOrderItemOutput(item)),
-      discount: this.mapDiscount(order.discount),
-      paymentSnapshot: this.mapPayment(order.paymentSnapshot),
-      shippingSnapshot: this.mapShipping(order.shippingSnapshot),
-      billingAddress: this.mapBillingAddress(order.billingAddress),
+      items: order.items.map((item) => OrderMapper.toOrderItemOutput(item)),
+      discount: OrderMapper.mapDiscount(order.discount),
+      paymentSnapshot: OrderMapper.mapPayment(order.paymentSnapshot),
+      shippingSnapshot: OrderMapper.mapShipping(order.shippingSnapshot),
+      billingAddress: OrderMapper.mapBillingAddress(order.billingAddress),
     };
   }
 

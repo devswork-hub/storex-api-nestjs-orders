@@ -11,7 +11,7 @@ import {
   BaseModel,
   BaseModelProps,
 } from '../../../shared/domain/base/model.base';
-import { Money } from '@/src/shared/domain/value-objects/money.vo';
+import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { calculateDiscountAmount } from './utils/discount-calculator';
 import { OrderID } from './order-id';
 
