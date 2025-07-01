@@ -1,0 +1,12 @@
+query {
+  products(page: 2, limit: 5) {
+    items {
+      _id
+      name
+      price
+    }
+    total
+    page
+    limit
+  }
+}

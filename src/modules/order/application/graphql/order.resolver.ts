@@ -24,6 +24,7 @@ import { OrderMapper } from '../order.mapper';
 import { UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
+import { PaginationOutput } from './outputs/pagination.output';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -100,6 +101,19 @@ export class OrderResolver {
   })
   async orderUpdated(@Args('orderId') orderId: string) {
     // return this.pubSub.asyncIterator(`orderUpdated.${orderId}`);
+  }
+
+  @Query(() => [PaginationOutput])
+  async findPaginatedOrders(
+    @Args('page', { type: () => Number, nullable: true, defaultValue: 1 })
+    page: number,
+    @Args('limit', { type: () => Number, nullable: true, defaultValue: 10 })
+    limit: number,
+  ): Promise<PaginationOutput[]> {
+    const orders = await this.findAllOrdersService.execute({ page, limit });
+    return orders.map((order) =>
+      OrderMapper.fromEntitytoGraphQLOrderOutput(order),
+    );
   }
 }
 

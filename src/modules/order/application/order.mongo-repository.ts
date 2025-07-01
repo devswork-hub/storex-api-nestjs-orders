@@ -109,4 +109,22 @@ export class OrderMongoRepository implements OrderRepositoryContract {
       );
     }
   }
+
+  async findPaginated(page: 1, limit: 10) {
+    const skip = (page - 1) * limit;
+    const [items, total] = await Promise.all([
+      this.orderModel.find().skip(skip).limit(limit).exec(),
+      this.orderModel.countDocuments(),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+    };
+    throw new RepositoryException(
+      'Method findPaginated is not implemented in OrderMongoRepository',
+    );
+  }
 }

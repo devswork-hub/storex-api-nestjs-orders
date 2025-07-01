@@ -6,15 +6,21 @@
 // import { SearchResult } from './search-result';
 // import { CriteriaContract } from './criteria.contract';
 
-// export interface SearchableRepositoryContract<
-//   Model,
-//   Fields = Partial<Model>,
-//   SearchInput = SearchParams<Fields>,
-//   SearchOutput = SearchResult<Model>,
-// > {
-//   search(input: SearchInput): Promise<SearchOutput>;
-//   searchByCriteria(criteria: CriteriaContract<Model>[]): Promise<SearchOutput>;
-// }
+import { CriteriaContract } from './criteria.contract';
+import { SearchParams } from './search-params';
+import { SearchResult } from './search-result';
+
+export type SearchResultProps = {};
+
+export interface SearchableRepositoryContract<
+  Model,
+  Fields = Partial<Model>,
+  SearchInput = SearchParams<Fields>,
+  SearchOutput = SearchResult<Model>,
+> {
+  search(input: SearchInput): Promise<SearchOutput>;
+  searchByCriteria(criteria: CriteriaContract<Model>[]): Promise<SearchOutput>;
+}
 
 // // Replace 'any' with the actual type for Fields if known
 // const s: SearchableRepositoryContract<
