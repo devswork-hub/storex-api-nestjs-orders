@@ -1,3 +1,3 @@
-export interface CriteriaContract<T> {
-  apply(items: T[]): T[];
-}
+export type CriteriaOptions<M> = {
+  apply(items: M[]): M[];
+};

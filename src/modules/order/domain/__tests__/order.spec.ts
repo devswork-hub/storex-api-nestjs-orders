@@ -1,10 +1,10 @@
 import {
   Currency,
   CurrencyEnum,
-} from '../../../shared/domain/value-objects/currency.vo';
-import { Money } from '../../../shared/domain/value-objects/money.vo';
-import { OrderModel } from './order';
-import { OrderItemModel } from './order-item';
+} from '../../../../shared/domain/value-objects/currency.vo';
+import { Money } from '../../../../shared/domain/value-objects/money.vo';
+import { OrderModel } from '../order';
+import { OrderItemModel } from '../order-item';
 
 describe('OrderModel', () => {
   it('return OrderModel', () => {

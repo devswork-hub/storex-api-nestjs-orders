@@ -1,9 +1,9 @@
-import { Money } from '../../../shared/domain/value-objects/money.vo';
+import { Money } from '../../../../shared/domain/value-objects/money.vo';
 import {
   Currency,
   CurrencyEnum,
-} from '../../../shared/domain/value-objects/currency.vo';
-import { OrderItemModel } from './order-item';
+} from '../../../../shared/domain/value-objects/currency.vo';
+import { OrderItemModel } from '../order-item';
 
 describe('OrderItemModel', () => {
   const currency = new Currency(CurrencyEnum.BRL);

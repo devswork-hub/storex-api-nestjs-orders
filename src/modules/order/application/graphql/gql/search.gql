@@ -1,0 +1,30 @@
+query {
+  searchOrders(
+    filter: { status: "PAID", customerId: "abc123" }
+    sort: { field: "createdAt", direction: DESC }
+    pagination: { type: "offset" }
+  ) {
+    ... on OffsetPaginatedOrderResult {
+      items {
+        id
+        status
+        total
+        createdAt
+        customerId
+      }
+      currentPage
+      perPage
+      lastPage
+      total
+    }
+
+    ... on CursorPaginatedOrderResult {
+      items {
+        id
+        status
+      }
+      hasNextPage
+      nextCursor
+    }
+  }
+}

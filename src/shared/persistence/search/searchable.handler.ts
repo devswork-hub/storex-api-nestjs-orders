@@ -1,10 +1,4 @@
-import {
-  CursorSearchResult,
-  OffsetSearchResult,
-  SearchableRepositoryContract,
-  SearchOptions,
-  SearchResult,
-} from './searchable.repository.contract';
+import { SearchOptions, SearchResult } from './searchable.repository.contract';
 
 export class SearchableHandler<T extends Record<string, any>> {
   constructor(private readonly data: T[]) {} // aqui não é o repositório ainda, só dados mockados

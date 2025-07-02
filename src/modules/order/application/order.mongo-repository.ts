@@ -140,6 +140,10 @@ export class OrderMongoRepository implements OrderRepositoryContract {
 
       const query = this.orderModel.find(filter).sort({ [sortField]: sortDir });
 
+      console.log(JSON.stringify(filter, null, 2));
+      console.log('=============');
+      console.log(JSON.stringify(filter, null, 2));
+
       let skip = 0;
       let limit = 10;
 
