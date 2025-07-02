@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigValues } from '../config/config.values';
 
 @Module({
   imports: [
     MongooseModule.forRootAsync({
-      useFactory: () => {
-        const user = process.env.MONGODB_USER || 'user';
-        const password = process.env.MONGODB_PASS || 'password';
-        const host = process.env.MONGODB_HOST || 'localhost';
-        const port = process.env.MONGODB_PORT || '27017';
-        const dbName = process.env.MONGODB_DB_NAME || 'mydatabase';
+      inject: [ConfigValues],
+      useFactory: (config: ConfigValues) => {
+        const user = config.get('MONGODB_USER') || 'user';
+        const password = config.get('MONGODB_PASS') || 'password';
+        const host = config.get('MONGODB_HOST') || 'localhost';
+        const port = config.get('MONGODB_PORT') || '27017';
+        const dbName = config.get('MONGODB_DB') || 'orders';
+
+        console.log(JSON.stringify(config.get('MONGODB_HOST')), null, 2);
 
         return {
           uri: `mongodb://${user}:${password}@${host}:${port}/${dbName}?authSource=admin`,

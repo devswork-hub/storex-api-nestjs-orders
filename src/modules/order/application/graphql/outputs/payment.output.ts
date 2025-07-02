@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ChangeTo } from '@/src/app/utils/type';
 import { InstallmentOutput } from './installment.output';
+import { ChangeTo } from '@/src/shared/utils/type-utils';
 
 type Output = ChangeTo<PaymentOutput, { method: string }>;
 

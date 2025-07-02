@@ -11,6 +11,7 @@ import {
   SearchOptions,
   SearchResult,
 } from '@/src/shared/persistence/search/searchable.repository.contract';
+import { CriteriaOptions } from '@/src/shared/persistence/criteria.contract';
 
 type FindByOptions = {
   orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };
@@ -22,6 +23,11 @@ export class OrderMongoRepository implements OrderRepositoryContract {
     @InjectModel(OrderMongoEntity.name)
     private readonly orderModel: Model<OrderMongoEntity>,
   ) {}
+  searchByCriteria(
+    criteria: CriteriaOptions<OrderModelContract>[],
+  ): Promise<SearchResult<OrderModelContract>> {
+    throw new Error('Method not implemented.');
+  }
 
   async createOne(entity: OrderModelContract): Promise<OrderModelContract> {
     try {

@@ -1,5 +1,4 @@
-// config.module.ts
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import {
   ConfigModule as NestConfigModule,
   ConfigModuleOptions,
@@ -7,20 +6,27 @@ import {
 import { join } from 'path';
 import { ConfigSchema } from './config.schema';
 import { ZodValidator } from '@/src/shared/domain/validation/zod-validator';
+import { ConfigValues } from './config.values';
 
 @Module({})
-export class ConfigModule extends NestConfigModule {
-  static forRoot(options?: ConfigModuleOptions) {
-    const envFilePaths = [
-      join(process.cwd(), `.env.${process.env.NODE_ENV}`),
-      join(process.cwd(), `.env`),
-    ];
-
-    return super.forRoot({
-      isGlobal: true,
-      envFilePath: envFilePaths,
-      validate: (config) => new ZodValidator(ConfigSchema).validate(config),
-      ...options,
-    });
+export class ConfigModule {
+  static forRoot(options?: ConfigModuleOptions): DynamicModule {
+    return {
+      module: ConfigModule,
+      global: true, // garante que o ConfigService seja visível globalmente
+      imports: [
+        NestConfigModule.forRoot({
+          isGlobal: true,
+          envFilePath: [
+            join(process.cwd(), `.env.${process.env.NODE_ENV}`),
+            join(process.cwd(), `.env`),
+          ],
+          validate: (config) => new ZodValidator(ConfigSchema).validate(config),
+          ...options,
+        }),
+      ],
+      providers: [ConfigValues],
+      exports: [ConfigValues],
+    };
   }
 }

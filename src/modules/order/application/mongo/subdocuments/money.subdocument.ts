@@ -1,5 +1,4 @@
-import { ChangeTo } from '@/src/app/utils/type';
-import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+import { ChangeTo } from '@/src/shared/utils/type-utils';
 import { MoneyProps } from '@/src/shared/domain/value-objects/money.vo';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 

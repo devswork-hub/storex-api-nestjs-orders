@@ -4,6 +4,11 @@
 
 import { CriteriaOptions } from '../criteria.contract';
 
+export enum SortDirectionEnum {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
 export type PaginationType = 'offset' | 'cursor';
 
 export type OffsetPagination = {

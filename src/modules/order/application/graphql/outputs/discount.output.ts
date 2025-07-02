@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ChangeTo } from '@/src/app/utils/type';
 import { Discount } from '../../../domain/order.constants';
+import { ChangeTo } from '@/src/shared/utils/type-utils';
 
 type Output = ChangeTo<Discount, { type: string; currency: string }>;
 
