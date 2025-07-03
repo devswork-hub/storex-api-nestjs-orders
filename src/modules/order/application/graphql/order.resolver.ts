@@ -1,4 +1,3 @@
-// src/modules/order/graphql/order.resolver.ts
 import {
   Resolver,
   Query,
@@ -9,30 +8,16 @@ import {
   Field,
 } from '@nestjs/graphql';
 import { OrderOuput } from './outputs/order.output';
-import { FindOneOrderService } from '../../domain/usecases/find-one-order.service';
-import { FindAllOrderService } from '../../domain/usecases/find-all-order.service';
-import {
-  CreateOrderGraphQLInput,
-  // UpdateOrderGraphQLInput,
-} from './inputs/order.inputs';
-import { CreateOrderService } from '../../domain/usecases/create-order/create-order.service';
+import { CreateOrderGraphQLInput } from './inputs/order.inputs';
 import { UpdateOrderService } from '../../domain/usecases/update-order.service';
 import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
 import { OrderID } from '../../domain/order-id';
-import { CreateOrderValidation } from '../../domain/usecases/create-order/create-order.validation';
 import { OrderMapper } from '../order.mapper';
 import { UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
-import { PaginationOutput } from './outputs/pagination.output';
+import { PaginatedOrderResult } from './outputs/search.output';
 import {
-  CursorPaginatedOrderResult,
-  OffsetPaginatedOrderResult,
-  PaginatedOrderResult,
-} from './outputs/search.output';
-import {
-  CursorPaginationInput,
-  OffsetPaginationInput,
   OrderFilterInput,
   OrderSortInput,
   PaginationInput,
@@ -44,15 +29,21 @@ import {
   OffsetSearchResult,
   SearchResult,
 } from '@/src/shared/persistence/search/searchable.repository.contract';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import {
+  FindAllOrdersHandler,
+  FindAllOrdersQuery,
+} from '../cqrs/handlers/find-all-orders.handler';
+import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';
+import { CreateOrderCommand } from '../cqrs/handlers/create-order.command';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
   constructor(
-    private readonly createOrderService: CreateOrderService,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly updateOrderService: UpdateOrderService,
     private readonly deleteOrderService: DeleteOrderService,
-    private readonly findOneOrderService: FindOneOrderService,
-    private readonly findAllOrdersService: FindAllOrderService,
     private readonly repo: OrderMongoRepository,
   ) {}
 
@@ -61,40 +52,27 @@ export class OrderResolver {
     return 'GraphQL está rodando!';
   }
 
-  // @Query(() => [OrderOuput])
-  // async findAllOrders(): Promise<OrderOuput[]> {
-  //   const orders = await this.findAllOrdersService.execute();
-  //   return orders.map(OrderMapper.fromEntitytoGraphQLOrderOutput);
-  // }
-
   @UseInterceptors(LoggingInterceptor)
   @Query(() => [OrderOuput])
   async findAllOrders() {
     try {
-      const orders = await this.findAllOrdersService.execute();
-      return orders.map((order) =>
-        OrderMapper.fromEntitytoGraphQLOrderOutput(order),
-      );
+      return await this.queryBus.execute(new FindAllOrdersQuery());
     } catch (error) {
       throw error;
     }
   }
   @Query(() => OrderOuput, { nullable: true })
   async findOrderById(@Args('id') id: string): Promise<OrderOuput | null> {
-    const order = await this.findOneOrderService.execute(new OrderID(id));
-    return order ? OrderMapper.fromEntitytoGraphQLOrderOutput(order) : null;
+    return await this.queryBus.execute(
+      new FindOrderByIdQuery(new OrderID(id).getValue()),
+    );
   }
 
   @Mutation(() => OrderOuput)
   async createOrder(
     @Args('input') data: CreateOrderGraphQLInput,
   ): Promise<OrderOuput> {
-    const validations = new CreateOrderValidation();
-    validations.validate(data); // ✅ Valida antes de mapear para domínio
-
-    const domainInput = OrderMapper.toDomainInput(data); // depois transforma
-    const created = await this.createOrderService.execute(domainInput);
-    return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
+    return await this.commandBus.execute(new CreateOrderCommand(data));
   }
 
   // @Mutation(() => OrderOuput)

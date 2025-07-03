@@ -20,13 +20,15 @@ import {
   OrderMongoEntity,
   OrderSchema,
 } from './mongo/documents/order.document';
-import { OrderItemSchema } from './mongo/documents/order-item.document';
-import { orderProviders } from './order.providers';
 import { OrderResolver } from './graphql/order.resolver';
 import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';
 import { DeleteOrderService } from '../domain/usecases/delete-order/delete-order.service';
 import { DomainSeeders } from './domain.seeders';
 import { OrdersSeeder } from './mongo/seeders/orders.seeder';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CommandHandlers } from './cqrs/handlers/command-handlers';
+import { QueryHandlers } from './cqrs/handlers/query-handlers';
+import { EventHandlers } from './cqrs/handlers/event-handlers';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -63,6 +65,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
+    CqrsModule,
     MongooseModule.forFeature([
       {
         name: OrderMongoEntity.name,
@@ -71,6 +74,12 @@ export const OrderUseCasesProviders: Provider[] = [
     ]),
   ],
   providers: [
+    ...CommandHandlers, // <- 👈 Aqui está o que faltava
+    ...QueryHandlers,
+    ...EventHandlers,
+    CreateOrderService,
+    FindAllOrderService,
+    FindOneOrderService,
     OrderMongoRepository,
     OrderRepositoryProvider, // 'OrderRepositoryContract'
     ...OrderUseCasesProviders, // casos de uso usam 'OrderRepositoryContract' no inject

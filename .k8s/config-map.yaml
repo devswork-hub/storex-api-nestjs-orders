@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storex-nestjs-api-orders-configmap
+  namespace: storex
+data:
+  database-rul: "mongodb://mongo:27017/orders"
+  api-url: "http://storex-nestjs-api-orders:3000"

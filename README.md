@@ -90,7 +90,7 @@
   - https://daisyui.com/docs/colors/
 
 - ===================================
-- https://github.com/desenvolvedor-io/dev-store/blob/main/src/services/DevStore.Orders.Domain/Orders/OrderItem.cs
+- [x] https://github.com/desenvolvedor-io/dev-store/blob/main/src/services/DevStore.Orders.Domain/Orders/OrderItem.cs
 - https://github.com/thepracticaldeveloper/kafka-spring-boot-example/blob/master/src/main/java/io/tpd/kafkaexample/HelloKafkaController.java
 - https://github.com/deyvisonborges/mach-catalog-graphql/blob/main/.k8s/secrets.yaml
 - https://github.com/deyvisonborges/fullcycle-codeflix-catalog-api-nestjs/blob/main/package-lock.json

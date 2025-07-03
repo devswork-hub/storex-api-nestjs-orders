@@ -1,0 +1,16 @@
+name: Publish images to docker hub
+on: [workflow_dispatch]
+
+jobs:
+  publish_images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: |
+          docker build . -t ${{secrets.DOCKERHUB_ORG}}/nestjs-api-orders:latest
+      - name: publish
+        run: |
+          docker login -u ${{secrets.DOCKERHUB_ORG}} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push ${{secrets.DOCKERHUB_ORG}}/nestjs-api-orders:latest
