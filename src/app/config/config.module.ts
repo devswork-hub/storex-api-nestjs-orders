@@ -13,7 +13,7 @@ export class ConfigModule {
   static forRoot(options?: ConfigModuleOptions): DynamicModule {
     return {
       module: ConfigModule,
-      global: true, // garante que o ConfigService seja visível globalmente
+      global: true,
       imports: [
         NestConfigModule.forRoot({
           isGlobal: true,

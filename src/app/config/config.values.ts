@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigSchema } from './config.schema';
 import { z } from 'zod';
 
-type ConfigSchemaType = z.infer<typeof ConfigSchema>;
+export type ConfigSchemaType = z.infer<typeof ConfigSchema>;
 
 @Injectable()
 export class ConfigValues {
