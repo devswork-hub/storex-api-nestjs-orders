@@ -4,7 +4,7 @@ import { CreateOrderService } from '../../../domain/usecases/create-order/create
 import { OrderOuput } from '../../graphql/outputs/order.output';
 import { CreateOrderValidation } from '../../../domain/usecases/create-order/create-order.validation';
 import { OrderMapper } from '../../order.mapper';
-import { OrderCreatedEvent } from '../events/created-order.event-handler';
+import { OrderCreatedEvent } from '../events/order-created.event-handler';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -26,7 +26,7 @@ export class CreateOrderCommandHandler
 
     const domainInput = OrderMapper.toDomainInput(data);
     const created = await this.createOrderService.execute(domainInput);
-    this.eventBus.publish(new OrderCreatedEvent(created.id, created));
+    this.eventBus.publish(new OrderCreatedEvent(created.id, created as any));
     return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
   }
 }

@@ -29,6 +29,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CommandHandlers } from './cqrs/handlers/command-handlers';
 import { QueryHandlers } from './cqrs/handlers/query-handlers';
 import { EventHandlers } from './cqrs/handlers/event-handlers';
+import { CacheModule } from '@nestjs/cache-manager';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -65,6 +66,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
+    CacheModule.register(),
     CqrsModule,
     MongooseModule.forFeature([
       {

@@ -30,12 +30,11 @@ import {
   SearchResult,
 } from '@/src/shared/persistence/search/searchable.repository.contract';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  FindAllOrdersHandler,
-  FindAllOrdersQuery,
-} from '../cqrs/handlers/find-all-orders.handler';
+import { FindAllOrdersQuery } from '../cqrs/handlers/find-all-orders.handler';
 import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';
 import { CreateOrderCommand } from '../cqrs/handlers/create-order.command';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { ORDER_CACHE_KEYS } from '../orders-cache-keys';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -52,7 +51,10 @@ export class OrderResolver {
     return 'GraphQL está rodando!';
   }
 
-  @UseInterceptors(LoggingInterceptor)
+  // Nao funciona com GraphQL, a abordagem deve ser manual
+  // @UseInterceptors(LoggingInterceptor, CacheInterceptor) // Automatically cache the response for this endpoint
+  // @CacheKey(ORDER_CACHE_KEYS.FIND_ALL)
+  // @CacheTTL(60000) // now in milliseconds (1 minute === 60000)
   @Query(() => [OrderOuput])
   async findAllOrders() {
     try {

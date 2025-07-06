@@ -1,3 +1,3 @@
-import { CreatedOrderEventHandler } from '../events/created-order.event-handler';
+import { OrderCreatedHandler } from '../events/order-created.event-handler';
 
-export const EventHandlers = [CreatedOrderEventHandler];
+export const EventHandlers = [OrderCreatedHandler];
