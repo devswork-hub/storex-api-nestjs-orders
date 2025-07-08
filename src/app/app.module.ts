@@ -5,7 +5,7 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { ConfigModule } from './config/config.module';
 import { PersistenceModule } from './persistence/persistence.module';
 import { DomainsModule } from '../modules/domain-modules.module';
-import { CacheModule } from './persistence/cache/cache.module';
+import { CustomCacheModule } from './persistence/cache/cache.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { CacheModule } from './persistence/cache/cache.module';
       introspection: true,
     }),
     PersistenceModule.register({ type: 'mongoose', global: true }),
-    CacheModule,
+    CustomCacheModule.forRoot({ isGlobal: true }),
     DomainsModule,
   ],
 })

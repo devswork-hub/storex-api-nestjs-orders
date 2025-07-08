@@ -30,7 +30,7 @@ import { CommandHandlers } from './cqrs/handlers/command-handlers';
 import { QueryHandlers } from './cqrs/handlers/query-handlers';
 import { EventHandlers } from './cqrs/handlers/event-handlers';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
-import { CacheModule } from '@/src/app/persistence/cache/cache.module';
+// import { CacheModule } from '@/src/app/persistence/cache/cache.module';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -67,7 +67,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
-    CacheModule,
+    // CacheModule,
     CqrsModule,
     MongooseModule.forFeature([
       {
