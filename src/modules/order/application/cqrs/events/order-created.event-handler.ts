@@ -1,3 +1,4 @@
+import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
 // events/order-created.event.ts
@@ -26,8 +27,15 @@ export class OrderCreatedHandler implements IEventHandler<OrderCreatedEvent> {
 export class OrderCompletedHandler
   implements IEventHandler<OrderCompletedEvent>
 {
-  handle(event: OrderCompletedEvent) {
+  constructor(private readonly publisher: RabbitMQPublisherService) {}
+
+  async handle(event: OrderCompletedEvent) {
     console.log('Order Updated Event:', event);
+    // Publicar no RabbitMQ
+    await this.publisher.publish('order.created', {
+      orderId: event.orderId,
+      data: event,
+    });
     // Handle the event (e.g., update read models)
   }
 }

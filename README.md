@@ -97,6 +97,11 @@
 - https://github.com/iluwatar/java-design-patterns
 - https://github.com/tomoyane/springboot-bestpractice/tree/master/src
 
+- https://github.com/zhuravlevma/typescript-ddd-architecture/blob/main/src/app.module.ts
+- https://github.com/Ho-s/NestJS-GraphQL-TypeORM-PostgresQL/blob/main/src/common/config/graphql-config.service.ts#L39
+- https://github.com/amehat/nestjs-cqrs-saga-event-sourcing-domain-driven
+- https://github.com/henriqueweiand/nestjs-typeorm-multi-tenancy?source=post_page-----a7f6176e8319---------------------------------------
+
 - `Kafka`
 
   - https://mosy.tech/spring-boot-kafka-config/

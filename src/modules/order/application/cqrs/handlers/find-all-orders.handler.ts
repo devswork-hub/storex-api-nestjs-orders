@@ -16,31 +16,32 @@ export class FindAllOrdersHandler
 
   constructor(
     private readonly findAllOrdersService: FindAllOrderService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async execute(): Promise<OrderOuput[]> {
     const cacheKey = ORDER_CACHE_KEYS.FIND_ALL;
-    const cached = await this.cacheManager.get<OrderOuput[]>(cacheKey);
 
-    if (cached) {
-      this.logger.log(`[CACHE HIT] Chave: ${cacheKey}`);
-      return cached;
-    }
+    // const cached = await this.cacheManager.get<OrderOuput[]>(cacheKey);
+
+    // if (cached) {
+    //   this.logger.log(`[CACHE HIT] Chave: ${cacheKey}`);
+    //   return cached;
+    // }
 
     this.logger.log(`[CACHE MISS] Chave: ${cacheKey}`);
 
+    // this.logger.log(
+    //   `CacheManager instance: ${JSON.stringify(this.cacheManager, null, 2)}`,
+    // );
+
     const result = await this.findAllOrdersService.execute();
-    this.logger.log(
-      `[CACHE SET] Armazenando resultado no cache para chave: ${cacheKey}`,
-    );
+    const output = result.map(OrderMapper.fromEntitytoGraphQLOrderOutput);
 
-    await this.cacheManager.set(cacheKey, result, 10);
+    this.logger.log(`[CACHE SAVE] Salvando na chave ${cacheKey}`);
 
-    this.logger.debug(`Valor armazenado no cache: ${JSON.stringify(result)}`);
+    // await this.cacheManager.set(cacheKey, output, 60);
 
-    return result.map((order) =>
-      OrderMapper.fromEntitytoGraphQLOrderOutput(order),
-    );
+    return output;
   }
 }

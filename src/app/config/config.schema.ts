@@ -2,6 +2,12 @@ import { z } from 'zod';
 
 export const ConfigSchema = z.object({
   APP_PORT: z.string().nonempty({ message: 'Pass APP_PORT key' }),
+  CACHE_DEFAULT_TTL: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => !isNaN(val), {
+      message: 'CACHE_DEFAULT_TTL must be a valid number',
+    }),
   MONGODB_USER: z.string().nonempty({ message: 'Pass MONGO_USER key' }),
   MONGODB_PASS: z.string().nonempty({ message: 'Pass MONGODB_PASS key' }),
   MONGODB_HOST: z.string().nonempty({ message: 'Pass MONGODB_HOST key' }),
