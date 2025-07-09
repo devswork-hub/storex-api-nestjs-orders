@@ -5,9 +5,8 @@ import { OrderOuput } from '../../graphql/outputs/order.output';
 import { CreateOrderValidation } from '../../../domain/usecases/create-order/create-order.validation';
 import { OrderMapper } from '../../order.mapper';
 import { OrderCreatedEvent } from '../events/order-created.event-handler';
-import { Inject } from '@nestjs/common';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
+import { CacheService } from '@/src/app/persistence/cache/cache.service';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -20,7 +19,7 @@ export class CreateOrderCommandHandler
   constructor(
     private readonly createOrderService: CreateOrderService,
     private readonly eventBus: EventBus,
-    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<OrderOuput> {
@@ -31,7 +30,7 @@ export class CreateOrderCommandHandler
     const domainInput = OrderMapper.toDomainInput(data);
     const created = await this.createOrderService.execute(domainInput);
     this.eventBus.publish(new OrderCreatedEvent(created.id, created as any));
-    // await this.cacheManager.del(ORDER_CACHE_KEYS.FIND_ALL);
+    await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
     return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
   }
 }

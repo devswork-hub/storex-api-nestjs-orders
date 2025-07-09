@@ -26,10 +26,8 @@ import { DeleteOrderService } from '../domain/usecases/delete-order/delete-order
 import { DomainSeeders } from './domain.seeders';
 import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 import { CqrsModule } from '@nestjs/cqrs';
-import { CommandHandlers } from './cqrs/handlers/command-handlers';
-import { QueryHandlers } from './cqrs/handlers/query-handlers';
-import { EventHandlers } from './cqrs/handlers/event-handlers';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
+import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 // import { CacheModule } from '@/src/app/persistence/cache/cache.module';
 
 export const OrderRepositoryProvider: Provider = {

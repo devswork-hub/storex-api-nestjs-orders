@@ -14,4 +14,22 @@ export class ConfigValues {
   get<K extends keyof ConfigSchemaType>(key: K): ConfigSchemaType[K] {
     return this.configService.getOrThrow(key);
   }
+
+  // TODO: validar se isso é útil
+  getRedisConnectionUri(): string {
+    const uri = this.configService.get('REDIS_URI');
+    if (uri) return uri;
+
+    const user = this.configService.get('REDIS_USER');
+    const pass = this.configService.get('REDIS_PASSWORD');
+    const host = this.configService.get('REDIS_HOST');
+    const port = this.configService.get('REDIS_PORT');
+
+    if (!host || !port) {
+      throw new Error('Missing REDIS_HOST or REDIS_PORT in env config');
+    }
+
+    const auth = user && pass ? `${user}:${pass}@` : '';
+    return `redis://${auth}${host}:${port}`;
+  }
 }
