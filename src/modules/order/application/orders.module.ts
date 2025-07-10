@@ -28,6 +28,7 @@ import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
+import { OutboxEntity, OutboxSchema } from './mongo/documents/outbox.document';
 // import { CacheModule } from '@/src/app/persistence/cache/cache.module';
 
 export const OrderRepositoryProvider: Provider = {
@@ -71,6 +72,10 @@ export const OrderUseCasesProviders: Provider[] = [
       {
         name: OrderMongoEntity.name,
         schema: OrderSchema,
+      },
+      {
+        name: OutboxEntity.name,
+        schema: OutboxSchema,
       },
     ]),
   ],
