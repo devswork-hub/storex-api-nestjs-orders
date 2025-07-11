@@ -1,62 +1,96 @@
-import amqp from 'amqplib';
-import { Observable } from 'rxjs';
+import amqp, { Channel, Connection, ConsumeMessage } from 'amqplib';
 
 export class RabbitMQService {
-  private connection: amqp.Connection | null = null;
-  private channel: amqp.Channel | null = null;
-  private channelConsumer: amqp.Channel | null = null;
+  private connection: Connection | null = null;
+  private channel: Channel | null = null;
 
-  constructor() {
-    this.connect();
-  }
+  constructor(
+    private readonly url: string = process.env.RABBITMQ_URL ||
+      'amqp://myuser:secret@localhost:5673',
+  ) {}
 
   async connect(): Promise<void> {
     try {
-      this.connection = await amqp.connect(
-        'amqp://myuser:secret@localhost:5673',
-      );
+      this.connection = await amqp.connect(this.url);
       this.channel = await this.connection.createChannel();
-      await this.channel.assertQueue('order-queue');
-      console.log('RabbitMQ connected');
-    } catch (err) {
-      console.error('Failed to connect to RabbitMQ:', err.message);
+      console.log('[RabbitMQ] Connection established');
+    } catch (error) {
+      console.error('[RabbitMQ] Failed to connect:', (error as Error).message);
     }
   }
 
-  async publishMessage(queue: string, message: any): Promise<void> {
+  private async getChannel(): Promise<Channel> {
     if (!this.channel) {
-      console.error('No RabbitMQ channel available.');
-      await this.connect(); // Tentar reconectar
-      return;
+      await this.connect();
+      if (!this.channel)
+        throw new Error(
+          '[RabbitMQ] Channel not available after reconnect attempt',
+        );
     }
+    return this.channel;
+  }
+
+  async assertQueue(queue: string): Promise<void> {
+    const channel = await this.getChannel();
+    await channel.assertQueue(queue, { durable: true });
+  }
+
+  async publishMessage(queue: string, message: unknown): Promise<void> {
+    const channel = await this.getChannel();
+    await this.assertQueue(queue);
 
     try {
-      await this.channel.sendToQueue(
+      const sent = channel.sendToQueue(
         queue,
         Buffer.from(JSON.stringify(message)),
+        {
+          persistent: true,
+        },
       );
-    } catch (err) {
-      console.error('Failed to publish message:', err);
+
+      if (!sent) {
+        console.warn(`[RabbitMQ] Message to queue "${queue}" was not sent`);
+      }
+    } catch (error) {
+      console.error(
+        `[RabbitMQ] Failed to publish message to "${queue}":`,
+        error,
+      );
     }
   }
 
   async consumeMessages(
     queue: string,
-    callback?: (message: any) => void,
-  ): Promise<Observable<any>> {
-    if (!this.channel) {
-      await this.connect();
-      return;
-    }
-    await this.channel.consume(queue, (message) => {
-      if (message) {
-        const content = message.content.toString();
-        if (callback) {
-          const parsedContent = JSON.parse(content);
-          callback(parsedContent);
+    callback: (message: unknown) => void,
+  ): Promise<void> {
+    const channel = await this.getChannel();
+    await this.assertQueue(queue);
+
+    await channel.consume(
+      queue,
+      (msg: ConsumeMessage | null) => {
+        if (msg) {
+          try {
+            const content = JSON.parse(msg.content.toString());
+            callback(content);
+            channel.ack(msg);
+          } catch (error) {
+            console.error('[RabbitMQ] Failed to process message:', error);
+            channel.nack(msg, false, false); // descarta a mensagem
+          }
         }
-        this.channel!.ack(message);
-      }
-    });
+      },
+      { noAck: false },
+    );
+  }
+
+  async close(): Promise<void> {
+    try {
+      await this.channel?.close();
+      await this.connection?.close();
+      console.log('[RabbitMQ] Connection closed');
+    } catch (error) {
+      console.error('[RabbitMQ] Failed to close connection:', error);
+    }
   }
 }

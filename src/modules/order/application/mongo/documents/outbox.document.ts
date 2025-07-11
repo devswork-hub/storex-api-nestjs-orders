@@ -1,4 +1,4 @@
-import { OutboxContract } from '@/src/shared/domain/outbox/outbox.contract';
+import { OutboxContract } from '@/src/app/persistence/outbox/outbox.contract';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { OrderOuput } from '../../graphql/outputs/order.output';

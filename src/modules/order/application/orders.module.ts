@@ -29,6 +29,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 import { OutboxEntity, OutboxSchema } from './mongo/documents/outbox.document';
+import { OutboxRelayModule } from '@/src/app/persistence/outbox/outbox.module';
 // import { CacheModule } from '@/src/app/persistence/cache/cache.module';
 
 export const OrderRepositoryProvider: Provider = {
@@ -67,19 +68,17 @@ export const OrderUseCasesProviders: Provider[] = [
 @Module({
   imports: [
     // CacheModule,
-    CqrsModule,
     MongooseModule.forFeature([
       {
         name: OrderMongoEntity.name,
         schema: OrderSchema,
       },
-      {
-        name: OutboxEntity.name,
-        schema: OutboxSchema,
-      },
     ]),
+    CqrsModule,
+    OutboxRelayModule,
   ],
   providers: [
+    OutboxRelayModule,
     RabbitMQPublisherService,
     ...CommandHandlers, // <- 👈 Aqui está o que faltava
     ...QueryHandlers,

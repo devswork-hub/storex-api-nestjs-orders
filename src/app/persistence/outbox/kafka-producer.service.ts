@@ -7,14 +7,14 @@ export class KafkaProducerService implements OnModuleDestroy {
   private kafka: Kafka;
   private producer: Producer;
 
-  constructor() {
-    this.kafka = new Kafka({
-      clientId: 'my-orders-app',
-      brokers: ['localhost:9092'], // Substitua pelos seus brokers Kafka
-    });
-    this.producer = this.kafka.producer();
-    this.producer.connect().catch(console.error);
-  }
+  // constructor() {
+  //   this.kafka = new Kafka({
+  //     clientId: 'my-orders-app',
+  //     brokers: ['localhost:9092'], // Substitua pelos seus brokers Kafka
+  //   });
+  //   this.producer = this.kafka.producer();
+  //   this.producer.connect().catch(console.error);
+  // }
 
   async sendMessage(topic: string, message: any): Promise<void> {
     const record: ProducerRecord = {

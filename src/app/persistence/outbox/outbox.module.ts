@@ -7,6 +7,7 @@ import {
   OutboxEntity,
   OutboxSchema,
 } from '@/src/modules/order/application/mongo/documents/outbox.document';
+import { OutboxRepository } from './outbox-repository';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import {
       { name: OutboxEntity.name, schema: OutboxSchema },
     ]),
   ],
-  providers: [OutboxRelayService, KafkaProducerService],
+  providers: [OutboxRelayService, KafkaProducerService, OutboxRepository],
+  exports: [MongooseModule, OutboxRepository],
 })
 export class OutboxRelayModule {}
