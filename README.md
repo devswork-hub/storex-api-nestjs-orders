@@ -1,7 +1,39 @@
 ### Sobre esse projeto
 
 - Inclui
-  - [ ] Documentacao do proprio GraphQL
+
+  - Analise e formatacao estatica de codigo com Eslint e Prettier
+  - Custom Exceptions, Error Handling
+  - Documentacao do proprio GraphQL
+    Outbox Pattern
+  - Coreografia com Sagas
+  - Uso correto de CQRS
+  - Gerenciamento de Cache com Cache-Manager e Redis
+  - Event Driven
+    - Resiliencia nas entregas
+    - Atomicidade (ACID) das transacoes de criacao, usando
+      - Idempotência de eventos
+    - Consistencia eventual em casos especificos
+
+- A nivel de aplicacao
+
+  - Uso de libs externas criadas com os mecanismos do Nest.js
+  - Custom Configuration
+  - Interceptors
+  - Persistence Module
+    - Cache
+    - Outbox Pattern (incluindo esquemas e logicas)
+    - Redis
+  - Servicos
+    - Kafka
+    - RabbitMQ
+  - E modulos compartilhados (Shared)
+
+- A nivel de conversao de logica de dominio para requisitos de software
+  - Separacao por modulos (geralmente representam os Bounded Contexts)
+  - Mescla de abordagens com Package By Feature e Vertical Slice Design
+  - Domain Drive Design adaptado a nivel de codigo
+  - Clean Architecture do jeito certo (aproveitando algumas partes que fazem sentido)
 
 ### API Terms
 
