@@ -8,6 +8,12 @@ import { ConfigSchema } from './config.schema';
 import { ZodValidator } from '@/src/shared/domain/validation/zod-validator';
 import { ConfigValues } from './config.values';
 
+type CustomProps = {
+  isGlobal: boolean;
+  envFilePaths: string[];
+  validateFunction?: CallableFunction;
+};
+
 @Module({})
 export class ConfigModule {
   static forRoot(options?: ConfigModuleOptions): DynamicModule {

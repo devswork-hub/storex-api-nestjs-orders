@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const ConfigSchema = z.object({
   // App
   APP_PORT: z.string().nonempty({ message: 'Pass APP_PORT key' }),
+  NODE_ENV: z.enum(['development', 'production']),
 
   // Cache
   CACHE_DEFAULT_TTL: z
@@ -23,6 +24,7 @@ export const ConfigSchema = z.object({
       message: 'MONGODB_PORT must be a valid number',
     }),
   MONGODB_DB: z.string().nonempty({ message: 'Pass MONGODB_DB key' }),
+  MONGODB_REPLICA_SET: z.string().optional().nullable(),
 
   // Redis
   REDIS_URI: z.string().optional().nullable(),

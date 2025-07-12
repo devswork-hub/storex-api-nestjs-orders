@@ -1,5 +1,15 @@
 # https://medium.com/norsys-octogone/a-local-environment-for-mongodb-with-docker-compose-ba52445b93ed
 services:
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq
+  #   restart: unless-stopped
+  #   ports:
+  #     - '5672:5672'
+  #     - '15672:15672'
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: admin
+  #     RABBITMQ_DEFAULT_PASS: admin
   redis:
     container_name: cache
     image: redis
@@ -7,20 +17,20 @@ services:
       - 6379:6379
     volumes:
       - redis:/data
-  tmp-keycloak:
-    image: quay.io/keycloak/keycloak:24.0.0
-    restart: always
-    container_name: storex_keycloak
-    environment:
-      KEYCLOAK_USER: ${KEYCLOAK_USER}
-      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS}
-      DB_VENDOR: h2
-      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASS}
-    ports:
-      - '8080:8080'
-    env_file:
-      - .env
+  # tmp-keycloak:
+  #   image: quay.io/keycloak/keycloak:24.0.0
+  #   restart: always
+  #   container_name: storex_keycloak
+  #   environment:
+  #     KEYCLOAK_USER: ${KEYCLOAK_USER}
+  #     KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS}
+  #     DB_VENDOR: h2
+  #     KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+  #     KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASS}
+  #   ports:
+  #     - '8080:8080'
+  #   env_file:
+  #     - .env
   mongodb:
     image: mongo:latest
     restart: always
