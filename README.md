@@ -1,3 +1,29 @@
+## Decisoes de arquitetura
+
+- Postgres para transacoes ACID (Command Side)
+  - Otimo para usar Outbox
+    - Uso de triggers, extensões como o pg_notify, ou simplesmente tabelas para gerenciar o Outbox
+  - Modelagem mais precisa
+    - Relacionamentos bem definidos
+- MongoDB com Redis para consultas otimizadas (Query Side)
+  - Nao recomendado para transacoes:
+    - Overhead;
+      - Transações multi-documento no MongoDB podem introduzir latência e impactar o desempenho, especialmente em alta escala.
+    - Necessidade de rodar em modo replicaset;
+      - As transações no MongoDB exigem um conjunto de réplicas, o que é uma configuração padrão, mas vale a pena mencionar como um requisito.
+    - "Desnormalizacao excessiva"
+      - É o que permite consultas otimizadas e rápidas, pois os dados são pré-agregados e otimizados para leitura, evitando joins complexos em tempo de execução.
+    - Pegadinha do achismo "Permite esquema mais flexivel"
+      - A "flexibilidade de esquema" do NoSQL pode levar a uma má modelagem se não for bem compreendida
+- Redis
+  - A inclusão do Redis é inteligente para camadas de cache, contadores rápidos, ou até mesmo como um "read-through cache" para o MongoDB para consultas de altíssima frequência.
+- Comunicação entre Command e Query Side
+  - Embora não esteja explícito nas conclusões, a implicação de ter sistemas separados (Postgres e MongoDB) é a necessidade de um mecanismo para sincronizar os dados do Command Side para o Query Side. Isso geralmente é feito através de eventos (event sourcing ou event-driven architecture), onde as mudanças no Postgres (após uma transação bem-sucedida) disparam eventos que são consumidos por um serviço que atualiza o MongoDB.
+- Desnormalização no Query Side
+  - Reforçando o ponto da desnormalização, para o Query Side, o objetivo é otimizar a leitura. Isso significa que você pode ter dados duplicados ou pré-calculados em diferentes coleções/documentos no MongoDB para atender a diferentes padrões de consulta sem a necessidade de operações de agregação complexas em tempo real.
+- Monitoramento e Observabilidade
+  - Com uma arquitetura distribuída como essa, monitorar a consistência eventual e o desempenho de ambos os lados (Postgres e MongoDB) se torna ainda mais crítico.
+
 ### Sobre esse projeto
 
 - Inclui

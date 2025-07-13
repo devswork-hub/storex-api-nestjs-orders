@@ -32,4 +32,14 @@ export const ConfigSchema = z.object({
   REDIS_HOST: z.string().optional().nullable(),
   REDIS_USER: z.string().optional().nullable(),
   REDIS_PASSWORD: z.string().optional().nullable(),
+
+  PG_USERNAME: z.string().nonempty({ message: 'PG_USERNAME is required' }),
+  PG_PASSWORD: z.string().nonempty({ message: 'PG_PASSWORD is required' }),
+  PG_NAME: z.string().nonempty({ message: 'PG_NAME is required' }),
+  PG_HOST: z.string().nonempty({ message: 'PG_HOST is required' }),
+  PG_PORT: z.string().nonempty({ message: 'PG_PORT is required' }),
+  // TODO: converter para booleano
+  PG_SEEDER: z.string().nonempty({ message: 'PG_SEEDER is required' }),
+  // TODO: converter para booleano
+  PG_SYNCRONIZE: z.string().nonempty({ message: 'PG_SYNCRONIZE is required' }),
 });
