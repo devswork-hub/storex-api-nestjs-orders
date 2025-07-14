@@ -4,6 +4,8 @@ import {
   BillingAddress,
   Discount,
   OrderStatus,
+  OrderStatusEnum,
+  PaymentMethodEnum,
   PaymentSnapshot,
   ShippingSnapshot,
 } from './order.constants';
@@ -14,6 +16,8 @@ import {
 import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { calculateDiscountAmount } from './utils/discount-calculator';
 import { OrderID } from './order-id';
+import { OrderCreatedEvent } from './events/order-created.event';
+import { OrderPaidEvent } from './events/order-paid.event';
 
 export type OrderModelInput = Omit<OrderModelContract, 'subTotal' | 'total'>;
 
@@ -30,7 +34,10 @@ export type OrderModelContract = {
   discount?: Discount; // Desconto aplicado ao pedido
 } & BaseModelProps;
 
-export class OrderModel extends BaseModel implements OrderModelContract {
+export class OrderModel
+  extends BaseModel<OrderModelContract>
+  implements OrderModelContract
+{
   status: OrderStatus;
   items: OrderItemModel[];
   currency: Currency;
@@ -95,20 +102,55 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     this.items.push(newItem);
   }
 
-  // static create(props: OrderModelInput): OrderModel {
-  // TODO: Isso seria usado pra resolver o problema do DeleteOrderService,
-  //   return new OrderModel({
-  //     ...props,
-  //     items: props.items.map((item) =>
-  //       item instanceof OrderItemModel ? item : new OrderItemModel(item),
-  //     ),
-  //   });
+  markAsPaid(paymentId: string, paymentMethod: keyof PaymentMethodEnum) {
+    if (this.status !== OrderStatusEnum.PENDING) {
+      throw new Error(
+        `Cannot mark order as paid. Current status: ${this.status}`,
+      );
+    }
+    this.status = OrderStatusEnum.PAID;
+    this.addDomainEvent(
+      new OrderPaidEvent({
+        id: this.id,
+        paymentId,
+        paymentStatus: this.paymentSnapshot.status,
+        amount: this.total.amount,
+      }),
+    );
+  }
+
+  // markAsShipped(trackingNumber: string, shippingMethod: string) {
+  //   if (this._status !== OrderStatus.PAID) {
+  //     throw new Error(`Cannot ship order. Current status: ${this._status}`);
+  //   }
+
+  //   this._status = OrderStatus.SHIPPED;
+  //   this.addDomainEvent(
+  //     new OrderShippedEvent(this.id, trackingNumber, shippingMethod),
+  //   );
+  //   this.incrementVersion();
   // }
 
   static create(props: OrderModelInput): OrderModel {
-    return new OrderModel({
+    const order = new OrderModel({
       ...props,
       items: props.items.map((item) => new OrderItemModel(item)),
     });
+    order.status = OrderStatusEnum.PENDING;
+    order.addDomainEvent(
+      new OrderCreatedEvent({
+        id: order.id,
+        customerId: order.customerId,
+        status: order.status,
+        createdAt: order.createdAt,
+        items: order.items.map((item) => item),
+        currency: order.currency.code.toString(),
+        billingAddress: order.billingAddress,
+        paymentId: order.paymentId,
+        totalAmount: order.total.amount,
+        shippingAddress: order.shippingSnapshot,
+      }),
+    );
+    return order;
   }
 }
