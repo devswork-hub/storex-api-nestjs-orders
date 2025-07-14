@@ -1,17 +1,7 @@
-export type DomainEventContract = {
-  version: {
-    prefix: string;
-    minor: number;
-    major: number;
-  };
-  metadata: {
-    name: string;
-    description: string;
-  };
-};
-
 export interface DomainEventType {
-  aggregateId: string;
-  occurredOn: string;
-  eventVersion: string;
+  readonly eventId: string; // Identificador unico do evento
+  readonly eventType: string; // Tipo do evento (ex.: "OrderCreated")
+  readonly aggregateId: string; // ID do agregado e/ou entitidade que originou o evento
+  readonly occurredOn: Date;
+  readonly eventVersion?: string; // Numero da versao do evento, para controle futuro
 }

@@ -6,7 +6,8 @@ export type OrderStatus =
   | 'AWAITING_SHIPMENT'
   | 'SHIPPED'
   | 'DELIVERED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'FINISHED';
 
 export enum OrderStatusEnum {
   PENDING = 'PENDING',
@@ -15,6 +16,7 @@ export enum OrderStatusEnum {
   SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
   CANCELLED = 'CANCELLED',
+  FINISHED = 'FINISHED',
 }
 
 export type BillingAddress = {

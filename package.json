@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
+    "@faker-js/faker": "^9.9.0",
     "@golevelup/nestjs-rabbitmq": "^6.0.1",
     "@keyv/redis": "^4.5.0",
     "@nestjs/apollo": "^13.1.0",

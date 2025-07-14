@@ -1,4 +1,5 @@
 import { UUID } from '../value-objects/uuid.vo';
+import { AggregateRoot } from './aggregate-root';
 
 /**
  * O BaseModel é o mesmo que o Entity no Domain Driven Design
@@ -12,7 +13,7 @@ export type BaseModelProps = {
   deletedAt?: Date;
 };
 
-export class BaseModel implements BaseModelProps {
+export class BaseModel<T> extends AggregateRoot implements BaseModelProps {
   id?: string;
   active?: boolean;
   createdAt?: Date;
@@ -21,6 +22,7 @@ export class BaseModel implements BaseModelProps {
   deletedAt?: Date;
 
   constructor(props: BaseModelProps) {
+    super();
     this.id = props?.id || new UUID().toString();
     this.active = props?.active ?? true;
     this.createdAt = props?.createdAt || new Date();

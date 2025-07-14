@@ -56,10 +56,15 @@
   - E modulos compartilhados (Shared)
 
 - A nivel de conversao de logica de dominio para requisitos de software
+
   - Separacao por modulos (geralmente representam os Bounded Contexts)
   - Mescla de abordagens com Package By Feature e Vertical Slice Design
   - Domain Drive Design adaptado a nivel de codigo
   - Clean Architecture do jeito certo (aproveitando algumas partes que fazem sentido)
+
+- Testes
+  - Test Data Builder
+  - Integration Tests com Testcontainers
 
 ### API Terms
 

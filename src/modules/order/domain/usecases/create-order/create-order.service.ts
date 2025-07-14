@@ -3,6 +3,7 @@ import { OrderRepositoryContract } from '../../persistence/order.repository';
 import { OrderModel, OrderModelContract } from '../../order';
 import { CreateOrderInput } from './create-order.input';
 import { ValidationException } from '@/src/shared/domain/validation/validation-exception';
+import { DomainEventBus } from '@/src/shared/domain/events/domain-event-bus';
 
 type Input = CreateOrderInput;
 type Output = OrderModelContract;
@@ -10,12 +11,18 @@ type Output = OrderModelContract;
 export class CreateOrderService
   implements BaseUseCaseContract<CreateOrderInput, Output>
 {
-  constructor(private readonly repository: OrderRepositoryContract) {}
+  constructor(
+    private readonly domainEventBus: DomainEventBus,
+    private readonly repository: OrderRepositoryContract,
+  ) {}
 
   async execute(dto: Input): Promise<Output> {
     try {
       const order = OrderModel.create(dto);
-      return await this.repository.createOne(order);
+      const createdOrder = await this.repository.createOne(order);
+      const events = order.pullDomainEvents();
+      this.domainEventBus.publishAll(events);
+      return createdOrder;
     } catch (error) {
       if (error instanceof ValidationException) {
         throw new Error(

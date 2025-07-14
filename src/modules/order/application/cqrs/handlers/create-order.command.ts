@@ -7,6 +7,7 @@ import { OrderMapper } from '../../order.mapper';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '@/src/app/persistence/cache/cache.service';
 import { OrderCreatedEvent } from '../events/order-created.event-handler';
+import { OrderModel } from '../../../domain/order';
 // import { InjectConnection } from '@nestjs/mongoose';
 // import { Connection } from 'mongoose';
 // import { OutboxRepository } from '@/src/app/persistence/outbox/outbox-repository';
@@ -36,7 +37,32 @@ export class CreateOrderCommandHandler
     /**
      * TODO: envio temporario, pra eu testar se de fato eu capturo no events-handler.ts
      */
-    this.eventBus.publish(new OrderCreatedEvent(created.id, created as any));
+    // this.eventBus.publish(new OrderCreatedEvent(created.id, created as any));
+
+    // IGNORAR
+    // const domainEvents = order.pullDomainEvents(); // extrai os eventos
+    // // Para cada evento, salva na coleção outbox
+    // for (const event of domainEvents) {
+    //   await this.outboxRepository.save(
+    //     {
+    //       aggregateId: order.id,
+    //       eventType: event.constructor.name,
+    //       payload: event,
+    //       occurredAt: new Date(),
+    //     },
+    //     session,
+    //   );
+    // }
+
+    // const pendingEvents = await outboxRepository.findPending();
+    // for (const event of pendingEvents) {
+    //   await rabbitMQPublisher.publish(event.eventType, event.payload);
+    //   await outboxRepository.markAsProcessed(event.id); // marca como enviado
+    // }
+
+    new OrderModel(created)
+      .pullDomainEvents()
+      .forEach((event) => this.eventBus.publish(event));
 
     await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
     return OrderMapper.fromEntitytoGraphQLOrderOutput(created);
@@ -74,3 +100,15 @@ export class CreateOrderCommandHandler
     validations.validate(data);
   }
 }
+
+// @EventsHandler(OrderCompletedDomainEvent)
+// export class OrderCompletedHandler
+//   implements IEventHandler<OrderCompletedDomainEvent>
+// {
+//   constructor(private readonly publisher: RabbitMQPublisherService) {}
+
+//   async handle(event: OrderCompletedDomainEvent) {
+//     const integrationEvent = new OrderCompletedIntegrationEvent(event.orderId);
+//     await this.publisher.publish('order.completed', integrationEvent);
+//   }
+// }
