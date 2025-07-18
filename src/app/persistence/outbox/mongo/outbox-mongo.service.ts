@@ -1,19 +1,15 @@
-import {
-  OutboxDocument,
-  OutboxEntity,
-} from '@/src/modules/order/application/mongo/documents/outbox.document';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClientSession, Model } from 'mongoose';
+import { OutboxDocument, OutboxMongoEntity } from './outbox-mongo.entity';
 
 @Injectable()
-export class OutboxRepository {
+export class OutboxMongoService {
   constructor(
-    @InjectModel(OutboxEntity.name)
+    @InjectModel(OutboxMongoEntity.name)
     private outbox: Model<OutboxDocument>,
   ) {}
 
-  // TODO: aplicar tipo generico para melhorar a tipagem
   async save(entity: any, session: ClientSession) {
     const outboxEntity = new this.outbox(entity);
     await outboxEntity.save({ session });

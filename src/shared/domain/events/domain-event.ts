@@ -4,4 +4,5 @@ export interface DomainEventType {
   readonly aggregateId: string; // ID do agregado e/ou entitidade que originou o evento
   readonly occurredOn: Date;
   readonly eventVersion?: string; // Numero da versao do evento, para controle futuro
+  readonly payload?: any;
 }

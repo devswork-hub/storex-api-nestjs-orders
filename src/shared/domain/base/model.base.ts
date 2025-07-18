@@ -13,7 +13,7 @@ export type BaseModelProps = {
   deletedAt?: Date;
 };
 
-export class BaseModel<T> extends AggregateRoot implements BaseModelProps {
+export class BaseModel extends AggregateRoot implements BaseModelProps {
   id?: string;
   active?: boolean;
   createdAt?: Date;

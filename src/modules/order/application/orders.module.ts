@@ -28,9 +28,7 @@ import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
-import { OutboxEntity, OutboxSchema } from './mongo/documents/outbox.document';
-import { OutboxRelayModule } from '@/src/app/persistence/outbox/outbox.module';
-// import { CacheModule } from '@/src/app/persistence/cache/cache.module';
+import { OutboxTypeORMModule } from '@/src/app/persistence/outbox/typeorm/typeorm-outbox.module';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -75,10 +73,10 @@ export const OrderUseCasesProviders: Provider[] = [
       },
     ]),
     CqrsModule,
-    OutboxRelayModule,
+    OutboxTypeORMModule,
+    // forwardRef(() => OutboxRelayModule),
   ],
   providers: [
-    OutboxRelayModule,
     RabbitMQPublisherService,
     ...CommandHandlers, // <- 👈 Aqui está o que faltava
     ...QueryHandlers,

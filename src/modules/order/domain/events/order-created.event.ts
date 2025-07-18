@@ -1,5 +1,5 @@
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
-import { UUID } from '@/src/shared/domain/value-objects/uuid.vo';
+import { DomainEventType } from '../../../../shared/domain/events/domain-event';
+import { UUID } from '../../../../shared/domain/value-objects/uuid.vo';
 import { BillingAddress, ShippingSnapshot } from '../order.constants';
 import { OrderItemModelContract } from '../order-item';
 

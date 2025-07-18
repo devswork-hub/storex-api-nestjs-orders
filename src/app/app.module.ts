@@ -6,11 +6,12 @@ import { ConfigModule } from './config/config.module';
 import { PersistenceModule } from './persistence/persistence.module';
 import { DomainsModule } from '../modules/domain-modules.module';
 import { CustomCacheModule } from './persistence/cache/cache.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './persistence/postgres/typeorm.config';
+import { TypeORMModule } from './persistence/typeorm/typeorm.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
@@ -18,7 +19,7 @@ import { dataSourceOptions } from './persistence/postgres/typeorm.config';
       sortSchema: true,
       introspection: true,
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    TypeORMModule,
     PersistenceModule.register({ type: 'mongoose', global: true }),
     CustomCacheModule.forRoot({ isGlobal: true }),
     DomainsModule,
