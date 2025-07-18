@@ -1,12 +1,11 @@
-import { OutboxContract } from '@/src/app/persistence/outbox/outbox.contract';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { OrderOuput } from '../../graphql/outputs/order.output';
+import { OutboxContract } from '../outbox.contract';
 
-export type OutboxDocument = HydratedDocument<OutboxEntity>;
+export type OutboxDocument = HydratedDocument<OutboxMongoEntity>;
 
 @Schema({ timestamps: true })
-export class OutboxEntity implements OutboxContract<OrderOuput> {
+export class OutboxMongoEntity implements OutboxContract<any> {
   @Prop({ required: true })
   aggregateType: string; // Tipo da entidade que gerou o evento (ex: 'Order')
 
@@ -17,7 +16,7 @@ export class OutboxEntity implements OutboxContract<OrderOuput> {
   eventType: string; // Tipo do evento (ex: 'OrderCreated', 'OrderUpdated')
 
   @Prop({ type: Object, required: true })
-  payload: Record<string, OrderOuput>; // Dados do evento
+  payload: Record<string, any>; // Dados do evento
 
   @Prop({ default: false })
   processed: boolean; // Indica se a mensagem foi processada e enviada
@@ -26,4 +25,5 @@ export class OutboxEntity implements OutboxContract<OrderOuput> {
   processedAt: Date; // Data/hora do processamento
 }
 
-export const OutboxSchema = SchemaFactory.createForClass(OutboxEntity);
+export const OutboxMongoSchema =
+  SchemaFactory.createForClass(OutboxMongoEntity);

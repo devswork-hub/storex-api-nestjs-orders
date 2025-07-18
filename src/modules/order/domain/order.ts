@@ -5,7 +5,6 @@ import {
   Discount,
   OrderStatus,
   OrderStatusEnum,
-  PaymentMethodEnum,
   PaymentSnapshot,
   ShippingSnapshot,
 } from './order.constants';
@@ -29,15 +28,12 @@ export type OrderModelContract = {
   shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
   billingAddress: BillingAddress; // Endereço de cobrança
   customerId: string; // ID do cliente na API de clientes
-  paymentId: string; // ID do pagamento na API de pagamentos
+  paymentId?: string | null; // ID do pagamento na API de pagamentos
   notes?: string; // Observações feitas pelo cliente
   discount?: Discount; // Desconto aplicado ao pedido
 } & BaseModelProps;
 
-export class OrderModel
-  extends BaseModel<OrderModelContract>
-  implements OrderModelContract
-{
+export class OrderModel extends BaseModel implements OrderModelContract {
   status: OrderStatus;
   items: OrderItemModel[];
   currency: Currency;
@@ -102,7 +98,7 @@ export class OrderModel
     this.items.push(newItem);
   }
 
-  markAsPaid(paymentId: string, paymentMethod: keyof PaymentMethodEnum) {
+  markAsPaid(paymentId: string) {
     if (this.status !== OrderStatusEnum.PENDING) {
       throw new Error(
         `Cannot mark order as paid. Current status: ${this.status}`,
@@ -118,18 +114,6 @@ export class OrderModel
       }),
     );
   }
-
-  // markAsShipped(trackingNumber: string, shippingMethod: string) {
-  //   if (this._status !== OrderStatus.PAID) {
-  //     throw new Error(`Cannot ship order. Current status: ${this._status}`);
-  //   }
-
-  //   this._status = OrderStatus.SHIPPED;
-  //   this.addDomainEvent(
-  //     new OrderShippedEvent(this.id, trackingNumber, shippingMethod),
-  //   );
-  //   this.incrementVersion();
-  // }
 
   static create(props: OrderModelInput): OrderModel {
     const order = new OrderModel({

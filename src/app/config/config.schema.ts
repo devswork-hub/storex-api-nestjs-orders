@@ -42,4 +42,5 @@ export const ConfigSchema = z.object({
   PG_SEEDER: z.string().nonempty({ message: 'PG_SEEDER is required' }),
   // TODO: converter para booleano
   PG_SYNCRONIZE: z.string().nonempty({ message: 'PG_SYNCRONIZE is required' }),
+  PG_DB: z.string(),
 });

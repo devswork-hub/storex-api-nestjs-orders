@@ -32,9 +32,9 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FindAllOrdersQuery } from '../cqrs/handlers/find-all-orders.handler';
 import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';
-import { CreateOrderCommand } from '../cqrs/handlers/create-order.command';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../orders-cache-keys';
+import { CreateOrderCommand } from '../cqrs/handlers/create-order-transaction.command';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
