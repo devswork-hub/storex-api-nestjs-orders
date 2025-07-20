@@ -1,3 +1,4 @@
+import { Snapshot } from '@/src/shared/domain/base/snapshot.base';
 import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
 
 export type OrderStatus =
@@ -19,12 +20,12 @@ export enum OrderStatusEnum {
   FINISHED = 'FINISHED',
 }
 
-export type BillingAddress = {
+export type BillingAddress = Snapshot<{
   street: string;
   city: string;
   state: string;
   zipCode: string;
-};
+}>;
 
 export type Discount = {
   couponCode: string;
@@ -51,7 +52,7 @@ export enum PaymentStatusEnum {
   FAILED = 'failed',
 }
 
-export type PaymentSnapshot = {
+export type PaymentSnapshot = Snapshot<{
   method: PaymentMethodEnum;
   status: 'paid' | 'pending' | 'failed' | string; // Status da transação no momento
   amount: number; // Valor total do pagamento
@@ -63,9 +64,9 @@ export type PaymentSnapshot = {
     totalValue?: number; // Valor total com juros
     dueDate?: string; // Data de vencimento da parcela
   }>;
-};
+}>;
 
-export type ShippingSnapshot = {
+export type ShippingSnapshot = Snapshot<{
   shippingId?: string; // ID externo do frete na API de envio
   status: ShippingStatus;
   carrier: string; // Exemplo: "Correios"
@@ -73,7 +74,7 @@ export type ShippingSnapshot = {
   fee?: number; // Taxa de entrega (ex: R$ 0,00)
   deliveryDate?: string; // Exemplo: "Entregue no dia 7 de junho"
   recipient?: string; // Exemplo: "Entregue nas mãos de um morador"
-};
+}>;
 
 export type ShippingStatus =
   | 'NOT_REQUESTED'
