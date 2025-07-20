@@ -29,6 +29,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 import { OutboxTypeORMModule } from '@/src/app/persistence/outbox/typeorm/typeorm-outbox.module';
+import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -74,6 +75,7 @@ export const OrderUseCasesProviders: Provider[] = [
     ]),
     CqrsModule,
     OutboxTypeORMModule,
+    TypeORMModule,
     // forwardRef(() => OutboxRelayModule),
   ],
   providers: [

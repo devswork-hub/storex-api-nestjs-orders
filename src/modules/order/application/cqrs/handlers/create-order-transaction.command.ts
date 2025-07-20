@@ -7,7 +7,7 @@ import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
 import { DataSource } from 'typeorm';
 import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbox-typeorm.service';
-import { Inject } from '@nestjs/common';
+import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -18,18 +18,16 @@ export class CreateOrderTransactionCommandHandler
   implements ICommandHandler<CreateOrderCommand>
 {
   constructor(
-    @Inject() private readonly createOrderService: CreateOrderService,
-    @Inject() private readonly cacheService: CacheService,
-    @Inject() private readonly dataSource: DataSource,
+    private readonly createOrderService: CreateOrderService,
+    private readonly cacheService: CacheService,
     private readonly outboxService: OutboxTypeORMService,
+    private readonly uow: TypeORMUnitOfWork,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<any> {
     this.executeValidations(command);
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await this.uow.startTransaction();
 
     try {
       const domainInput = OrderMapper.toDomainInput(command.data);
@@ -50,17 +48,17 @@ export class CreateOrderTransactionCommandHandler
         //
         // ✅ Com `queryRunner.manager`, tanto a persistência do pedido quanto do evento
         // estarão no mesmo commit/rollback.
-        await this.outboxService.save(event, queryRunner.manager);
+        await this.outboxService.save(event, this.uow.getManager());
       }
 
-      await queryRunner.commitTransaction();
+      await this.uow.commitTransaction();
 
       return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      await this.uow.rollbackTransaction();
       throw error;
     } finally {
-      await queryRunner.release();
+      await this.uow.release();
     }
   }
 
