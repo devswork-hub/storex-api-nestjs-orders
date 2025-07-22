@@ -30,6 +30,14 @@ import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.pu
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 import { OutboxTypeORMModule } from '@/src/app/persistence/outbox/typeorm/typeorm-outbox.module';
 import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
+import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
+import {
+  RABBIT_ORDERS_SERVICE,
+  RabbitmqModule,
+} from '@/src/app/messaging/rabbitmq/rabbitmq.module';
+// import { RabbitMQPublisher } from '@/src/app/messaging/rabbitmq/rabbitmq.publisher';
+// import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
+import { OutboxCronService } from './messaging/outbox-cron.service';
 
 export const OrderRepositoryProvider: Provider = {
   provide: 'OrderRepositoryContract',
@@ -66,6 +74,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
+    RabbitmqModule,
     // CacheModule,
     MongooseModule.forFeature([
       {
@@ -76,8 +85,10 @@ export const OrderUseCasesProviders: Provider[] = [
     CqrsModule,
     OutboxTypeORMModule,
     TypeORMModule,
+
     // forwardRef(() => OutboxRelayModule),
   ],
+  // controllers: [OrdersRabbitMQController],
   providers: [
     RabbitMQPublisherService,
     ...CommandHandlers, // <- 👈 Aqui está o que faltava
@@ -92,6 +103,8 @@ export const OrderUseCasesProviders: Provider[] = [
     OrderResolver,
     DomainSeeders,
     OrdersSeeder,
+    OrdersRabbitMQService,
+    OutboxCronService,
   ],
   exports: [OrderRepositoryProvider, ...OrderUseCasesProviders],
 })

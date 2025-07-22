@@ -11,7 +11,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@app/lib-events": ["libs/lib-events/src"],
+      "@app/lib-events/*": ["libs/lib-events/src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

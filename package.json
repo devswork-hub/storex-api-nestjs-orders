@@ -17,46 +17,36 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:run": "npm run typeorm -- migration:run",
-    "migration:generate": "npm run typeorm -- migration:generate",
-    "migration:revert": "npm run typeorm -- migration:revert",
-    "migration:create": "npm run typeorm -- migration:create",
-    "migration:show": "npm run typeorm -- migration:show",
-    "migrate": "npm run typeorm migration:run -- -t=false",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "schema:sync": "npm run typeorm schema:sync",
-    "schema:drop": "npm run typeorm schema:drop",
-    "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d dist/config/database.config.js",
-    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d dist/config/database.config.js",
-    "seed:run": "npm run build && ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d dist/config/database.config.js --preserveFilePaths true -n",
-    "seed:run:all": "npm run build && ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d dist/config/database.config.js",
-    "seed:create": "npm run build && ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:create"
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
     "@faker-js/faker": "^9.9.0",
     "@golevelup/nestjs-rabbitmq": "^6.0.1",
     "@keyv/redis": "^4.5.0",
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/apollo": "^13.1.0",
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/cache-manager": "^3.0.1",
-    "@nestjs/common": "11.1.3",
+    "@nestjs/common": "^11.1.5",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "11.1.3",
+    "@nestjs/core": "^11.1.5",
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/graphql": "^13.1.0",
-    "@nestjs/microservices": "^11.1.3",
+    "@nestjs/microservices": "^11.1.5",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "11.1.3",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.8",
+    "axios": "^1.10.0",
     "cache-manager": "^7.0.1",
     "cacheable": "^1.10.1",
     "graphql": "^16.11.0",
     "kafkajs": "^2.2.4",
     "mongoose": "^8.15.1",
+    "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
     "rxjs": "7.8.2",
     "typeorm": "^0.3.25",
@@ -68,9 +58,11 @@
     "@nestjs/cli": "11.0.7",
     "@nestjs/schematics": "11.0.5",
     "@nestjs/testing": "11.1.3",
+    "@types/amqplib": "^0.10.7",
     "@types/express": "5.0.3",
     "@types/jest": "^29.5.14",
-    "@types/node": "22.15.30",
+    "@types/node": "^22.15.30",
+    "@types/nodemailer": "^6.4.17",
     "@types/supertest": "6.0.3",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "8.33.1",
@@ -94,7 +86,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       ".+\\.(t|j)s$": "ts-jest"
@@ -102,7 +94,14 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/lib-events(|/.*)$": "<rootDir>/libs/lib-events/src/$1"
+    }
   }
 }

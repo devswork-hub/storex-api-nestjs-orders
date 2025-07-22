@@ -13,21 +13,23 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new TimeoutInterceptor(), new LoggingInterceptor());
 
+  // isso configra os listeners do RabbitMQ // @MessagePattern('orders.*'), @EventPattern('payments.*')
   // app.connectMicroservice({
   //   transport: Transport.RMQ,
   //   options: {
-  //     urls: ['amqp://guest:guest@localhost:5672'],
-  //     queue: 'order_events', // mesma queue usada no publisher
-  //     queueOptions: {
-  //       durable: true,
-  //     },
+  //     urls: process.env.RABBITMQ_URL,
+  //     queue: process.env.RABBITMQ_QUEUE_ORDER,
+  //     queueOptions: { durable: false },
   //   },
   // });
-
-  await app.startAllMicroservices(); // importante!
+  await app.startAllMicroservices();
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      'http://localhost:3000',
+      'https://outra-origin.com',
+      'https://mais-uma.com',
+    ],
     credentials: true,
   });
 

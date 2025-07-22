@@ -1,13 +1,13 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateOrderGraphQLInput } from '../../graphql/inputs/order.inputs';
 import { CreateOrderService } from '../../../domain/usecases/create-order/create-order.service';
 import { CreateOrderValidation } from '../../../domain/usecases/create-order/create-order.validation';
 import { OrderMapper } from '../../order.mapper';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
-import { DataSource } from 'typeorm';
 import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
+import { OrdersRabbitMQService } from '../../messaging/orders.rabbitmq.service';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -18,6 +18,7 @@ export class CreateOrderTransactionCommandHandler
   implements ICommandHandler<CreateOrderCommand>
 {
   constructor(
+    private readonly ordersRabbitMqService: OrdersRabbitMQService,
     private readonly createOrderService: CreateOrderService,
     private readonly cacheService: CacheService,
     private readonly outboxService: OutboxTypeORMService,

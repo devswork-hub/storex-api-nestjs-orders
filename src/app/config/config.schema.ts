@@ -43,4 +43,10 @@ export const ConfigSchema = z.object({
   // TODO: converter para booleano
   PG_SYNCRONIZE: z.string().nonempty({ message: 'PG_SYNCRONIZE is required' }),
   PG_DB: z.string(),
+
+  RABBITMQ_URL: z.string().nonempty(),
+  RABBITMQ_QUEUE_ORDER: z.string().nonempty(),
+
+  KAFKA_BROKERS: z.string().nonempty(),
+  KAFKA_CONSUMER_GROUP: z.string().nonempty(),
 });
