@@ -7,6 +7,7 @@ type DomainEventHandlerType<T extends DomainEventType> = {
 export class DomainEventBus {
   private handlers: Map<string, Set<DomainEventHandlerType<any>>> = new Map();
   private eventHistory: DomainEventType[] = [];
+  // private dispatchedEvents: DomainEventType[] = [];// TODO: Implement this if needed
 
   subscribe<T extends DomainEventType>(
     eventType: string,

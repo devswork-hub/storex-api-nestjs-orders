@@ -137,4 +137,22 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     );
     return order;
   }
+
+  toContract(): OrderModelContract {
+    return {
+      id: this.id,
+      status: this.status,
+      items: this.items.map((item) => item.toContract?.() ?? item),
+      currency: this.currency,
+      paymentSnapshot: this.paymentSnapshot,
+      shippingSnapshot: this.shippingSnapshot,
+      billingAddress: this.billingAddress,
+      customerId: this.customerId,
+      paymentId: this.paymentId,
+      notes: this.notes,
+      discount: this.discount,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

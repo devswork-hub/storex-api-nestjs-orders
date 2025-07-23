@@ -75,7 +75,6 @@ export const OrderUseCasesProviders: Provider[] = [
 @Module({
   imports: [
     RabbitmqModule,
-    // CacheModule,
     MongooseModule.forFeature([
       {
         name: OrderMongoEntity.name,
@@ -85,8 +84,6 @@ export const OrderUseCasesProviders: Provider[] = [
     CqrsModule,
     OutboxTypeORMModule,
     TypeORMModule,
-
-    // forwardRef(() => OutboxRelayModule),
   ],
   // controllers: [OrdersRabbitMQController],
   providers: [
@@ -109,71 +106,3 @@ export const OrderUseCasesProviders: Provider[] = [
   exports: [OrderRepositoryProvider, ...OrderUseCasesProviders],
 })
 export class OrdersModule {}
-
-// @Module({
-//   imports: [
-//     MongooseModule.forFeature([
-//       {
-//         name: OrderMongoEntity.name,
-//         schema: OrderSchema,
-//       },
-//     ]),
-//   ],
-//   providers: [
-//     OrderRepositoryProvider,
-//     ...OrderUseCasesProviders,
-//     ...orderProviders,
-//     // OrderService,
-//     // OrderItemResolver,
-//     // OrderItemSeeder,
-//     OrderResolver,
-//     OrderMongoRepository,
-//     FindAllOrderService,
-//     // {
-//     //   provide: OrderInMemoryRepository,
-//     //   useClass: OrderMongoRepository,
-//     // },
-//     // {
-//     //   provide: FindAllOrderService,
-//     //   useFactory: (repo: OrderRepositoryContract) => {
-//     //     return new FindAllOrderService(repo);
-//     //   },
-//     //   inject: [OrderMongoRepository],
-//     // },
-//     // {
-//     //   provide: CreateOrderService,
-//     //   useFactory: (repo: OrderRepositoryContract) =>
-//     //     new CreateOrderService(repo),
-//     //   inject: [OrderMongoRepository],
-//     // },
-//   ],
-//   exports: [
-//     OrderRepositoryProvider,
-//     ...OrderUseCasesProviders,
-//     ...orderProviders,
-//   ],
-// })
-// export class OrdersModule {}
-
-// // orders
-// //   - app
-// //     - api
-// //       - graphql
-// //         - order-item.schema.ts
-// //         - order.resolver.ts
-// //       - order.service.ts
-// //       - order-item.seeders.ts
-// //   - core
-// //     - order-item.interface.ts
-// //     - order-item.model.ts
-
-// @Module({
-//   imports: [
-//     MongooseModule.forFeature([
-//       { name: OrderMongoEntity.name, schema: OrderSchema },
-//     ]),
-//   ],
-//   providers: [OrderRepositoryProvider, ...OrderUseCasesProviders],
-//   exports: [OrderRepositoryProvider, ...OrderUseCasesProviders],
-// })
-// export class OrdersModule {}

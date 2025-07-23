@@ -55,4 +55,21 @@ export class OrderItemModel
       this.price.currency,
     );
   }
+
+  toContract(): OrderItemModelContract {
+    return {
+      id: this.id,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      productId: this.productId,
+      quantity: this.quantity,
+      price: this.price,
+      discount: this.discount,
+      seller: this.seller,
+      title: this.title,
+      imageUrl: this.imageUrl,
+      description: this.description,
+      shippingId: this.shippingId,
+    };
+  }
 }

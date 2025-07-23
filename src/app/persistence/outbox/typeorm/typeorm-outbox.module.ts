@@ -11,9 +11,9 @@ import { CqrsModule } from '@nestjs/cqrs';
   imports: [TypeOrmModule.forFeature([OutboxTypeORMEntity]), CqrsModule],
   providers: [
     OutboxTypeORMService,
-    TypeORMOutboxCronProcessorService, // Só precisa de @Injectable + @Cron
-    TypeORMOutboxIntervalProcessorService, // Só precisa de @Injectable + setInterval
-    IntervalEventHandler, // handler registrado via CqrsModule
+    // TypeORMOutboxCronProcessorService, // Só precisa de @Injectable + @Cron
+    // TypeORMOutboxIntervalProcessorService, // Só precisa de @Injectable + setInterval
+    // IntervalEventHandler, // handler registrado via CqrsModule
   ],
   exports: [
     OutboxTypeORMService, // usado fora, por isso exporta

@@ -32,6 +32,9 @@ async function bootstrap() {
     ],
     credentials: true,
   });
+  const isProd = process.env.NODE_ENV === 'production';
+
+  app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
 
   const configService = app
     .select(AppModule)

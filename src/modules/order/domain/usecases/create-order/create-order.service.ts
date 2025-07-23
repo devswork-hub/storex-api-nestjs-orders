@@ -18,7 +18,7 @@ export class CreateOrderService
     const events = entity.pullDomainEvents();
 
     return {
-      order: entity,
+      order: entity.toContract(),
       events,
     };
   }

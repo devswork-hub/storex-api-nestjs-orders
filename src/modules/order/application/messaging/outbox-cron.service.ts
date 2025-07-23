@@ -1,17 +1,11 @@
 import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { OrdersRabbitMQService } from './orders.rabbitmq.service';
-import {
-  Injectable,
-  Logger,
-  ServiceUnavailableException,
-} from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 // import { MESSAGE_PATTERNS } from './message-patterns';
-// import { measureMemory } from 'vm';
 
 @Injectable()
 export class OutboxCronService {
-  private logger = new Logger(OutboxCronService.name);
   constructor(
     private readonly ordersRabbitMQService: OrdersRabbitMQService,
     private readonly outboxService: OutboxTypeORMService,
@@ -20,23 +14,15 @@ export class OutboxCronService {
   @Cron('*/10 * * * * *')
   async process() {
     try {
-      this.logger.log('[START] Processing outbox messages');
       const messages = await this.outboxService.findUnprocessed();
-
-      if (messages.length === 0) {
-        this.logger.log('[FINISH] No unprocessed messages found');
-        return;
-      }
+      if (messages.length === 0) return;
 
       for (const message of messages) {
         const plainMessage = { ...message };
         this.ordersRabbitMQService.sendMessage(plainMessage);
-        await this.outboxService.markAsProcessed(message.id.toString());
+        await this.outboxService.markAsProcessed(plainMessage.id.toString());
       }
-
-      this.logger.log('[FINISH] Processing outbox messages');
     } catch (error) {
-      console.error('Error processing outbox messages:', error);
       throw new ServiceUnavailableException(
         'Failed to process outbox messages',
       );

@@ -1,47 +1,16 @@
-// import { Injectable } from '@nestjs/common';
-// import { DataSource, QueryRunner } from 'typeorm';
-
 import { Injectable } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 import { DataSource, QueryRunner } from 'typeorm';
-
-// @Injectable()
-// export class TypeORMUnitOfWork {
-//   private queryRunner: QueryRunner;
-
-//   constructor(private readonly dataSource: DataSource) {
-//     this.queryRunner = this.dataSource.createQueryRunner();
-//   }
-
-//   async startTransaction(): Promise<void> {
-//     await this.queryRunner.connect();
-//     await this.queryRunner.startTransaction();
-//   }
-
-//   async commitTransaction(): Promise<void> {
-//     await this.queryRunner.commitTransaction();
-//   }
-
-//   async rollbackTransaction(): Promise<void> {
-//     await this.queryRunner.rollbackTransaction();
-//   }
-
-//   async release(): Promise<void> {
-//     await this.queryRunner.release();
-//   }
-
-//   getManager() {
-//     return this.queryRunner.manager;
-//   }
-// }
 
 @Injectable()
 export class TypeORMUnitOfWork {
   private queryRunner: QueryRunner;
+  private aggregates: Set<AggregateRoot> = new Set<AggregateRoot>();
 
   constructor(private readonly dataSource: DataSource) {}
 
   async startTransaction(): Promise<void> {
-    this.queryRunner = this.dataSource.createQueryRunner(); // <-- aqui sim!
+    this.queryRunner = this.dataSource.createQueryRunner();
     await this.queryRunner.connect();
     await this.queryRunner.startTransaction();
   }
@@ -65,5 +34,13 @@ export class TypeORMUnitOfWork {
       );
     }
     return this.queryRunner.manager;
+  }
+
+  addAggregate(aggregate: AggregateRoot): void {
+    this.aggregates.add(aggregate);
+  }
+
+  getAggregates(): AggregateRoot[] {
+    return Array.from(this.aggregates);
   }
 }
