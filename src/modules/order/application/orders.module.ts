@@ -1,15 +1,3 @@
-// import { Module } from '@nestjs/common';
-// import { MongooseModule } from '@nestjs/mongoose';
-// import { OrderMongoRepository } from '@/src/modules/order/application/order.mongo-repository';
-// import { OrderService } from '@/src/modules/order/application/order.service';
-// import { OrderItemSeeder } from '@/src/modules/order/application/order-item.seeders';
-// import { OrderItemSchema } from '@/src/modules/order/application/graphql/schemas/order-item.schema';
-// import {
-//   OrderMongoSchema,
-//   OrderSchema,
-// } from '@/src/modules/order/application/mongo/order.schema.v2';
-// import { orderProviders } from './order.providers';
-
 import { Module, Provider } from '@nestjs/common';
 import { OrderMongoRepository } from './order.mongo-repository';
 import { UpdateOrderService } from '../domain/usecases/update-order.service';
@@ -31,24 +19,27 @@ import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 import { OutboxTypeORMModule } from '@/src/app/persistence/outbox/typeorm/typeorm-outbox.module';
 import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
 import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
-import {
-  RABBIT_ORDERS_SERVICE,
-  RabbitmqModule,
-} from '@/src/app/messaging/rabbitmq/rabbitmq.module';
-// import { RabbitMQPublisher } from '@/src/app/messaging/rabbitmq/rabbitmq.publisher';
-// import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
+import { RabbitmqModule } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
 import { OutboxCronService } from './messaging/outbox-cron.service';
+import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
+import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
 
-export const OrderRepositoryProvider: Provider = {
-  provide: 'OrderRepositoryContract',
-  useClass: OrderMongoRepository,
-};
+export const OrderRepositoryProvider: Provider[] = [
+  {
+    provide: 'OrderRepositoryContract',
+    useClass: OrderMongoRepository,
+  },
+  {
+    provide: 'OrderReadableRepositoryContract',
+    useClass: OrderTypeORMRepository,
+  },
+];
 
 export const OrderUseCasesProviders: Provider[] = [
   {
     provide: CreateOrderService,
     useFactory: (repo: any) => new CreateOrderService(repo),
-    inject: ['OrderRepositoryContract'],
+    inject: ['OrderReadableRepositoryContract'],
   },
   {
     provide: UpdateOrderService,
@@ -88,14 +79,14 @@ export const OrderUseCasesProviders: Provider[] = [
   // controllers: [OrdersRabbitMQController],
   providers: [
     RabbitMQPublisherService,
-    ...CommandHandlers, // <- 👈 Aqui está o que faltava
+    ...CommandHandlers,
     ...QueryHandlers,
     ...EventHandlers,
     CreateOrderService,
     FindAllOrderService,
     FindOneOrderService,
     OrderMongoRepository,
-    OrderRepositoryProvider, // 'OrderRepositoryContract'
+    ...OrderRepositoryProvider, // 'OrderRepositoryContract'
     ...OrderUseCasesProviders, // casos de uso usam 'OrderRepositoryContract' no inject
     OrderResolver,
     DomainSeeders,
@@ -103,6 +94,6 @@ export const OrderUseCasesProviders: Provider[] = [
     OrdersRabbitMQService,
     OutboxCronService,
   ],
-  exports: [OrderRepositoryProvider, ...OrderUseCasesProviders],
+  exports: [...OrderRepositoryProvider, ...OrderUseCasesProviders],
 })
 export class OrdersModule {}
