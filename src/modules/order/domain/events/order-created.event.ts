@@ -1,20 +1,6 @@
 import { DomainEventType } from '../../../../shared/domain/events/domain-event';
 import { UUID } from '../../../../shared/domain/value-objects/uuid.vo';
-import { BillingAddress, ShippingSnapshot } from '../order.constants';
-import { OrderItemModelContract } from '../order-item';
-
-type OrderCreatedPayload = {
-  id: string;
-  customerId: string;
-  status: string;
-  createdAt: Date;
-  totalAmount: number;
-  currency: string;
-  paymentId: string;
-  shippingAddress: ShippingSnapshot;
-  billingAddress: BillingAddress;
-  items: OrderItemModelContract[];
-};
+import { OrderModelContract } from '../order';
 
 export class OrderCreatedEvent implements DomainEventType {
   readonly eventId: string;
@@ -23,9 +9,9 @@ export class OrderCreatedEvent implements DomainEventType {
   readonly occurredOn: Date;
   // TODO: validar se é util ou nao
   readonly eventVersion?: string;
-  readonly payload: OrderCreatedPayload;
+  readonly payload: OrderModelContract;
 
-  constructor(payload: OrderCreatedPayload) {
+  constructor(payload: OrderModelContract) {
     this.eventId = new UUID().toString();
     this.eventType = OrderCreatedEvent.name;
     this.aggregateId = payload.id;

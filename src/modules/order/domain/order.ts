@@ -121,20 +121,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
       items: props.items.map((item) => new OrderItemModel(item)),
     });
     order.status = OrderStatusEnum.PENDING;
-    order.addDomainEvent(
-      new OrderCreatedEvent({
-        id: order.id,
-        customerId: order.customerId,
-        status: order.status,
-        createdAt: order.createdAt,
-        items: order.items.map((item) => item),
-        currency: order.currency.code.toString(),
-        billingAddress: order.billingAddress,
-        paymentId: order.paymentId,
-        totalAmount: order.total.amount,
-        shippingAddress: order.shippingSnapshot,
-      }),
-    );
+    order.addDomainEvent(new OrderCreatedEvent(order.toContract()));
     return order;
   }
 

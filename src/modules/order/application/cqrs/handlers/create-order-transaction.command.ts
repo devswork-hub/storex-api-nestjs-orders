@@ -40,10 +40,8 @@ export class CreateOrderTransactionCommandHandler
 
       const domainInput = OrderMapper.toDomainInput(command.data);
       // Se não passar o manager, o TypeORM vai criar uma nova conexão para o repositório e não vai respeitar a transação atual, abrindo risco de inconsistência.
-      const { order, events } = await this.createOrderService.execute(
-        domainInput,
-        manager,
-      );
+      const { order, events } =
+        await this.createOrderService.execute(domainInput);
 
       await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
 

@@ -14,15 +14,17 @@ import { DeleteOrderService } from '../domain/usecases/delete-order/delete-order
 import { DomainSeeders } from './domain.seeders';
 import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 import { CqrsModule } from '@nestjs/cqrs';
-import { RabbitMQPublisherService } from '@/src/app/shared/messaging/rabbitmq.publisher';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
-import { OutboxTypeORMModule } from '@/src/app/persistence/outbox/typeorm/typeorm-outbox.module';
 import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
 import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
 import { RabbitmqModule } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
-import { OutboxCronService } from './messaging/outbox-cron.service';
+import { OrdersOutboxRelayService } from './messaging/orders.outbox-relay-cron.service';
 import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
 import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
+import { OutboxModule } from '@/src/app/persistence/outbox/outbox.module';
+import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
+import { OrdersProjectionService } from './persistence/orders-projection.service';
+import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
 
 export const OrderRepositoryProvider: Provider[] = [
   {
@@ -73,12 +75,11 @@ export const OrderUseCasesProviders: Provider[] = [
       },
     ]),
     CqrsModule,
-    OutboxTypeORMModule,
+    OutboxModule.forFeature('typeorm'),
     TypeORMModule,
   ],
-  // controllers: [OrdersRabbitMQController],
+  controllers: [OrdersRabbitMQController],
   providers: [
-    RabbitMQPublisherService,
     ...CommandHandlers,
     ...QueryHandlers,
     ...EventHandlers,
@@ -92,7 +93,9 @@ export const OrderUseCasesProviders: Provider[] = [
     DomainSeeders,
     OrdersSeeder,
     OrdersRabbitMQService,
-    OutboxCronService,
+    OrdersOutboxRelayService,
+    OrdersProjectionService,
+    OrdersProjectionCronService,
   ],
   exports: [...OrderRepositoryProvider, ...OrderUseCasesProviders],
 })

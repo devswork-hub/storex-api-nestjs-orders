@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OutboxTypeORMEntity } from './outbox-typeorm.entity';
 import { OutboxTypeORMService } from './outbox-typeorm.service';
@@ -23,4 +23,9 @@ import { CqrsModule } from '@nestjs/cqrs';
     // IntervalEventHandler,
   ],
 })
-export class OutboxTypeORMModule {}
+export class OutboxTypeORMModule implements OnModuleInit {
+  private readonly logger = new Logger(OutboxTypeORMModule.name);
+  onModuleInit() {
+    this.logger.log('OutboxTypeORMModule ');
+  }
+}
