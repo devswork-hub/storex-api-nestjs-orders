@@ -5,6 +5,7 @@ import { OrderMongoEntity } from './mongo/documents/order.document';
 import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { FindAllOrderService } from '../domain/usecases/find-all-order.service';
 import { CreateOrderService } from '../domain/usecases/create-order/create-order.service';
+import { OrderReadableRepositoryContract } from './persistence/order.readable-respository';
 
 export const repositories = {
   // Token principal usado para injeção do repositório de pedidos.
@@ -40,7 +41,7 @@ export const usecases = {
   // Caso de uso para criar pedido
   CREATE_ORDER_USECASE: {
     provide: CreateOrderService, // Token é a própria classe
-    useFactory: (orderRepository: OrderRepositoryContract) => {
+    useFactory: (orderRepository: OrderReadableRepositoryContract) => {
       // Recebe o repositório como dependência e retorna o use case
       return new CreateOrderService(orderRepository);
     },

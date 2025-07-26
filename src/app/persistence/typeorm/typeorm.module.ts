@@ -1,8 +1,9 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigValues } from '../../config/config.values';
 import { TypeOrmConfigService } from './typeorm.config.service';
 import { TypeORMUnitOfWork } from './typeorm-uow.service';
+// import { TypeORMTransactionInterceptor } from './typeorm-transaction.interceptor';
 
 @Module({
   imports: [
@@ -11,7 +12,13 @@ import { TypeORMUnitOfWork } from './typeorm-uow.service';
       useClass: TypeOrmConfigService,
     }),
   ],
-  providers: [TypeORMUnitOfWork],
-  exports: [TypeORMUnitOfWork],
+  providers: [
+    TypeORMUnitOfWork,
+    // TypeORMTransactionInterceptor
+  ],
+  exports: [
+    TypeORMUnitOfWork,
+    // TypeORMTransactionInterceptor
+  ],
 })
 export class TypeORMModule {}

@@ -1,46 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { AggregateRoot } from '@nestjs/cqrs';
+import { Injectable, Scope } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class TypeORMUnitOfWork {
   private queryRunner: QueryRunner;
-  private aggregates: Set<AggregateRoot> = new Set<AggregateRoot>();
 
   constructor(private readonly dataSource: DataSource) {}
 
-  async startTransaction(): Promise<void> {
+  async startTransaction<T>(
+    work: (manager: QueryRunner['manager']) => Promise<T>,
+  ): Promise<T> {
     this.queryRunner = this.dataSource.createQueryRunner();
+
     await this.queryRunner.connect();
     await this.queryRunner.startTransaction();
-  }
 
-  async commitTransaction(): Promise<void> {
-    await this.queryRunner.commitTransaction();
-  }
-
-  async rollbackTransaction(): Promise<void> {
-    await this.queryRunner.rollbackTransaction();
-  }
-
-  async release(): Promise<void> {
-    await this.queryRunner.release();
-  }
-
-  getManager() {
-    if (!this.queryRunner) {
-      throw new Error(
-        'QueryRunner não inicializado. Chame startTransaction() primeiro.',
-      );
+    try {
+      const result = await work(this.queryRunner.manager);
+      await this.queryRunner.commitTransaction();
+      return result;
+    } catch (err) {
+      await this.queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await this.queryRunner.release();
     }
-    return this.queryRunner.manager;
-  }
-
-  addAggregate(aggregate: AggregateRoot): void {
-    this.aggregates.add(aggregate);
-  }
-
-  getAggregates(): AggregateRoot[] {
-    return Array.from(this.aggregates);
   }
 }

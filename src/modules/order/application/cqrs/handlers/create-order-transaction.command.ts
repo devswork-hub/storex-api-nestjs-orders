@@ -7,6 +7,8 @@ import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
 import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
+import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
+import { Inject } from '@nestjs/common';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -21,43 +23,33 @@ export class CreateOrderTransactionCommandHandler
     private readonly cacheService: CacheService,
     private readonly outboxService: OutboxTypeORMService,
     private readonly uow: TypeORMUnitOfWork,
+    /**
+     * Usando o inject, pra nao precisar declarar todos os providers explicitamente na useFactory na injecao dos providers
+     */
+    @Inject('OrderReadableRepositoryContract')
+    private readonly orderRepository: OrderTypeORMRepository,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<any> {
     this.executeValidations(command);
+    // Passar o manager garante que tanto o insert do pedido quanto o save do outbox aconteçam na mesma transação.
+    return await this.uow.startTransaction(async (manager) => {
+      // Se eu remover o setTransactionManager, o repositório não vai usar o manager da transação atual, e sim o padrão do TypeORM.
+      // Logo, o pedido e o outbox não vão ser salvos na mesma transação, podendo gerar inconsistências.
+      this.orderRepository.setTransactionManager(manager);
 
-    await this.uow.startTransaction();
-
-    try {
       const domainInput = OrderMapper.toDomainInput(command.data);
+      // Se não passar o manager, o TypeORM vai criar uma nova conexão para o repositório e não vai respeitar a transação atual, abrindo risco de inconsistência.
       const { order, events } =
         await this.createOrderService.execute(domainInput);
+
       await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
 
       for (const event of events) {
-        /**
-         * Usamos o `queryRunner.manager` aqui para garantir que o repositório usado esteja
-         * dentro da mesma transação aberta pelo QueryRunner.
-         * Isso é essencial para garantir consistência entre a criação do pedido
-         * e o armazenamento do evento no Outbox.
-         *
-         * Se usássemos `this.outboxService.save(event)` diretamente (sem passar o manager),
-         * o TypeORM usaria o EntityManager padrão, fora da transação,
-         * o que poderia causar inconsistência caso ocorra rollback.
-         *
-         * ✅ Com `queryRunner.manager`, tanto a persistência do pedido quanto do evento
-         * estarão no mesmo commit/rollback.
-         */
-        await this.outboxService.save(event, this.uow.getManager());
+        await this.outboxService.save(event, manager);
       }
-      await this.uow.commitTransaction();
       return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
-    } catch (error) {
-      await this.uow.rollbackTransaction();
-      throw error;
-    } finally {
-      await this.uow.release();
-    }
+    });
   }
 
   private executeValidations(command: CreateOrderCommand) {
