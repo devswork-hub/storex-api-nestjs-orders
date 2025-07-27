@@ -29,9 +29,9 @@ import { ConfigValues } from './config/config.values';
     TypeORMModule,
     PersistenceModule.register({ type: 'mongoose', global: true }),
     CustomCacheModule.forRoot({ isGlobal: true }),
-    DomainsModule,
     RabbitmqModule,
     KafkaModule,
+    DomainsModule,
   ],
 })
 export class AppModule {}
