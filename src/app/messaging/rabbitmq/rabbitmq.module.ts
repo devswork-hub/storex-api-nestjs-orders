@@ -14,6 +14,7 @@ import { ConfigModule } from '../../config/config.module';
 export const RABBIT_ORDERS_SERVICE = Symbol('RABBIT_ORDERS_SERVICE');
 export const RABBIT_PAYMENTS_SERVICE = Symbol('RABBIT_PAYMENTS_SERVICE');
 
+// @Global()
 @Module({
   imports: [
     ConfigModule,

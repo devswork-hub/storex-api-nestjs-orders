@@ -37,9 +37,9 @@ import { APP_GUARD } from '@nestjs/core';
     TypeORMModule,
     PersistenceModule.register({ type: 'mongoose', global: true }),
     CustomCacheModule.forRoot({ isGlobal: true }),
+    DomainsModule,
     RabbitmqModule,
     KafkaModule,
-    DomainsModule,
   ],
   providers: [
     {
