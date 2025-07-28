@@ -7,6 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
 import { Transport } from '@nestjs/microservices';
+import { configureMicroservices } from './app/messaging/rabbitmq/listeners';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -14,14 +15,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TimeoutInterceptor(), new LoggingInterceptor());
 
   // isso configra os listeners do RabbitMQ // @MessagePattern('orders.*'), @EventPattern('payments.*')
-  app.connectMicroservice({
-    transport: Transport.RMQ,
-    options: {
-      urls: process.env.RABBITMQ_URL,
-      queue: process.env.RABBITMQ_QUEUE_ORDER,
-      queueOptions: { durable: false },
-    },
-  });
+  configureMicroservices(app);
+
   await app.startAllMicroservices();
 
   app.enableCors({

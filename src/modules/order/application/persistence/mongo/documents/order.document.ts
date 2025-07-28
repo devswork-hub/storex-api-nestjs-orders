@@ -1,11 +1,11 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { OrderStatusEnum } from '../../../domain/order.constants';
 import { DiscountSubdocument } from '../subdocuments/discount.subdocument';
 import { PaymentSubdocument } from '../subdocuments/payment.subdocument';
 import { ShippingSubdocument } from '../subdocuments/shipping.subdocument';
 import { BillingAddressSubdocument } from '../subdocuments/billing-address.subdocument';
 import { OrderItemSubdocument, OrderItemSchema } from './order-item.document';
+import { OrderStatusEnum } from '@/src/modules/order/domain/order.constants';
 
 export type OrderMongoEntityProps = Omit<OrderDocument, 'id'> & {
   _id: string;

@@ -21,29 +21,14 @@ import {
   PaymentMethodEnum,
   ShippingStatus,
 } from '../domain/order.constants';
+import { OrderItemMongoMapper } from './order-item-mongo.mapper';
 
 export class OrderMapper {
   static toDomainInput(input: CreateOrderGraphQLInput): OrderModelInput {
     return {
       status: input.status as OrderStatus,
       currency: new Currency(input.currency as CurrencyEnum),
-      items: input.items.map(
-        (item): OrderItemModelContract => ({
-          ...item,
-          price: new Money(
-            item.price.amount,
-            new Currency(item.price.currency as CurrencyEnum),
-          ),
-          ...(item.discount && {
-            discount: {
-              couponCode: item.discount.couponCode,
-              value: item.discount.value,
-              type: item.discount.type,
-              currency: new Currency(item.discount.currency as CurrencyEnum),
-            },
-          }),
-        }),
-      ),
+      items: input.items.map((item) => OrderItemMongoMapper.toDomain(item)),
       discount: input.discount
         ? {
             couponCode: input.discount.couponCode,

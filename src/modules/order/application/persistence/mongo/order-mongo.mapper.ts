@@ -15,7 +15,7 @@ import {
   DiscountTypeEnum,
   OrderStatus,
   PaymentStatusEnum,
-} from '../../domain/order.constants';
+} from '../../../domain/order.constants';
 import { DateUtils } from '@/src/shared/domain/date';
 
 export type OrderMongoProps = Omit<OrderMongoEntity, keyof Document>;
