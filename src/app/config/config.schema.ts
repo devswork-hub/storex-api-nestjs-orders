@@ -47,8 +47,6 @@ export const ConfigSchema = z.object({
   RABBITMQ_URL: z.string().nonempty(),
   RABBITMQ_QUEUE_ORDER: z.string().nonempty(),
 
-  RABBITMQ_PAYMENT_QUEUE_URL: z.string().nonempty(),
-
   KAFKA_BROKERS: z.string().nonempty(),
   KAFKA_CONSUMER_GROUP: z.string().nonempty(),
 });

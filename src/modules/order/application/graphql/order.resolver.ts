@@ -13,7 +13,7 @@ import { UpdateOrderService } from '../../domain/usecases/update-order.service';
 import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
 import { OrderID } from '../../domain/order-id';
 import { OrderMapper } from '../order.mapper';
-import { UseGuards, UseInterceptors } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 import { PaginatedOrderResult } from './outputs/search.output';
@@ -35,9 +35,7 @@ import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../orders-cache-keys';
 import { CreateOrderCommand } from '../cqrs/handlers/create-order-transaction.command';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
-@UseGuards(ThrottlerGuard)
 @Resolver(() => OrderOuput)
 export class OrderResolver {
   constructor(
@@ -65,7 +63,6 @@ export class OrderResolver {
       throw error;
     }
   }
-
   @Query(() => OrderOuput, { nullable: true })
   async findOrderById(@Args('id') id: string): Promise<OrderOuput | null> {
     return await this.queryBus.execute(
@@ -73,7 +70,6 @@ export class OrderResolver {
     );
   }
 
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Mutation(() => OrderOuput)
   async createOrder(
     @Args('input') data: CreateOrderGraphQLInput,

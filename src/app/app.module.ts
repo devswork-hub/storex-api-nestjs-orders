@@ -11,17 +11,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RabbitmqModule } from './messaging/rabbitmq/rabbitmq.module';
 import { KafkaModule } from './messaging/kafka/kafka.module';
 import { ConfigValues } from './config/config.values';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000,
-        limit: 100,
-      },
-    ]),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
@@ -40,12 +32,6 @@ import { APP_GUARD } from '@nestjs/core';
     DomainsModule,
     RabbitmqModule,
     KafkaModule,
-  ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
   ],
 })
 export class AppModule {}

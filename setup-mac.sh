@@ -1,55 +1,33 @@
-#!/bin/bash
+# # Localstack
+# brew install localstack/tap/localstack-cli
 
-# Lista dos arquivos de perfil onde os aliases serão configurados
-# Ajuste esta lista se você tiver outros arquivos de perfil específicos.
-PROFILE_FILES=(
-    "$HOME/.bash_profile"
-    "$HOME/.zprofile"
-    "$HOME/.zshrc"
-)
+# # AWS Clients
+# npm i -g @aws-sdk/client-sns
 
-echo "Configurando aliases Git em múltiplos perfis..."
+# # Nest.js
+# npm i -g @nestjs/cli
 
-# Lista de aliases a serem adicionados
-declare -A aliases=(
-    ["gl"]="git pull"
-    ["gp"]="git push"
-    ["gs"]="git status"
-    ["gb"]="git branch"
-    ["gco"]="git checkout"
-    ["gcb"]="git checkout -b"
-    ["gd"]="git diff"
-    ["ga"]="git add ."
-    ["gc"]="git commit"
-    ["gcm"]="git commit -m"
-)
+# export AWS_DEFAULT_REGION=us-east-1 # Or eu-west-1, or whatever you prefer
 
-# Itera sobre cada arquivo de perfil
-for PROFILE_FILE in "${PROFILE_FILES[@]}"; do
-    echo "" # Linha em branco para melhor leitura
-    echo "Processando: $PROFILE_FILE"
+# awslocal sns create-topic --name order_creation
+# awslocal sns subscribe --topic-arn
+# \ arn:aws:sns:eu-west-1:000000000000:app_events
+# \ --protocol http
+# \ --notification-endpoint http://host.docker.internal:3000/_sns/onEvent
 
-    # Verifica se o arquivo de perfil existe. Se não existir, cria um.
-    if [ ! -f "$PROFILE_FILE" ]; then
-        touch "$PROFILE_FILE"
-        echo "Arquivo '$PROFILE_FILE' criado."
-    fi
+# # Create topic and capture ARN
+# TOPIC_ARN=$(awslocal sns create-topic --name order_creation | grep -oP '(?<="TopicArn": ")[^"]+')
 
-    # Adiciona cada alias se ele ainda não existir no arquivo de perfil
-    for alias_name in "${!aliases[@]}"; do
-        alias_command="${aliases[$alias_name]}"
-        if ! grep -q "alias $alias_name=" "$PROFILE_FILE"; then
-            echo "alias $alias_name='$alias_command'" >> "$PROFILE_FILE"
-            echo "  Alias '$alias_name' adicionado."
-        else
-            echo "  Alias '$alias_name' já existe."
-        fi
-    done
-done
+# # Check if ARN was captured
+# if [ -z "$TOPIC_ARN" ]; then
+#   echo "Error: Could not retrieve Topic ARN."
+#   exit 1
+# fi
 
-echo "" # Linha em branco para melhor leitura
-echo "Configuração de aliases Git concluída em todos os perfis especificados."
-echo "Para aplicar as mudanças, por favor, reinicie seu terminal ou execute um dos seguintes comandos (conforme seu shell ativo):"
-echo "  source ~/.bash_profile"
-echo "  source ~/.zprofile"
-echo "  source ~/.zshrc"
+# echo "Created Topic ARN: $TOPIC_ARN"
+
+# # Subscribe to the captured ARN
+# awslocal sns subscribe \
+#   --topic-arn "$TOPIC_ARN" \
+#   --protocol http \
+#   --notification-endpoint http://host.docker.internal:3000/_sns/onEvent
