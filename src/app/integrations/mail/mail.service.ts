@@ -8,8 +8,9 @@ export class MailService {
   async sendMail(notification: {
     email: string;
     message: string;
+    subject: string;
   }): Promise<void> {
-    const { email, message } = notification;
+    const { email, message, subject } = notification;
 
     await this.mailerService.sendMail({
       to: email,

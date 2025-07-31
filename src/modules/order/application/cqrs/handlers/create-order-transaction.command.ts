@@ -9,6 +9,8 @@ import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbo
 import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
 import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
 import { Inject } from '@nestjs/common';
+import { MailService } from '@/src/app/integrations/mail/mail.service';
+import { MailQueueService } from '@/src/app/integrations/mail/mail-queue.service';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -28,6 +30,7 @@ export class CreateOrderTransactionCommandHandler
      */
     @Inject('OrderReadableRepositoryContract')
     private readonly orderRepository: OrderTypeORMRepository,
+    private readonly mailQueueService: MailQueueService,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<any> {
@@ -48,6 +51,13 @@ export class CreateOrderTransactionCommandHandler
       for (const event of events) {
         await this.outboxService.save(event, manager);
       }
+      await this.mailQueueService.dispatchTasks({
+        payload: {
+          to: 'web.dborges@gmail.com',
+          subject: 'Pedido criado com sucesso',
+          body: 'Seu pedido foi recebido com sucesso!',
+        },
+      });
       return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
     });
   }

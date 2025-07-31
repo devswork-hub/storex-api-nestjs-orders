@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { BullModule } from '@nestjs/bullmq';
+import { mailQueueName } from './mail.constants';
+import { MailQueueService } from './mail-queue.service';
+import { EmailsQueueProcessor } from './send-email.processor';
 
 @Module({
   imports: [
@@ -10,13 +14,16 @@ import { MailerModule } from '@nestjs-modules/mailer';
         port: 587,
         secure: false,
         auth: {
-          user: 'your_username',
-          pass: 'your_password',
+          user: 'marta33@ethereal.email',
+          pass: 'b1auVW5T48ekDKcKfE',
         },
       },
-    }), 
+    }),
+    BullModule.registerQueue({
+      name: mailQueueName,
+    }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [MailService, MailQueueService, EmailsQueueProcessor],
+  exports: [MailService, MailQueueService],
 })
 export class MailModule {}

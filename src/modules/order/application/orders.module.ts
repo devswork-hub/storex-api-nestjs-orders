@@ -20,11 +20,11 @@ import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
 import { RabbitmqModule } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
 import { OrdersOutboxRelayService } from './messaging/orders.outbox-relay-cron.service';
 import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
-import { OrderInMemoryRepository } from '../domain/persistence/order.in-memory.repository';
 import { OutboxModule } from '@/src/app/persistence/outbox/outbox.module';
 import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
 import { OrdersProjectionService } from './persistence/orders-projection.service';
 import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
+import { MailModule } from '@/src/app/integrations/mail/mail.module';
 
 export const OrderRepositoryProvider: Provider[] = [
   {
@@ -77,6 +77,7 @@ export const OrderUseCasesProviders: Provider[] = [
     CqrsModule,
     OutboxModule.forFeature('typeorm'),
     TypeORMModule,
+    MailModule,
   ],
   controllers: [OrdersRabbitMQController],
   providers: [
@@ -87,8 +88,8 @@ export const OrderUseCasesProviders: Provider[] = [
     FindAllOrderService,
     FindOneOrderService,
     OrderMongoRepository,
-    ...OrderRepositoryProvider, // 'OrderRepositoryContract'
-    ...OrderUseCasesProviders, // casos de uso usam 'OrderRepositoryContract' no inject
+    ...OrderRepositoryProvider,
+    ...OrderUseCasesProviders,
     OrderResolver,
     DomainSeeders,
     OrdersSeeder,

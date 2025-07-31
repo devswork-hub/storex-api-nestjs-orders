@@ -17,16 +17,12 @@ export class OrdersRabbitMQService {
   ) {}
   sendMessage(data: any) {
     try {
-      this.client
-        .emit({ cmd: MESSAGE_PATTERNS.ORDER_CREATED }, data)
-        .subscribe({
-          complete: () => {
-            this.logger.log(`Evento 'order.created' emitido com sucesso.`);
-          },
-          error: (err) => {
-            this.logger.error(`Erro ao emitir evento 'order.created'`, err);
-          },
-        });
+      this.client.emit(MESSAGE_PATTERNS.ORDER_CREATED, data).subscribe({
+        complete: () =>
+          this.logger.log(`Evento 'order.created' emitido com sucesso.`),
+        error: (err) =>
+          this.logger.error(`Erro ao emitir evento 'order.created'`, err),
+      });
     } catch (error) {
       throw new ServiceUnavailableException(
         'Service unavailable, please try again later',

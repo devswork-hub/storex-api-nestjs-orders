@@ -11,9 +11,16 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RabbitmqModule } from './messaging/rabbitmq/rabbitmq.module';
 import { KafkaModule } from './messaging/kafka/kafka.module';
 import { ConfigValues } from './config/config.values';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
