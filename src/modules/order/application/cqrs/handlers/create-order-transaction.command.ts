@@ -9,9 +9,7 @@ import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbo
 import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
 import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
 import { Inject } from '@nestjs/common';
-import { MailService } from '@/src/app/integrations/mail/mail.service';
 import { MailQueueService } from '@/src/app/integrations/mail/mail-queue.service';
-
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
 }

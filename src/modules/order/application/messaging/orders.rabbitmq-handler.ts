@@ -9,10 +9,8 @@ import { MESSAGE_PATTERNS } from './message-patterns';
 
 @Controller()
 export class OrdersRabbitMQController {
-  @MessagePattern({ cmd: MESSAGE_PATTERNS.ORDER_CREATED })
+  @MessagePattern('order.created')
   async createOrder(@Payload() payload: any, @Ctx() context: RmqContext) {
-    const originalMessage = context.getMessage();
-    console.log('Original RabbitMQ message:', originalMessage);
-    console.log('📦 Payload completo:', payload); // { pattern, data }
+    console.log('Recebido');
   }
 }

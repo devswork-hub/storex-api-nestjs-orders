@@ -49,4 +49,14 @@ export const ConfigSchema = z.object({
 
   KAFKA_BROKERS: z.string().nonempty(),
   KAFKA_CONSUMER_GROUP: z.string().nonempty(),
+
+  // // BullMQ
+  // BULLMQ_HOST: z
+  //   .string()
+  //   .transform((val) => parseInt(val, 10))
+  //   .refine((val) => !isNaN(val)),
+  // BULLMQ_PORT: z
+  //   .string()
+  //   .transform((val) => parseInt(val, 10))
+  //   .refine((val) => !isNaN(val)),
 });

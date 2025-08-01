@@ -6,11 +6,11 @@
 //   Payload,
 //   RmqContext,
 // } from '@nestjs/microservices';
-// import { RABBIT_ORDERS_SERVICE } from './rabbitmq.module';
+// import { RMQ_ORDERS_SERVICE } from './rabbitmq.module';
 
 // @Controller()
 // export class RabbitConsumer {
-//   constructor(@Inject(RABBIT_ORDERS_SERVICE) private userClient: ClientProxy) {}
+//   constructor(@Inject(RMQ_ORDERS_SERVICE) private userClient: ClientProxy) {}
 
 //   @MessagePattern({ cmd: 'order.created' })
 //   async handleOrderCreated(@Payload() data: any, @Ctx() context: RmqContext) {

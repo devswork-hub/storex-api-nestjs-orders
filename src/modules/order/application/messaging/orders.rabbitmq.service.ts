@@ -1,4 +1,4 @@
-import { RABBIT_ORDERS_SERVICE } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
+import { RMQ_ORDERS_SERVICE } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
 import {
   Inject,
   Injectable,
@@ -13,7 +13,7 @@ export class OrdersRabbitMQService {
   private logger = new Logger(OrdersRabbitMQService.name);
 
   constructor(
-    @Inject(RABBIT_ORDERS_SERVICE) private readonly client: ClientProxy,
+    @Inject(RMQ_ORDERS_SERVICE) private readonly client: ClientProxy,
   ) {}
   sendMessage(data: any) {
     try {

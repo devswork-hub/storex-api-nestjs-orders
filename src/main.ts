@@ -17,9 +17,14 @@ async function bootstrap() {
   // app.connectMicroservice({
   //   transport: Transport.RMQ,
   //   options: {
-  //     urls: process.env.RABBITMQ_URL,
-  //     queue: process.env.RABBITMQ_QUEUE_ORDER,
-  //     queueOptions: { durable: false },
+  //     urls: ['amqp://localhost:5672'],
+  //     queue: 'orders_queue',
+  //     queueOptions: {
+  //       durable: true,
+  //     },
+  //     exchange: 'orders-topic-exchange',
+  //     exchangeType: 'topic',
+  //     routingKey: 'order.created',
   //   },
   // });
   // await app.startAllMicroservices();
