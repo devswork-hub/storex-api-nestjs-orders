@@ -8,10 +8,11 @@ import { DomainsModule } from '../modules/domain-modules.module';
 import { CustomCacheModule } from './persistence/cache/cache.module';
 import { TypeORMModule } from './persistence/typeorm/typeorm.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RabbitmqModule } from './messaging/rabbitmq/rabbitmq.module';
 import { KafkaModule } from './messaging/kafka/kafka.module';
 import { ConfigValues } from './config/config.values';
 import { BullModule } from '@nestjs/bullmq';
+import { RabbitMQModule as GoLevelupRabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.module';
 
 @Module({
   imports: [
@@ -37,8 +38,8 @@ import { BullModule } from '@nestjs/bullmq';
     PersistenceModule.register({ type: 'mongoose', global: true }),
     CustomCacheModule.forRoot({ isGlobal: true }),
     DomainsModule,
-    RabbitmqModule,
     KafkaModule,
+    RabbitmqWrapperModule,
   ],
 })
 export class AppModule {}

@@ -17,14 +17,14 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
 import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
 import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
-import { RabbitmqModule } from '@/src/app/messaging/rabbitmq/rabbitmq.module';
 import { OrdersOutboxRelayService } from './messaging/orders.outbox-relay-cron.service';
 import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
 import { OutboxModule } from '@/src/app/persistence/outbox/outbox.module';
-import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
+// import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
 import { OrdersProjectionService } from './persistence/orders-projection.service';
 import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
 import { MailModule } from '@/src/app/integrations/mail/mail.module';
+import { RabbitmqWrapperModule } from '@/src/app/messaging/rabbitmq/rabbitmq.wrapper.module';
 
 export const OrderRepositoryProvider: Provider[] = [
   {
@@ -67,7 +67,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
-    RabbitmqModule,
+    RabbitmqWrapperModule,
     MongooseModule.forFeature([
       {
         name: OrderMongoEntity.name,
@@ -79,8 +79,8 @@ export const OrderUseCasesProviders: Provider[] = [
     TypeORMModule,
     MailModule,
   ],
-  controllers: [OrdersRabbitMQController],
   providers: [
+    // OrdersRabbitMQController,
     ...CommandHandlers,
     ...QueryHandlers,
     ...EventHandlers,

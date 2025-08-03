@@ -22,7 +22,7 @@
   "dependencies": {
     "@apollo/server": "^4.12.2",
     "@faker-js/faker": "^9.9.0",
-    "@golevelup/nestjs-rabbitmq": "^6.0.1",
+    "@golevelup/nestjs-rabbitmq": "^6.0.2",
     "@keyv/redis": "^4.5.0",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/apollo": "^13.1.0",

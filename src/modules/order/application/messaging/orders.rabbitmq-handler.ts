@@ -1,18 +1,23 @@
-import { Controller } from '@nestjs/common';
-import {
-  Ctx,
-  MessagePattern,
-  Payload,
-  RmqContext,
-} from '@nestjs/microservices';
-import { MESSAGE_PATTERNS } from './message-patterns';
+// import { Injectable } from '@nestjs/common';
+// import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 
-@Controller()
-export class OrdersRabbitMQController {
-  @MessagePattern({ cmd: MESSAGE_PATTERNS.ORDER_CREATED })
-  async createOrder(@Payload() payload: any, @Ctx() context: RmqContext) {
-    const originalMessage = context.getMessage();
-    console.log('Original RabbitMQ message:', originalMessage);
-    console.log('📦 Payload completo:', payload); // { pattern, data }
-  }
-}
+// @Injectable()
+// export class OrdersRabbitMQController {
+//   @RabbitSubscribe({
+//     exchange: 'orders-topic-exchange',
+//     queue: 'orders-queue',
+//     routingKey: 'order.created',
+//   })
+//   handle(message: any) {
+//     console.log(`Receive message ${JSON.stringify(message, null, 2)}`);
+//   }
+
+//   @RabbitSubscribe({
+//     exchange: 'orders-topic-exchange',
+//     queue: 'emails-queue',
+//     routingKey: 'order.created',
+//   })
+//   handleEmail(message: any) {
+//     console.log('Emails Queue received:', message);
+//   }
+// }
