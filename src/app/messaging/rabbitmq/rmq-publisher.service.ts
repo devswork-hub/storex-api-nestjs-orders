@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { MessageBrokerContract } from './message-broker.contract';
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 import { EVENTS_MESSAGE_BROKER_CONFIG } from './events-message-broker.config';
 
 @Injectable()

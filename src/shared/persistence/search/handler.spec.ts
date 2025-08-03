@@ -1,9 +1,9 @@
-import {
-  OrderModel,
-  OrderModelContract,
-} from '../../../modules/order/domain/order';
+import { OrderModel, OrderModelContract } from '@/modules/order/domain/order';
 import { SearchableHandler } from './searchable.handler';
-import { Currency, CurrencyEnum } from '../../domain/value-objects/currency.vo';
+import {
+  Currency,
+  CurrencyEnum,
+} from '@/shared//domain/value-objects/currency.vo';
 
 describe('SearchableHandler', () => {
   it('Test handler', async () => {
@@ -28,6 +28,6 @@ describe('SearchableHandler', () => {
       pagination: { type: 'offset', page: 1, limit: 20 },
     });
 
-    console.log(result);
+    console.log(null);
   });
 });

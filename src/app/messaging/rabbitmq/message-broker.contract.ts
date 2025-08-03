@@ -1,4 +1,4 @@
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 
 export interface MessageBrokerContract {
   publish(event: DomainEventType): Promise<void>;

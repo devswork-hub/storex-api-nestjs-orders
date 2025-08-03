@@ -1,8 +1,8 @@
 import { OrdersRabbitMQService } from './orders.rabbitmq.service';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { OutboxCronExecutorService } from '@/src/app/persistence/outbox/outbox-cron-executor.service';
-import { RmqPublisherService } from '@/src/app/messaging/rabbitmq/rmq-publisher.service';
+import { OutboxCronExecutorService } from '@/app/persistence/outbox/outbox-cron-executor.service';
+import { RmqPublisherService } from '@/app/messaging/rabbitmq/rmq-publisher.service';
 
 @Injectable()
 export class OrdersOutboxRelayService {

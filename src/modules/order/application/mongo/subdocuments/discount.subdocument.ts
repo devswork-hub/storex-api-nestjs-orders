@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Discount, DiscountTypeEnum } from '../../../domain/order.constants';
-import { ChangeTo } from '@/src/shared/utils/type-utils';
+import { ChangeTo } from '@/shared/utils/type-utils';
 
 export type DiscountSubdocumentProps = ChangeTo<
   Discount,

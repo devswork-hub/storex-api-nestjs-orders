@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { mailQueueName } from './mail.constants';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
-import { SendEmailEvent } from '@/src/modules/order/application/messaging/events/send-email.event';
+import { SendEmailEvent } from '@/modules/order/application/messaging/events/send-email.event';
 
 @Injectable()
 export class MailQueueService {

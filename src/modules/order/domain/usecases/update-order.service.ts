@@ -1,4 +1,4 @@
-import { BaseUseCaseContract } from '@/src/shared/domain/base/usecase.base';
+import { BaseUseCaseContract } from '@/shared/domain/base/usecase.base';
 import { OrderModel, OrderModelInput } from '../order';
 import { OrderRepositoryContract } from '../persistence/order.repository';
 

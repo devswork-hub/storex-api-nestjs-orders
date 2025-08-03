@@ -14,7 +14,7 @@ import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-or
 import { OrderID } from '../../domain/order-id';
 import { OrderMapper } from '../order.mapper';
 import { UseInterceptors } from '@nestjs/common';
-import { LoggingInterceptor } from '@/src/app/interceptors/logging.interceptor';
+import { LoggingInterceptor } from '@/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 import { PaginatedOrderResult } from './outputs/search.output';
 import {
@@ -28,7 +28,7 @@ import {
   CursorSearchResult,
   OffsetSearchResult,
   SearchResult,
-} from '@/src/shared/persistence/search/searchable.repository.contract';
+} from '@/shared/persistence/search/searchable.repository.contract';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FindAllOrdersQuery } from '../cqrs/handlers/find-all-orders.handler';
 import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';

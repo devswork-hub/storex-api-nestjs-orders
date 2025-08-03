@@ -1,4 +1,4 @@
-// import { BaseModelProps } from '@/src/shared/domain/base/model.base';
+// import { BaseModelProps } from '@/shared/domain/base/model.base';
 
 // export type OrderModelContract = {
 //   status: OrderStatus;

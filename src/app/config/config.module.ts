@@ -5,7 +5,7 @@ import {
 } from '@nestjs/config';
 import { join } from 'path';
 import { ConfigSchema } from './config.schema';
-import { ZodValidator } from '@/src/shared/domain/validation/zod-validator';
+import { ZodValidator } from '@/shared/domain/validation/zod-validator';
 import { ConfigValues } from './config.values';
 
 @Module({})

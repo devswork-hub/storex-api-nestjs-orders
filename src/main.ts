@@ -1,17 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 // import { DomainSeeders } from './modules/order/application/domain.seeders';
-import { TimeoutInterceptor } from './app/interceptors/timeout.interceptor';
-import { LoggingInterceptor } from './app/interceptors/logging.interceptor';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // app.useGlobalInterceptors(new TimeoutInterceptor(), new LoggingInterceptor());
-  app.useGlobalInterceptors(new TimeoutInterceptor());
 
   app.enableCors({
     origin: [

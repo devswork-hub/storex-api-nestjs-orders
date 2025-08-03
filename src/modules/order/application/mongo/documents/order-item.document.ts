@@ -5,7 +5,7 @@ import {
   MoneySubdocument,
 } from '../subdocuments/money.subdocument';
 import { OrderItemModelContract } from '../../../domain/order-item';
-import { ChangeTo } from '@/src/shared/utils/type-utils';
+import { ChangeTo } from '@/shared/utils/type-utils';
 
 export type OrderItemMongoEntityProps = ChangeTo<
   Omit<OrderItemModelContract, 'id'> & { _id: string },

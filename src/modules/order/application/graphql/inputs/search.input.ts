@@ -1,4 +1,4 @@
-import { SortDirectionEnum } from '@/src/shared/persistence/search/searchable.repository.contract';
+import { SortDirectionEnum } from '@/shared/persistence/search/searchable.repository.contract';
 import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 
 registerEnumType(SortDirectionEnum, { name: 'SortDirection' });

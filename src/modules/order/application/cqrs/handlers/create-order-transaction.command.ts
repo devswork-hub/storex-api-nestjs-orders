@@ -5,12 +5,12 @@ import { CreateOrderValidation } from '../../../domain/usecases/create-order/cre
 import { OrderMapper } from '../../order.mapper';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
-import { OutboxTypeORMService } from '@/src/app/persistence/outbox/typeorm/outbox-typeorm.service';
-import { TypeORMUnitOfWork } from '@/src/app/persistence/typeorm/typeorm-uow.service';
+import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-typeorm.service';
+import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
 import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
 import { Inject } from '@nestjs/common';
-import { MailService } from '@/src/app/integrations/mail/mail.service';
-import { MailQueueService } from '@/src/app/integrations/mail/mail-queue.service';
+import { MailService } from '@/app/integrations/mail/mail.service';
+import { MailQueueService } from '@/app/integrations/mail/mail-queue.service';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}

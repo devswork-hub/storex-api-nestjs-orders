@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager, LessThan } from 'typeorm';
 import { OutboxTypeORMEntity } from './outbox-typeorm.entity';
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 
 @Injectable()
 export class OutboxTypeORMService {

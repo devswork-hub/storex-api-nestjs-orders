@@ -12,7 +12,7 @@
 // import {
 //   OutboxDocument,
 //   OutboxEntity,
-// } from '@/src/app/persistence/outbox/mongo/outbox.document'; // Ajuste o path conforme seu projeto
+// } from '@/app/persistence/outbox/mongo/outbox.document'; // Ajuste o path conforme seu projeto
 
 // @Controller() // Ou @Injectable() se preferir que seja um serviço puro com um listener
 // export class OutboxRelayConsumer {
