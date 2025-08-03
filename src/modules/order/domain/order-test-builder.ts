@@ -1,11 +1,11 @@
-import { TestDataBuilder } from '@/src/shared/testing/test-data-builder';
+import { TestDataBuilder } from '@/shared/testing/test-data-builder';
 import { OrderModelContract } from './order';
 import { faker } from '@faker-js/faker/.';
 import {
   Currency,
   CurrencyEnum,
-} from '@/src/shared/domain/value-objects/currency.vo';
-import { fakeId } from '@/src/shared/testing/fake-id';
+} from '@/shared/domain/value-objects/currency.vo';
+import { fakeId } from '@/shared/testing/fake-id';
 
 export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {}
 

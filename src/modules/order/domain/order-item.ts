@@ -1,4 +1,4 @@
-import { BaseModel, BaseModelProps } from '@/shared/domain/base/model.base';
+import { BaseModel, BaseModelProps } from '@/shared//domain/base/model.base';
 import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';

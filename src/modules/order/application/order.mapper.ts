@@ -14,8 +14,8 @@ import { CreateOrderGraphQLInput } from './graphql/inputs/order.inputs';
 import {
   Currency,
   CurrencyEnum,
-} from '@/src/shared/domain/value-objects/currency.vo';
-import { Money } from '@/src/shared/domain/value-objects/money.vo';
+} from '@/shared/domain/value-objects/currency.vo';
+import { Money } from '@/shared/domain/value-objects/money.vo';
 import {
   OrderStatus,
   PaymentMethodEnum,

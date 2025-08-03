@@ -13,7 +13,7 @@ const config: Config = {
   },
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
-    '^@/shared/(.*)$': '<rootDir>/shared/$1',
+    '^@/shared//(.*)$': '<rootDir>/shared/$1',
   },
   testMatch: [`${__dirname}/**/*.spec.ts`],
   collectCoverageFrom: [

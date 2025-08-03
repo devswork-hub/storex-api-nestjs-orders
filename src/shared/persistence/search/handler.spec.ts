@@ -3,7 +3,7 @@ import { SearchableHandler } from './searchable.handler';
 import {
   Currency,
   CurrencyEnum,
-} from '@/shared/domain/value-objects/currency.vo';
+} from '@/shared//domain/value-objects/currency.vo';
 
 describe('SearchableHandler', () => {
   it('Test handler', async () => {

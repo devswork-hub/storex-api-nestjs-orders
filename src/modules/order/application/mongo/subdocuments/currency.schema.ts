@@ -1,4 +1,4 @@
-import { CurrencyEnum } from '@/src/shared/domain/value-objects/currency.vo';
+import { CurrencyEnum } from '@/shared/domain/value-objects/currency.vo';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ _id: false })

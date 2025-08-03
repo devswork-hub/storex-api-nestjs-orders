@@ -13,11 +13,13 @@ import { RmqPublisherService } from './rmq-publisher.service';
           name: 'orders-queue',
           options: { durable: true },
           routingKey: ['order.created'],
+          exchange: 'orders-topic-exchange',
         },
         {
           name: 'emails-queue',
           options: { durable: true },
           routingKey: ['order.created'],
+          exchange: 'orders-topic-exchange',
         },
       ],
       enableControllerDiscovery: true, // permite usar @RabbitSubscribe

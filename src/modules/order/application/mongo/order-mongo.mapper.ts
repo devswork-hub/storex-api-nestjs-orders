@@ -1,12 +1,9 @@
-import {
-  OrderModel,
-  OrderModelContract,
-} from '@/src/modules/order/domain/order';
+import { OrderModel, OrderModelContract } from '@/modules/order/domain/order';
 import {
   Currency,
   CurrencyEnum,
-} from '@/src/shared/domain/value-objects/currency.vo';
-import { Money } from '@/src/shared/domain/value-objects/money.vo';
+} from '@/shared/domain/value-objects/currency.vo';
+import { Money } from '@/shared/domain/value-objects/money.vo';
 import {
   OrderMongoEntity,
   OrderMongoEntityProps,
@@ -16,7 +13,7 @@ import {
   OrderStatus,
   PaymentStatusEnum,
 } from '../../domain/order.constants';
-import { DateUtils } from '@/src/shared/domain/date';
+import { DateUtils } from '@/shared/domain/date';
 
 export type OrderMongoProps = Omit<OrderMongoEntity, keyof Document>;
 

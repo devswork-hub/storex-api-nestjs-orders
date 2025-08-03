@@ -5,9 +5,9 @@ import {
   SearchableRepositoryContract,
   SearchOptions,
   SearchResult,
-} from '@/src/shared/persistence/search/searchable.repository.contract';
-import { CriteriaOptions } from '@/src/shared/persistence/criteria.contract';
-import { SearchableHandler } from '@/src/shared/persistence/search/searchable.handler';
+} from '@/shared/persistence/search/searchable.repository.contract';
+import { CriteriaOptions } from '@/shared/persistence/criteria.contract';
+import { SearchableHandler } from '@/shared/persistence/search/searchable.handler';
 
 export class OrderInMemoryRepository
   extends InMemoryBaseRepository<OrderModelContract>

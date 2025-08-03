@@ -1,5 +1,5 @@
-import { ChangeTo } from '@/src/shared/utils/type-utils';
-import { MoneyProps } from '@/src/shared/domain/value-objects/money.vo';
+import { ChangeTo } from '@/shared/utils/type-utils';
+import { MoneyProps } from '@/shared/domain/value-objects/money.vo';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type MoneySubdocumentProps = ChangeTo<MoneyProps, { currency: string }>;

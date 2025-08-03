@@ -1,9 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { FindOneOrderService } from '@/src/modules/order/domain/usecases/find-one-order.service';
-import { OrderID } from '@/src/modules/order/domain/order-id';
+import { FindOneOrderService } from '@/modules/order/domain/usecases/find-one-order.service';
+import { OrderID } from '@/modules/order/domain/order-id';
 import { OrderOuput } from '../../graphql/outputs/order.output';
 import { OrderMapper } from '../../order.mapper';
-import { CacheService } from '@/src/app/persistence/cache/cache.service';
+import { CacheService } from '@/app/persistence/cache/cache.service';
 import { Logger } from '@nestjs/common';
 
 export class FindOrderByIdQuery {

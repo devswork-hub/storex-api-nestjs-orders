@@ -1,11 +1,11 @@
-import { Money } from '@/shared/domain/value-objects/money.vo';
+import { Money } from '@/shared//domain/value-objects/money.vo';
 import { OrderModelContract } from '../domain/order';
 import { OrderItemModelContract } from '../domain/order-item';
 import { PaymentMethodEnum } from '../domain/order.constants';
 import {
   Currency,
   CurrencyEnum,
-} from '@/shared/domain/value-objects/currency.vo';
+} from '@/shared//domain/value-objects/currency.vo';
 export const mockOrderItem: OrderItemModelContract = {
   id: 'item-1',
   productId: 'prod-123',

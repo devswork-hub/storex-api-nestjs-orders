@@ -1,4 +1,4 @@
-// import { OrderItemModel } from '@/src/modules/order/domain/order-item';
+// import { OrderItemModel } from '@/modules/order/domain/order-item';
 
 // export interface OffsetSearchResult<Item> extends BaseSearchResult<Item> {
 //   type: 'offset';

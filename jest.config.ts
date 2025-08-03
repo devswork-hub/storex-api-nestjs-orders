@@ -1,8 +1,4 @@
 import type { Config } from 'jest';
-import { pathsToModuleNameMapper } from 'ts-jest';
-import { compilerOptions } from './tsconfig.json';
-
-const SRC = '<rootDir>/src';
 
 const config: Config = {
   // Faz o Jest mostrar no console o nome de cada teste que está sendo executado.
@@ -16,7 +12,7 @@ const config: Config = {
   rootDir: '.',
 
   /**
-   * Sempre que o Jest encontrar um import do tipo: import { Foo } from '@/shared/foo'
+   * Sempre que o Jest encontrar um import do tipo: import { Foo } from '@/shared//foo'
    * Ele vai resolver como: <rootDir>/src/shared/foo
    */
   // moduleNameMapper: {
@@ -48,6 +44,7 @@ const config: Config = {
     '!main.ts',
     '!**/index.ts',
     '!**/*.module.ts',
+    '!**/*.service.ts',
     '!**/*.dto.ts',
     '!**/*.entity.ts',
     '!**/*.d.ts',

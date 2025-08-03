@@ -15,16 +15,16 @@ import { DomainSeeders } from './domain.seeders';
 import { OrdersSeeder } from './mongo/seeders/orders.seeder';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CommandHandlers, EventHandlers, QueryHandlers } from './cqrs/handlers';
-import { TypeORMModule } from '@/src/app/persistence/typeorm/typeorm.module';
+import { TypeORMModule } from '@/app/persistence/typeorm/typeorm.module';
 import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
 import { OrdersOutboxRelayService } from './messaging/orders.outbox-relay-cron.service';
 import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
-import { OutboxModule } from '@/src/app/persistence/outbox/outbox.module';
+import { OutboxModule } from '@/app/persistence/outbox/outbox.module';
 // import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
 import { OrdersProjectionService } from './persistence/orders-projection.service';
 import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
-import { MailModule } from '@/src/app/integrations/mail/mail.module';
-import { RabbitmqWrapperModule } from '@/src/app/messaging/rabbitmq/rabbitmq.wrapper.module';
+import { MailModule } from '@/app/integrations/mail/mail.module';
+import { RabbitmqWrapperModule } from '@/app/messaging/rabbitmq/rabbitmq.wrapper.module';
 
 export const OrderRepositoryProvider: Provider[] = [
   {

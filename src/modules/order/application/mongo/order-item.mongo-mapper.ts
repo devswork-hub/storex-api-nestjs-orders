@@ -1,8 +1,8 @@
-// import { Money } from '@/src/shared/domain/value-objects/money.vo';
+// import { Money } from '@/shared/domain/value-objects/money.vo';
 // import {
 //   Currency,
 //   CurrencyEnum,
-// } from '@/src/shared/domain/value-objects/currency.vo';
+// } from '@/shared/domain/value-objects/currency.vo';
 // import { DiscountTypeEnum } from '../../domain/order.constants';
 // import { OrderItemModelContract } from '../../domain/order-item';
 // import { OrderItemSubdocument } from './documents/order-item.document';

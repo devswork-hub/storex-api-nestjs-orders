@@ -1,4 +1,4 @@
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 import { MessageBrokerContract } from './message-broker.contract';
 
 type HandlerType = Record<string, (event: DomainEventType) => Promise<void>>;

@@ -11,7 +11,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { KafkaModule } from './messaging/kafka/kafka.module';
 import { ConfigValues } from './config/config.values';
 import { BullModule } from '@nestjs/bullmq';
-import { RabbitMQModule as GoLevelupRabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.module';
 
 @Module({

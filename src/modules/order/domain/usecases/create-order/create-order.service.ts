@@ -1,7 +1,7 @@
 import { BaseUseCaseContract } from '../../../../../shared/domain/base/usecase.base';
 import { OrderModel, OrderModelContract } from '../../order';
 import { CreateOrderInput } from './create-order.input';
-import { DomainEventType } from '@/src/shared/domain/events/domain-event';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 import { OrderReadableRepositoryContract } from '../../../application/persistence/order.readable-respository';
 
 type Input = CreateOrderInput;
