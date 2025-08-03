@@ -1,0 +1,1 @@
+npm i jest @types/jest ts-jest

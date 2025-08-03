@@ -33,3 +33,13 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Jest cache
+jest-cache/
+
+# Test coverage output
+coverage/
+.nyc_output/
+
+# Test results
+test-results/

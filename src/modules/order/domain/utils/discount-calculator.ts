@@ -1,4 +1,4 @@
-import { Currency } from '@/src/shared/domain/value-objects/currency.vo';
+import { Currency } from '@/shared/domain/value-objects/currency.vo';
 
 export function calculateDiscountAmount(
   baseAmount: number,

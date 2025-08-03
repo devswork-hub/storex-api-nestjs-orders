@@ -1,6 +1,6 @@
-import { ZodValidator } from '@/src/shared/domain/validation/zod-validator';
 import { z } from 'zod';
 import { CreateOrderGraphQLInput } from '../../../application/graphql/inputs/order.inputs';
+import { ZodValidator } from '@/shared/domain/validation/zod-validator';
 
 export const MoneyInputSchema = z.object({
   amount: z.number().positive('Amount must be greater than 0'),

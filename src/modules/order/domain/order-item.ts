@@ -1,7 +1,7 @@
+import { BaseModel, BaseModelProps } from '@/shared/domain/base/model.base';
 import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { Discount } from './order.constants';
 import { calculateDiscountAmount } from './utils/discount-calculator';
-import { BaseModel, BaseModelProps } from '@/src/shared/domain/base/model.base';
 
 export type OrderItemModelContract = {
   productId: string;
