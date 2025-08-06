@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { RabbitMQModule as GoLevelupRabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RmqPublisherService } from './rmq-publisher.service';
+import { InMemoryBroker } from './in-memory-broker';
 
 @Global()
 @Module({
@@ -25,7 +26,14 @@ import { RmqPublisherService } from './rmq-publisher.service';
       enableControllerDiscovery: true, // permite usar @RabbitSubscribe
     }),
   ],
-  providers: [RmqPublisherService],
-  exports: [GoLevelupRabbitMQModule, RmqPublisherService],
+  providers: [
+    RmqPublisherService,
+    { provide: 'MessageBrokerContract', useClass: InMemoryBroker },
+  ],
+  exports: [
+    GoLevelupRabbitMQModule,
+    RmqPublisherService,
+    'MessageBrokerContract',
+  ],
 })
 export class RabbitmqWrapperModule {}

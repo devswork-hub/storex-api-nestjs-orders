@@ -20,7 +20,7 @@ import { OrdersRabbitMQService } from './messaging/orders.rabbitmq.service';
 import { OrdersOutboxRelayService } from './messaging/orders.outbox-relay-cron.service';
 import { OrderTypeORMRepository } from './persistence/typeorm/order.typeorm-repository';
 import { OutboxModule } from '@/app/persistence/outbox/outbox.module';
-// import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
+import { OrdersRabbitMQController } from './messaging/orders.rabbitmq-handler';
 import { OrdersProjectionService } from './persistence/orders-projection.service';
 import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
 import { MailModule } from '@/app/integrations/mail/mail.module';
@@ -80,7 +80,7 @@ export const OrderUseCasesProviders: Provider[] = [
     MailModule,
   ],
   providers: [
-    // OrdersRabbitMQController,
+    OrdersRabbitMQController,
     ...CommandHandlers,
     ...QueryHandlers,
     ...EventHandlers,

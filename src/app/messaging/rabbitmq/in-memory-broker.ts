@@ -8,7 +8,7 @@ export class InMemoryBroker implements MessageBrokerContract {
 
   async publish(event: DomainEventType) {
     const handler = this.handlers[event.eventType];
-    if (handler) handler(event);
+    if (handler) await handler(event);
   }
 
   subscribe<T extends DomainEventType>(
