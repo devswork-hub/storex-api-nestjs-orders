@@ -1,5 +1,5 @@
-import { Snapshot } from '@/shared//domain/base/snapshot.base';
-import { Currency } from '@/shared//domain/value-objects/currency.vo';
+import { Snapshot } from '@/shared/domain/base/snapshot.base';
+import { Currency } from '@/shared/domain/value-objects/currency.vo';
 
 export type OrderStatus =
   | 'PENDING'

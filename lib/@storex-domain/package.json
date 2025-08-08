@@ -1,0 +1,10 @@
+{
+  "name": "@storex/lib-domain",
+  "main": "index.ts",
+  "directories": {
+    "src": "src"
+  },
+  "files": [
+    "src"
+  ]
+}

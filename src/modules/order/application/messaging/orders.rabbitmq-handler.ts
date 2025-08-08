@@ -7,6 +7,7 @@ export class OrdersRabbitMQController {
     exchange: 'orders-topic-exchange',
     queue: 'orders-queue',
     routingKey: 'order.created',
+    allowNonJsonMessages: true, // permite que eu receba as mensagens unacked
   })
   handle(message: any) {
     console.log(`Receive message ${JSON.stringify(message, null, 2)}`);
