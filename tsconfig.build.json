@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+  "watchOptions": {
+    "watchDirectory": "src"
+  },
+  "exclude": ["node_modules", "test", "dist", "lib", "**/*spec.ts"]
 }
