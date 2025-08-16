@@ -7,18 +7,38 @@ import { InMemoryBroker } from './in-memory-broker';
 @Module({
   imports: [
     GoLevelupRabbitMQModule.forRoot({
-      uri: 'amqp://guest:guest@localhost:5672',
-      exchanges: [{ name: 'orders-topic-exchange', type: 'topic' }],
+      uri: 'amqp://admin:admin@localhost:5672',
+      exchanges: [
+        { name: 'dlx.exchange', type: 'topic' },
+        { name: 'orders-topic-exchange', type: 'topic' },
+      ],
       queues: [
         {
+          name: 'dlx.queue',
+          exchange: 'dlx.exchange',
+          routingKey: '#', // aceito qualquer routing key
+        },
+        {
           name: 'orders-queue',
-          options: { durable: true },
+          options: {
+            durable: true,
+            arguments: {
+              'x-dead-letter-exchange': 'dlx.exchange',
+              'x-dead-letter-routing-key': 'order.created',
+            },
+          },
           routingKey: ['order.created'],
           exchange: 'orders-topic-exchange',
         },
         {
           name: 'emails-queue',
-          options: { durable: true },
+          options: {
+            durable: true,
+            arguments: {
+              'x-dead-letter-exchange': 'dlx.exchange',
+              'x-dead-letter-routing-key': 'order.created',
+            },
+          },
           routingKey: ['order.created'],
           exchange: 'orders-topic-exchange',
         },

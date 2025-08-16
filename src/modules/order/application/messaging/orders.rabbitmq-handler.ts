@@ -17,6 +17,10 @@ export class OrdersRabbitMQController {
     queue: 'orders-queue',
     routingKey: 'order.created',
     allowNonJsonMessages: true, // permite que eu receba as mensagens unacked
+    queueOptions: {
+      deadLetterExchange: 'dlx.exchange',
+      deadLetterRoutingKey: 'order.created',
+    },
   })
   handle(message: any) {
     console.log(`Receive message`);
@@ -26,6 +30,12 @@ export class OrdersRabbitMQController {
     exchange: 'orders-topic-exchange',
     queue: 'emails-queue',
     routingKey: 'order.created',
+    allowNonJsonMessages: true, // permite que eu receba as mensagens unacked
+    queueOptions: {
+      deadLetterExchange: 'dlx.exchange',
+      deadLetterRoutingKey: 'order.created',
+      // messageTtl: 5000 - tempo de vida da mensagem na fila para ser republicada
+    },
   })
   handleEmail(message: any) {
     // o RabbitMQConsumerFilter so ativa quando enviamos erros retryables que defini no filtro

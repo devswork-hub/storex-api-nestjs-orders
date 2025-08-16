@@ -9,7 +9,6 @@ import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-ty
 import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
 import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
 import { Inject } from '@nestjs/common';
-import { MailService } from '@/app/integrations/mail/mail.service';
 import { MailQueueService } from '@/app/integrations/mail/mail-queue.service';
 
 export class CreateOrderCommand {

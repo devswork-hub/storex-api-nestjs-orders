@@ -1,4 +1,3 @@
-import { OrdersRabbitMQService } from './orders.rabbitmq.service';
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { OutboxCronExecutorService } from '@/app/persistence/outbox/outbox-cron-executor.service';
