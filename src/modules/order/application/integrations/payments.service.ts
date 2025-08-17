@@ -17,7 +17,7 @@ export class PaymentService {
       //   .toPromise();
 
       // return response.data;
-      return null;
+      return new Promise(() => setTimeout(() => 3000));
     } catch (error) {
       console.error(
         `Erro ao buscar detalhes do pagamento ${paymentId}:`,

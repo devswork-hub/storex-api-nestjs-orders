@@ -1,6 +1,8 @@
 services:
   rabbitmq:
-    image: rabbitmq:3.9-management
+    build:
+      context: .
+      dockerfile: ./Dockerfile.rabbitmq
     container_name: rabbitmq
     restart: always
     hostname: rabbitmq
