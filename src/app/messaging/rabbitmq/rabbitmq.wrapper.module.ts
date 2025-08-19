@@ -10,9 +10,19 @@ import { InMemoryBroker } from './in-memory-broker';
       uri: 'amqp://admin:admin@localhost:5672',
       exchanges: [
         { name: 'dlx.exchange', type: 'topic' },
+        {
+          name: 'direct.delayed',
+          type: 'x-delayed-message',
+          options: {
+            arguments: {
+              'x-delayed-type': 'direct',
+            },
+          },
+        },
         { name: 'orders-topic-exchange', type: 'topic' },
       ],
       queues: [
+        { name: 'delayed.queue', exchange: 'direct.delayed' },
         {
           name: 'dlx.queue',
           exchange: 'dlx.exchange',

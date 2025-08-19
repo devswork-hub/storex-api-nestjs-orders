@@ -17,6 +17,7 @@ import { calculateDiscountAmount } from './utils/discount-calculator';
 import { OrderID } from './order-id';
 import { OrderCreatedEvent } from './events/order-created.event';
 import { OrderPaidEvent } from './events/order-paid.event';
+import { OrderReminderEvent } from './events/order-reminder.event';
 
 export type OrderModelInput = Omit<OrderModelContract, 'subTotal' | 'total'>;
 
@@ -105,12 +106,25 @@ export class OrderModel extends BaseModel implements OrderModelContract {
       );
     }
     this.status = OrderStatusEnum.PAID;
+
+    // Evento de pagamento
     this.addDomainEvent(
       new OrderPaidEvent({
         id: this.id,
         paymentId,
         paymentStatus: this.paymentSnapshot.status,
         amount: this.total.amount,
+      }),
+    );
+
+    // Evento de lembrete delayed (ex: 10 minutos)
+    this.addDomainEvent(
+      new OrderReminderEvent({
+        orderId: this.id,
+        customerId: this.customerId,
+        // TODO: pegar o email do cliente no customerSnapshot que ainda nao construi
+        email: '',
+        reminderType: 'ORDER_PAYMENT',
       }),
     );
   }
