@@ -1,32 +1,18 @@
 # https://medium.com/norsys-octogone/a-local-environment-for-mongodb-with-docker-compose-ba52445b93ed
 include:
   - docker-compose.rabbitmq.yml
-  - docker-compose.kafka.yml
+  # - docker-compose.kafka.yml
+  # - docker-compose.keycloak.yml
+  - docker-compose.pg.yml
 
 services:
   redis:
-    networks:
-      - app
     container_name: cache
     image: redis
     ports:
       - 6379:6379
     volumes:
       - redis:/data
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.0
-    restart: always
-    container_name: storex_keycloak
-    environment:
-      KEYCLOAK_USER: ${KEYCLOAK_USER}
-      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS}
-      DB_VENDOR: h2
-      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASS}
-    ports:
-      - '8080:8080'
-    env_file:
-      - .env
   mongodb:
     image: mongo:latest
     restart: always
@@ -38,32 +24,6 @@ services:
       - '27017:27017'
     env_file:
       - .env
-    networks:
-      - app
-
-  postgres:
-    image: postgres:15
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=test
-    volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    networks:
-      - postgres-db-network
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'teste@teste.com'
-      PGADMIN_DEFAULT_PASSWORD: 'teste'
-    ports:
-      - 16543:80
-    volumes:
-      - ./servers.json:/pgadmin4/servers.json
-    networks:
-      - postgres-db-network
 
   # nestjs-c:
   #   build: .
@@ -77,13 +37,7 @@ services:
   #   networks:
   #     - app
 volumes:
-  postgres-db-volume:
-    driver: local
+  postgres_data:
   redis:
     driver: local
-
-networks:
-  postgres-db-network:
-    driver: bridge
-  app:
-    driver: bridge
+  rabbitmq_data:

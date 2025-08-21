@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:shared": "jest --projects ./src/shared --runInBand",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "dc-up": "docker-compose -f docker-compose.dev.yml up -d",
+    "dc-down": "docker-compose -f docker-compose.dev.yml down -v"
   },
   "dependencies": {
     "@apollo/server": "^4.12.2",
@@ -53,7 +55,7 @@
     "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
     "rxjs": "7.8.2",
-    "typeorm": "^0.3.25",
+    "typeorm": "^0.3.26",
     "typeorm-extension": "^3.7.1",
     "typeorm-naming-strategies": "^4.1.0",
     "zod": "^3.25.64"
