@@ -36,13 +36,13 @@ export class RmqPublisherService implements MessageBrokerContract {
 
     this.logger.debug(`Sending event from type ${event.eventType}`);
 
-    const headers = customOptions.withDelay
-      ? {
-          'x-delay': customOptions.withDelay.delay,
-          ...customOptions.headers,
-        }
-      : customOptions.headers;
-
-    await this.amqp.publish(exchange, routingKey, event, { headers });
+    await this.amqp.publish(exchange, routingKey, event, {
+      headers: {
+        ...(customOptions?.headers || {}),
+        ...(customOptions?.withDelay
+          ? { 'x-delay': customOptions.withDelay.delay }
+          : {}),
+      },
+    });
   }
 }

@@ -8,25 +8,26 @@ import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { RabbitMQConsumerErrorFilter } from '@/app/messaging/rabbitmq/rabbitmq-consumer-error.filter';
 import { RmqPublisherService } from '@/app/messaging/rabbitmq/rmq-publisher.service';
 import { OrderReminderEvent } from '../../domain/events/order-reminder.event';
+import { th } from '@faker-js/faker/.';
 
 @Controller()
-@UseFilters(new RabbitMQConsumerErrorFilter())
+@UseFilters(RabbitMQConsumerErrorFilter)
 export class OrdersRabbitMQController {
   private readonly logger = new Logger(OrdersRabbitMQController.name);
 
   constructor(private readonly rmqService: RmqPublisherService) {}
 
-  @RabbitSubscribe({
-    exchange: 'direct.delayed', // O exchange de onde a mensagem virá
-    queue: 'delayed.queue',
-    routingKey: 'order.reminder', // A routingKey específica para este consumidor
-  })
-  handleRemain(message: any) {
-    this.logger.log(
-      `Received delayed email message: ${JSON.stringify(message)}`,
-    );
-    console.log('Passei no delayed');
-  }
+  // @RabbitSubscribe({
+  //   exchange: 'direct.delayed', // O exchange de onde a mensagem virá
+  //   queue: 'delayed.queue',
+  //   routingKey: 'order.created', // A routingKey específica para este consumidor
+  // })
+  // handleRemain(message: any) {
+  //   this.logger.log(
+  //     `Received delayed email message: ${JSON.stringify(message)}`,
+  //   );
+  //   console.log('Passei no delayed');
+  // }
 
   @RabbitSubscribe({
     exchange: 'orders-topic-exchange',
@@ -39,8 +40,6 @@ export class OrdersRabbitMQController {
     },
   })
   handle(message: any) {
-    console.log(`Receive message`);
-
     this.rmqService.publish(
       new OrderReminderEvent({
         orderId: message.id,
@@ -48,9 +47,23 @@ export class OrdersRabbitMQController {
         email: 'customerEmail',
         reminderType: 'ORDER_PAYMENT',
       }),
-      { headers: { 'x-delay': 10 * 1000 } },
+      { withDelay: { delay: 10 * 1000 } },
     );
   }
+
+  // @RabbitSubscribe({
+  //   exchange: 'direct.delayed',
+  //   routingKey: 'order.created',
+  //   queue: 'delayed.queue',
+  //   queueOptions: {
+  //     deadLetterExchange: 'dlx.exchange',
+  //     deadLetterRoutingKey: 'order.created', // TODO: trocar para order_remain
+  //   },
+  // })
+  // async handleDelayedMessages(message: any) {
+  //   this.logger.error('Cai no delayed error consumer');
+  //   throw new FakeError('Delayed error consumer');
+  // }
 
   // @RabbitSubscribe({
   //   exchange: 'orders-topic-exchange',
@@ -69,4 +82,11 @@ export class OrdersRabbitMQController {
   //   // Aqui pode ser ZodValidator... VadlidationExceptions e outros
   //   // throw new BadRequestException('Simulando erro');
   // }
+}
+
+class FakeError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FakeError';
+  }
 }

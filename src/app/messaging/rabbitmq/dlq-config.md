@@ -121,7 +121,7 @@ import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { RabbitMQConsumerErrorFilter } from './rabbitmq-consumer-error.filter';
 
 @Controller()
-@UseFilters(new RabbitMQConsumerErrorFilter())
+@UseFilters(RabbitMQConsumerErrorFilter())
 export class OrdersRabbitMQController {
   private readonly logger = new Logger(OrdersRabbitMQController.name);
 

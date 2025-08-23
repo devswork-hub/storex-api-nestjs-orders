@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { RabbitMQModule as GoLevelupRabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RmqPublisherService } from './rmq-publisher.service';
 import { InMemoryBroker } from './in-memory-broker';
+import { RabbitMQConsumerErrorFilter } from './rabbitmq-consumer-error.filter';
 
 @Global()
 @Module({
@@ -22,7 +23,16 @@ import { InMemoryBroker } from './in-memory-broker';
         { name: 'orders-topic-exchange', type: 'topic' },
       ],
       queues: [
-        { name: 'delayed.queue', exchange: 'direct.delayed' },
+        {
+          name: 'delayed.queue',
+          exchange: 'direct.delayed',
+          options: {
+            arguments: {
+              'x-dead-letter-exchange': 'dlx.exchange',
+              'x-dead-letter-routing-key': 'order.created',
+            },
+          },
+        },
         {
           name: 'dlx.queue',
           exchange: 'dlx.exchange',
@@ -52,11 +62,17 @@ import { InMemoryBroker } from './in-memory-broker';
           routingKey: ['order.created'],
           exchange: 'orders-topic-exchange',
         },
+        // {
+        //   name: 'orders-queue',
+        //   exchange: 'direct.delayed',
+        //   routingKey: 'order.created',
+        // },
       ],
       enableControllerDiscovery: true, // permite usar @RabbitSubscribe
     }),
   ],
   providers: [
+    RabbitMQConsumerErrorFilter,
     RmqPublisherService,
     { provide: 'MessageBrokerContract', useClass: InMemoryBroker },
   ],
