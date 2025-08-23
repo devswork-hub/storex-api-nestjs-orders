@@ -63,15 +63,29 @@ export class RabbitMQConsumerErrorFilter implements ExceptionFilter {
 
   private async retry(message: ConsumeMessage, previousRetryCount: number) {
     const headers = { ...(message.properties.headers || {}) };
-    headers[RabbitMQConsumerErrorFilter.RETRY_COUNT_HEADER] =
-      previousRetryCount + 1;
-    headers['x-delay'] = 5000; // delay de 5 segundos antes do próximo processamento
+    const retryCount = previousRetryCount + 1;
+    headers[RabbitMQConsumerErrorFilter.RETRY_COUNT_HEADER] = retryCount;
 
-    this.logger.debug('Reprocessando mensagem com delay de 5s');
+    // Pegando o delay original definido no header ou default 10s
+    const originalDelay =
+      parseInt(headers['x-original-delay'] as string, 10) || 10000;
+
+    // Calculando backoff exponencial: delay = originalDelay * 2^(retryCount-1)
+    const backoffDelay = originalDelay * Math.pow(2, retryCount - 1);
+    headers['x-delay'] = backoffDelay;
+
+    // Guardar o delay original no header para próximas tentativas
+    if (!headers['x-original-delay']) {
+      headers['x-original-delay'] = originalDelay;
+    }
+
+    this.logger.debug(
+      `Reprocessando mensagem com retry #${retryCount}, delay de ${backoffDelay}ms`,
+    );
 
     await this.amqpConnection.publish(
-      message.fields.exchange, // publica na mesma exchange de origem
-      message.fields.routingKey, // mesma routing key
+      message.fields.exchange,
+      message.fields.routingKey,
       message.content,
       {
         correlationId: message.properties.correlationId,
@@ -79,6 +93,25 @@ export class RabbitMQConsumerErrorFilter implements ExceptionFilter {
       },
     );
   }
+
+  // private async retry(message: ConsumeMessage, previousRetryCount: number) {
+  //   const headers = { ...(message.properties.headers || {}) };
+  //   headers[RabbitMQConsumerErrorFilter.RETRY_COUNT_HEADER] =
+  //     previousRetryCount + 1;
+  //   headers['x-delay'] = 5000; // delay de 5 segundos antes do próximo processamento
+
+  //   this.logger.debug('Reprocessando mensagem com delay de 5s');
+
+  //   await this.amqpConnection.publish(
+  //     message.fields.exchange, // publica na mesma exchange de origem
+  //     message.fields.routingKey, // mesma routing key
+  //     message.content,
+  //     {
+  //       correlationId: message.properties.correlationId,
+  //       headers,
+  //     },
+  //   );
+  // }
 
   // /**
   //  * Reprocessa a mensagem, incrementando o contador de tentativas no header

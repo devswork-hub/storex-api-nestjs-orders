@@ -37,6 +37,7 @@ import { RabbitMQConsumerErrorFilter } from './rabbitmq-consumer-error.filter';
           name: 'dlx.queue',
           exchange: 'dlx.exchange',
           routingKey: '#', // aceito qualquer routing key
+          createQueueIfNotExists: false,
         },
         {
           name: 'orders-queue',
