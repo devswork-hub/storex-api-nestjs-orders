@@ -185,3 +185,18 @@
 #### Docker Compose
 
 - https://medium.com/norsys-octogone/a-local-environment-for-mongodb-with-docker-compose-ba52445b93ed
+
+### Arquitetura de Eventos
+
+- `Rabbit`
+
+  - Configuracao de DLQ
+  - Reprocessamento de mensagens:
+    - Uso de delayed messages, exponential backoffice retry, retries;
+    - Nack e Unack de mensagens;
+
+- `Container`
+  - Composes moduleres;
+  - Utilitária para reset global;
+  - Facilitacao de scripts no package.json;
+  - Dockfiler modular;

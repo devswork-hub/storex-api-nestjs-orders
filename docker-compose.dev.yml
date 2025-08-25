@@ -4,6 +4,7 @@ include:
   # - docker-compose.kafka.yml
   # - docker-compose.keycloak.yml
   - docker-compose.pg.yml
+  - docker-compose.elk.yml
 
 services:
   redis:
@@ -25,17 +26,20 @@ services:
     env_file:
       - .env
 
-  # nestjs-c:
-  #   build: .
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - redis
-  #     - mongodb
-  #   networks:
-  #     - app
+  nestjs-c:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+      - mongodb
+    networks:
+      - app
+    labels:
+      filebeat_collector: true
+
 volumes:
   postgres_data:
   redis:

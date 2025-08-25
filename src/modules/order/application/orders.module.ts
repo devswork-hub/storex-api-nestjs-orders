@@ -67,7 +67,7 @@ export const OrderUseCasesProviders: Provider[] = [
 
 @Module({
   imports: [
-    RabbitmqWrapperModule,
+    RabbitmqWrapperModule.forRoot(),
     MongooseModule.forFeature([
       {
         name: OrderMongoEntity.name,

@@ -1,0 +1,11 @@
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTICSEARCH_KIBANA_IMAGE_TAG:-8.15.2}
+    env_file:
+      - .env
+    depends_on:
+      - elasticsearch
+    networks:
+      - common-net
+    ports:
+      - ${KIBANA_PUBLISH_PORT:-5601}:5601

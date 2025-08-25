@@ -38,7 +38,7 @@ import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.mod
     CustomCacheModule.forRoot({ isGlobal: true }),
     DomainsModule,
     KafkaModule,
-    RabbitmqWrapperModule,
+    RabbitmqWrapperModule.forRoot(),
   ],
 })
 export class AppModule {}

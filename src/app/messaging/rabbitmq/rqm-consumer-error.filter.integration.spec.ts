@@ -44,7 +44,7 @@ describe('Integration tests / RabbitMQConsumerErrorFilter', () => {
           ignoreEnvFile: true,
           validate: () => ({}), // evita erro de validation
         }),
-        RabbitmqWrapperModule,
+        RabbitmqWrapperModule.forRoot({ enableHandlers: true }),
       ],
       providers: [RabbitMQConsumerErrorFilter, StubConsumer],
     }).compile();
