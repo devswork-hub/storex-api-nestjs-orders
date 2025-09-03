@@ -11,7 +11,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@storex-domain/*": ["lib/@storex-domain/src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

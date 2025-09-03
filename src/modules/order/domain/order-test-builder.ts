@@ -1,6 +1,6 @@
 import { TestDataBuilder } from '@/shared/testing/test-data-builder';
 import { OrderModelContract } from './order';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import {
   Currency,
   CurrencyEnum,
@@ -10,6 +10,7 @@ import { fakeId } from '@/shared/testing/fake-id';
 export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {}
 
 export const orderTestData = new OrderTestBuilder()
+  .with('id', fakeId)
   .with('customerId', fakeId)
   .with('discount', {
     couponCode: 'BRL30',

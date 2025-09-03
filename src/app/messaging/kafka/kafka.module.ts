@@ -1,11 +1,9 @@
-// src/kafka/kafka.module.ts
 import { Module } from '@nestjs/common';
 import {
   ClientsModule,
   Transport,
   ClientProviderOptions,
 } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
 import { KafkaConsumer } from './kafka.consumer';
 import { ConfigValues } from '../../config/config.values';
 
