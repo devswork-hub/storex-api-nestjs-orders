@@ -4,7 +4,6 @@ import {
 } from '@/shared/domain/value-objects/currency.vo';
 import { OrderModel } from './order';
 import { Money } from '@/shared/domain/value-objects/money.vo';
-import { ExchangeRateProvider } from '@/shared/domain/value-objects/exchange-rate.provider';
 import { PaymentMethodEnum } from './order.constants';
 
 describe('Order', () => {
@@ -21,7 +20,7 @@ describe('Order', () => {
         ],
         currency: new Currency(CurrencyEnum.BRL),
         paymentSnapshot: {
-          method: PaymentMethodEnums.CREDIT_CARD,
+          method: PaymentMethodEnum.CREDIT_CARD,
           status: '',
           amount: 0,
         },

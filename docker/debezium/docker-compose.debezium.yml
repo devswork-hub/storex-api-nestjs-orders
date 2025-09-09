@@ -1,0 +1,11 @@
+services:
+  debezium:
+    container_name: debezium-server
+    image: quay.io/debezium/server
+    ports:
+      - 8080:8080
+    volumes:
+      - ./docker/debezium:/debezium/config
+    depends_on:
+      - rabbitmq
+      - postgres

@@ -1,0 +1,31 @@
+# services:
+#   postgres:
+#     image: postgres:10.5
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=password
+#       - POSTGRES_DB=test
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#       - ./postgresql.conf:/etc/postgresql/postgresql.conf
+#     ports:
+#       - 5432:5432
+#     command: ['postgres', '-c', 'config_file=/etc/postgresql/postgresql.conf']
+
+services:
+  postgres:
+    image: postgres:10.5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=test
+    logging:
+      options:
+        max-size: 10m
+        max-file: '3'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
