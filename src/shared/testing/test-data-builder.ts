@@ -1,17 +1,10 @@
-export class TestDataBuilder<T> {
-  private data: Partial<T> = {};
+export abstract class TestDataBuilder<T> {
+  protected defaults: Partial<T> = {};
+  private data: Partial<T>;
 
   constructor(initialData?: Partial<T>) {
-    if (initialData) {
-      this.data = { ...initialData };
-    }
+    this.data = { ...this.defaults, ...initialData };
   }
-  // TODO: validar se esse faz sentido, em relacao ao construtor de cima
-  // constructor(defaults?: Partial<T>) {
-  //   if (defaults) {
-  //     this.entity = defaults;
-  //   }
-  // }
 
   with<K extends keyof T>(key: K, value: T[K]): this {
     this.data[key] = value;
