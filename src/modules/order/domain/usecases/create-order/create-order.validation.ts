@@ -59,6 +59,11 @@ export const ShippingSnapshotInputSchema = z.object({
   recipient: z.string().optional(),
 });
 
+export const CustomerSnapshotInputSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
 export const CreateOrderSchema = z.object({
   status: z.string().min(1),
   items: z
@@ -68,6 +73,7 @@ export const CreateOrderSchema = z.object({
   paymentSnapshot: PaymentSnapshotInputSchema,
   shippingSnapshot: ShippingSnapshotInputSchema,
   billingAddress: BillingAddressInputSchema,
+  customerSnapshot: CustomerSnapshotInputSchema,
   customerId: z.string().min(1),
   paymentId: z.string().min(1),
   notes: z.string().optional(),

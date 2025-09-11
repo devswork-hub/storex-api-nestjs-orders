@@ -40,6 +40,7 @@ export class OrderMongoMapper {
       currency: order.currency.code,
       billingAddress: order.billingAddress,
       shippingSnapshot: order.shippingSnapshot,
+      customerSnapshot: order.customerSnapshot,
       paymentSnapshot: {
         ...order.paymentSnapshot,
         status: order.paymentSnapshot.status as PaymentStatusEnum,
@@ -87,6 +88,7 @@ export class OrderMongoMapper {
       billingAddress: raw.billingAddress,
       shippingSnapshot: raw.shippingSnapshot,
       paymentSnapshot: raw.paymentSnapshot,
+      customerSnapshot: raw.customerSnapshot,
       items: raw.items.map((item: any) => ({
         id: item._id,
         active: item.active,
@@ -128,6 +130,7 @@ export class OrderMongoMapper {
       billingAddress: raw.billingAddress,
       shippingSnapshot: raw.shippingSnapshot,
       paymentSnapshot: raw.paymentSnapshot,
+      customerSnapshot: raw.customerSnapshot,
       items: raw.items.map((i: any) => ({
         id: i._id,
         active: i.active,

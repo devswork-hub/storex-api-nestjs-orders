@@ -32,6 +32,7 @@ mutation CreateOrder {
         state: "SP"
         zipCode: "01234-567"
       }
+      customerSnapshot: { name: "João Silva", email: "js@email.com" }
     }
   ) {
     id
@@ -67,6 +68,10 @@ mutation CreateOrder {
       city
       state
       zipCode
+    }
+    customerSnapshot {
+      name
+      email
     }
   }
 }

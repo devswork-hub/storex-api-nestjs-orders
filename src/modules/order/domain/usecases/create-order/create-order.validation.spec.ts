@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { custom, z } from 'zod';
 import { CreateOrderSchema } from './create-order.validation';
 
 describe('CreateOrderSchema', () => {
@@ -16,6 +16,11 @@ describe('CreateOrderSchema', () => {
       status: 'ready',
       carrier: 'Correios',
       service: 'SEDEX',
+    },
+    customerSnapshot: {
+      customerId: 'customer-1',
+      name: 'João Silva',
+      email: 'email@gmail.com',
     },
     billingAddress: {
       street: 'Rua A',

@@ -21,6 +21,7 @@ import {
   PaymentMethodEnum,
   ShippingStatus,
 } from '../domain/order.constants';
+import { CustomerSnapshotOutput } from './graphql/outputs/customer-snapshot.output';
 
 export class OrderMapper {
   static toDomainInput(input: CreateOrderGraphQLInput): OrderModelInput {
@@ -61,6 +62,7 @@ export class OrderMapper {
         status: input.shippingSnapshot.status as ShippingStatus,
       },
       billingAddress: input.billingAddress,
+      customerSnapshot: input.customerSnapshot,
       customerId: input.customerId,
       paymentId: input.paymentId,
       notes: input.notes,
@@ -88,6 +90,7 @@ export class OrderMapper {
       paymentSnapshot: OrderMapper.mapPayment(order.paymentSnapshot),
       shippingSnapshot: OrderMapper.mapShipping(order.shippingSnapshot),
       billingAddress: OrderMapper.mapBillingAddress(order.billingAddress),
+      customerSnapshot: OrderMapper.mapCustomerSnapshot(order.customerSnapshot),
     };
   }
 
@@ -149,6 +152,14 @@ export class OrderMapper {
   ): BillingAddressOutput {
     return {
       ...address,
+    };
+  }
+
+  static mapCustomerSnapshot(
+    customer: OrderModelContract['customerSnapshot'],
+  ): CustomerSnapshotOutput {
+    return {
+      ...customer,
     };
   }
 }

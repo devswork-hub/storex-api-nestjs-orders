@@ -43,6 +43,7 @@ export class OrderTypeORMRepository implements OrderReadableRepositoryContract {
       paymentSnapshot: order.paymentSnapshot,
       shippingSnapshot: order.shippingSnapshot,
       billingAddress: order.billingAddress,
+      customerSnapshot: order.customerSnapshot,
       active: order.active,
       deleted: order.deleted,
       deletedAt: order.deletedAt,

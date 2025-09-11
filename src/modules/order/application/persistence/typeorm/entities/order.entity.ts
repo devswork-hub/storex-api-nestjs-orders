@@ -25,6 +25,9 @@ export class OrderTypeORMEntity {
   @Column({ type: 'jsonb' })
   billingAddress: any;
 
+  @Column({ type: 'jsonb' })
+  customerSnapshot: any;
+
   @Column()
   customerId: string;
 

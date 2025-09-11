@@ -1,8 +1,8 @@
 // import { DomainEventBus } from '../../../../../shared/domain/events/domain-event-bus';
-// import { CreateOrderCommand } from './create-order.command';
 // import { StubEvent } from '../../../../../shared/domain/events/stub-event';
+// import { CreateOrderTransactionCommandHandler } from './create-order-transaction.command';
 
-// describe(CreateOrderCommand.name, () => {
+// describe(CreateOrderTransactionCommandHandler.name, () => {
 //   let eventBus: DomainEventBus;
 
 //   beforeAll(() => {

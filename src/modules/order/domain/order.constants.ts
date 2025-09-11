@@ -82,3 +82,8 @@ export type ShippingStatus =
   | 'SHIPPED'
   | 'DELIVERED'
   | 'FAILED';
+
+export type CustomerSnapshot = Snapshot<{
+  name: string;
+  email: string;
+}>;

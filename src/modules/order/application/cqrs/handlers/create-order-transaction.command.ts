@@ -52,11 +52,12 @@ export class CreateOrderTransactionCommandHandler
       }
       await this.mailQueueService.dispatchTasks({
         payload: {
-          to: 'web.dborges@gmail.com',
-          subject: 'Pedido criado com sucesso',
-          body: 'Seu pedido foi recebido com sucesso!',
+          to: order.customerSnapshot.email, // e-mail do cliente
+          subject: 'Confirmação do Pedido', // assunto fixo ou dinâmico
+          body: `Olá ${order.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
         },
       });
+
       return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
     });
   }

@@ -146,6 +146,15 @@ class ShippingSnapshotInput {
   recipient?: string;
 }
 
+@InputType()
+class CustomerSnapshotInput {
+  @Field()
+  name: string;
+
+  @Field()
+  email: string;
+}
+
 // === CREATE ORDER INPUT ===
 @InputType({
   description: 'Dados necessários para a criação de um novo pedido.',
@@ -176,6 +185,11 @@ export class CreateOrderGraphQLInput {
     description: 'Endereço de cobrança do cliente.',
   })
   billingAddress: BillingAddressInput;
+
+  @Field(() => CustomerSnapshotInput, {
+    description: 'Informações do cliente no momento da compra.',
+  })
+  customerSnapshot: CustomerSnapshotInput;
 
   @Field({ description: 'ID do cliente responsável pela compra.' })
   customerId: string;

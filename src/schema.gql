@@ -16,36 +16,63 @@ type BillingAddressOutput {
   zipCode: String!
 }
 
-"""Dados necessários para a criação de um novo pedido."""
+"""
+Dados necessários para a criação de um novo pedido.
+"""
 input CreateOrderGraphQLInput {
-  """Endereço de cobrança do cliente."""
+  """
+  Endereço de cobrança do cliente.
+  """
   billingAddress: BillingAddressInput!
 
-  """Moeda utilizada no pedido."""
+  """
+  Moeda utilizada no pedido.
+  """
   currency: String!
 
-  """ID do cliente responsável pela compra."""
+  """
+  ID do cliente responsável pela compra.
+  """
   customerId: String!
 
-  """Desconto geral aplicado ao pedido."""
+  """
+  Informações do cliente no momento da compra.
+  """
+  customerSnapshot: CustomerSnapshotInput!
+
+  """
+  Desconto geral aplicado ao pedido.
+  """
   discount: DiscountInput
 
-  """Lista de itens que compõem o pedido."""
+  """
+  Lista de itens que compõem o pedido.
+  """
   items: [OrderItemInput!]!
 
-  """Observações adicionais fornecidas pelo cliente ou sistema."""
+  """
+  Observações adicionais fornecidas pelo cliente ou sistema.
+  """
   notes: String
 
-  """ID do pagamento associado."""
+  """
+  ID do pagamento associado.
+  """
   paymentId: String!
 
-  """Informações do pagamento no momento da compra."""
+  """
+  Informações do pagamento no momento da compra.
+  """
   paymentSnapshot: PaymentSnapshotInput!
 
-  """Detalhes da logística e envio do pedido."""
+  """
+  Detalhes da logística e envio do pedido.
+  """
   shippingSnapshot: ShippingSnapshotInput!
 
-  """Status inicial do pedido (ex: pending, paid)."""
+  """
+  Status inicial do pedido (ex: pending, paid).
+  """
   status: String!
 }
 
@@ -62,27 +89,52 @@ input CursorPaginationInput {
   limit: Int = 10
 }
 
+input CustomerSnapshotInput {
+  email: String!
+  name: String!
+}
+
+"""
+Representa uma composição do Order
+"""
+type CustomerSnapshotOutput {
+  email: String!
+  name: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
-"""Informações de desconto aplicável à compra."""
+"""
+Informações de desconto aplicável à compra.
+"""
 input DiscountInput {
-  """Código do cupom de desconto."""
+  """
+  Código do cupom de desconto.
+  """
   couponCode: String!
 
-  """Moeda usada no desconto."""
+  """
+  Moeda usada no desconto.
+  """
   currency: String!
 
-  """Tipo do desconto (percentage ou fixed)."""
+  """
+  Tipo do desconto (percentage ou fixed).
+  """
   type: String!
 
-  """Valor do desconto aplicado."""
+  """
+  Valor do desconto aplicado.
+  """
   value: Float!
 }
 
-"""Representa uma composição do Order"""
+"""
+Representa uma composição do Order
+"""
 type DiscountOutput {
   couponCode: String!
   currency: String!
@@ -106,16 +158,24 @@ type InstallmentOutput {
   value: Float!
 }
 
-"""Representa um valor monetário com moeda e quantia."""
+"""
+Representa um valor monetário com moeda e quantia.
+"""
 input MoneyInput {
-  """Quantia monetária (ex: 99.99)."""
+  """
+  Quantia monetária (ex: 99.99).
+  """
   amount: Float!
 
-  """Código da moeda (ex: BRL, USD)."""
+  """
+  Código da moeda (ex: BRL, USD).
+  """
   currency: String!
 }
 
-"""Representa o objeto de valor, Money"""
+"""
+Representa o objeto de valor, Money
+"""
 type MoneyOutput {
   amount: Float!
   currency: String!
@@ -145,33 +205,53 @@ input OrderFilterInput {
   status: String
 }
 
-"""Item que compõe o pedido."""
+"""
+Item que compõe o pedido.
+"""
 input OrderItemInput {
-  """Descrição do produto."""
+  """
+  Descrição do produto.
+  """
   description: String
 
-  """Desconto aplicado ao item, se houver."""
+  """
+  Desconto aplicado ao item, se houver.
+  """
   discount: DiscountInput
 
-  """URL da imagem do produto."""
+  """
+  URL da imagem do produto.
+  """
   imageUrl: String
 
-  """Preço unitário do produto."""
+  """
+  Preço unitário do produto.
+  """
   price: MoneyInput!
 
-  """ID do produto."""
+  """
+  ID do produto.
+  """
   productId: String!
 
-  """Quantidade desejada do produto."""
+  """
+  Quantidade desejada do produto.
+  """
   quantity: Float!
 
-  """Identificador do vendedor, se aplicável."""
+  """
+  Identificador do vendedor, se aplicável.
+  """
   seller: String
 
-  """ID do envio (caso item tenha logística individual)."""
+  """
+  ID do envio (caso item tenha logística individual).
+  """
   shippingId: String
 
-  """Título do produto."""
+  """
+  Título do produto.
+  """
   title: String
 }
 
@@ -199,6 +279,7 @@ type OrderOuput {
   createdAt: DateTime
   currency: String!
   customerId: String!
+  customerSnapshot: CustomerSnapshotOutput!
   deleted: Boolean
   deletedAt: DateTime
   discount: DiscountOutput
@@ -219,7 +300,9 @@ input OrderSortInput {
   field: String!
 }
 
-"""Possible order statuses"""
+"""
+Possible order statuses
+"""
 enum OrderStatus {
   AWAITING_SHIPMENT
   CANCELLED
@@ -235,7 +318,9 @@ type OrderStatusUpdateType {
   status: OrderStatus!
 }
 
-union PaginatedOrderResult = CursorPaginatedOrderResult | OffsetPaginatedOrderResult
+union PaginatedOrderResult =
+  | CursorPaginatedOrderResult
+  | OffsetPaginatedOrderResult
 
 input PaginationInput {
   cursor: CursorPaginationInput
@@ -263,7 +348,11 @@ type Query {
   findAllOrders: [OrderOuput!]!
   findOrderById(id: String!): OrderOuput
   healthCheck: String!
-  searchOrders(filter: OrderFilterInput, pagination: PaginationInput, sort: OrderSortInput): PaginatedOrderResult!
+  searchOrders(
+    filter: OrderFilterInput
+    pagination: PaginationInput
+    sort: OrderSortInput
+  ): PaginatedOrderResult!
 }
 
 type ShippingOutput {

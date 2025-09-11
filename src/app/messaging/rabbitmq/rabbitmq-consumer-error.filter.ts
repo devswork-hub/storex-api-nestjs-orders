@@ -8,7 +8,7 @@ import {
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { ConsumeMessage, MessagePropertyHeaders } from 'amqplib';
+import { ConsumeMessage } from 'amqplib';
 
 @Catch()
 export class RabbitMQConsumerErrorFilter implements ExceptionFilter {

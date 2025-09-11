@@ -2,6 +2,7 @@ import { OrderItemModel, OrderItemModelContract } from './order-item';
 import { Currency } from '../../../shared/domain/value-objects/currency.vo';
 import {
   BillingAddress,
+  CustomerSnapshot,
   Discount,
   OrderStatus,
   OrderStatusEnum,
@@ -28,6 +29,7 @@ export type OrderModelContract = {
   paymentSnapshot: PaymentSnapshot; // Snapshot da informação de pagamento no momento da criação do pedido
   shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
   billingAddress: BillingAddress; // Endereço de cobrança
+  customerSnapshot: CustomerSnapshot;
   customerId: string; // ID do cliente na API de clientes
   paymentId?: string | null; // ID do pagamento na API de pagamentos
   notes?: string; // Observações feitas pelo cliente
@@ -45,6 +47,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   paymentId: string;
   notes?: string;
   discount?: Discount;
+  customerSnapshot: CustomerSnapshot;
 
   constructor(props: OrderModelInput) {
     const id = OrderID.generate(OrderID).getValue();
@@ -150,6 +153,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
       billingAddress: this.billingAddress,
       customerId: this.customerId,
       paymentId: this.paymentId,
+      customerSnapshot: this.customerSnapshot,
       notes: this.notes,
       discount: this.discount,
       createdAt: this.createdAt,
