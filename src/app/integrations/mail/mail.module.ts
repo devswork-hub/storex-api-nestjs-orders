@@ -23,7 +23,7 @@ import { EmailsQueueProcessor } from './send-email.processor';
       name: mailQueueName,
     }),
   ],
-  providers: [MailService, MailQueueService, EmailsQueueProcessor],
-  exports: [MailService, MailQueueService],
+  providers: [MailQueueService, EmailsQueueProcessor],
+  exports: [MailQueueService],
 })
 export class MailModule {}
