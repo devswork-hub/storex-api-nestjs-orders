@@ -7,9 +7,9 @@ import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
 import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
-import { OrderTypeORMRepository } from '../../persistence/typeorm/order.typeorm-repository';
 import { Inject } from '@nestjs/common';
 import { MailQueueService } from '@/app/integrations/mail/mail-queue.service';
+import { OrderWritableRepositoryContract } from '../../persistence/order.respository';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -27,8 +27,14 @@ export class CreateOrderTransactionCommandHandler
     /**
      * Usando o inject, pra nao precisar declarar todos os providers explicitamente na useFactory na injecao dos providers
      */
-    @Inject('OrderReadableRepositoryContract')
-    private readonly orderRepository: OrderTypeORMRepository,
+    /**
+     * Toda vez que eu tiver OrderWritableRepositoryContract,
+     * o Nest vai injetar a implementação configurada (OrderTypeORMRepository).
+     * - Token no @Inject → garante que o Nest saiba qual provider instanciar.
+     * - Tipo da propriedade → garante que o seu código só use o que o contrato expõe.
+     */
+    @Inject('OrderWritableRepositoryContract')
+    private readonly orderRepository: OrderWritableRepositoryContract,
     private readonly mailQueueService: MailQueueService,
   ) {}
 
@@ -47,16 +53,18 @@ export class CreateOrderTransactionCommandHandler
 
       await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
 
+      console.log(`✅ Cache invalidado`);
       for (const event of events) {
         await this.outboxService.save(event, manager);
       }
       await this.mailQueueService.dispatchTasks({
         payload: {
-          to: 'web.dborges@gmail.com',
-          subject: 'Pedido criado com sucesso',
-          body: 'Seu pedido foi recebido com sucesso!',
+          to: order.customerSnapshot.email, // e-mail do cliente
+          subject: 'Confirmação do Pedido', // assunto fixo ou dinâmico
+          body: `Olá ${order.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
         },
       });
+
       return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
     });
   }

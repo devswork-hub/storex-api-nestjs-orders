@@ -25,14 +25,18 @@ import { OrdersProjectionService } from './persistence/orders-projection.service
 import { OrdersProjectionCronService } from './persistence/orders-projection-cron.service';
 import { MailModule } from '@/app/integrations/mail/mail.module';
 import { RabbitmqWrapperModule } from '@/app/messaging/rabbitmq/rabbitmq.wrapper.module';
+import {
+  OrderReadableRepositoryContract,
+  OrderWritableRepositoryContract,
+} from './persistence/order.respository';
 
 export const OrderRepositoryProvider: Provider[] = [
   {
-    provide: 'OrderRepositoryContract',
+    provide: 'OrderReadableRepositoryContract',
     useClass: OrderMongoRepository,
   },
   {
-    provide: 'OrderReadableRepositoryContract',
+    provide: 'OrderWritableRepositoryContract',
     useClass: OrderTypeORMRepository,
   },
 ];
@@ -40,28 +44,33 @@ export const OrderRepositoryProvider: Provider[] = [
 export const OrderUseCasesProviders: Provider[] = [
   {
     provide: CreateOrderService,
-    useFactory: (repo: any) => new CreateOrderService(repo),
-    inject: ['OrderReadableRepositoryContract'],
+    useFactory: (repo: OrderWritableRepositoryContract) =>
+      new CreateOrderService(repo),
+    inject: ['OrderWritableRepositoryContract'],
   },
   {
     provide: UpdateOrderService,
-    useFactory: (repo: any) => new UpdateOrderService(repo),
-    inject: ['OrderRepositoryContract'],
+    useFactory: (repo: OrderWritableRepositoryContract) =>
+      new UpdateOrderService(repo),
+    inject: ['OrderWritableRepositoryContract'],
   },
   {
     provide: DeleteOrderService,
-    useFactory: (repo: any) => new DeleteOrderService(repo),
-    inject: ['OrderRepositoryContract'],
+    useFactory: (repo: OrderWritableRepositoryContract) =>
+      new DeleteOrderService(repo),
+    inject: ['OrderWritableRepositoryContract'],
   },
   {
     provide: FindOneOrderService,
-    useFactory: (repo: any) => new FindOneOrderService(repo),
-    inject: ['OrderRepositoryContract'],
+    useFactory: (repo: OrderReadableRepositoryContract) =>
+      new FindOneOrderService(repo),
+    inject: ['OrderReadableRepositoryContract'],
   },
   {
     provide: FindAllOrderService,
-    useFactory: (repo: any) => new FindAllOrderService(repo),
-    inject: ['OrderRepositoryContract'],
+    useFactory: (repo: OrderReadableRepositoryContract) =>
+      new FindAllOrderService(repo),
+    inject: ['OrderReadableRepositoryContract'],
   },
 ];
 

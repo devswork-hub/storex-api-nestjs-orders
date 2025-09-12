@@ -14,6 +14,13 @@ services:
       - 6379:6379
     volumes:
       - redis:/data
+  redis-bullmq:
+    container_name: redis-bullmq
+    image: redis
+    ports:
+      - 6380:6379
+    volumes:
+      - redis:/data
   mongodb:
     image: mongo:latest
     restart: always

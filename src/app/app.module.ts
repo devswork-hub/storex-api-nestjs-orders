@@ -15,11 +15,15 @@ import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.mod
 
 @Module({
   imports: [
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
+    CustomCacheModule.forRoot({ isGlobal: true }),
+    BullModule.forRootAsync({
+      inject: [ConfigValues],
+      useFactory: (cfg: ConfigValues) => ({
+        connection: {
+          host: cfg.get('BULLMQ_HOST'),
+          port: cfg.get('BULLMQ_PORT'),
+        },
+      }),
     }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
@@ -35,7 +39,6 @@ import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.mod
     }),
     TypeORMModule,
     PersistenceModule.register({ type: 'mongoose', global: true }),
-    CustomCacheModule.forRoot({ isGlobal: true }),
     DomainsModule,
     KafkaModule,
     RabbitmqWrapperModule.forRoot(),

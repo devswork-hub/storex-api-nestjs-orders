@@ -62,4 +62,5 @@ export const mockOrder: OrderModelContract = {
     state: 'MA',
     zipCode: '',
   },
+  customerSnapshot: { name: 'João Silva', email: '' },
 };

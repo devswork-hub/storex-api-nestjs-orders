@@ -8,7 +8,6 @@ import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { RabbitMQConsumerErrorFilter } from '@/app/messaging/rabbitmq/rabbitmq-consumer-error.filter';
 import { RmqPublisherService } from '@/app/messaging/rabbitmq/rmq-publisher.service';
 import { OrderReminderEvent } from '../../domain/events/order-reminder.event';
-import { th } from '@faker-js/faker/.';
 
 @Controller()
 @UseFilters(RabbitMQConsumerErrorFilter)
@@ -45,7 +44,6 @@ export class OrdersRabbitMQController {
         orderId: message.id,
         customerId: message.customerId,
         email: 'customerEmail',
-        reminderType: 'ORDER_PAYMENT',
       }),
       { withDelay: { delay: 10 * 1000 } },
     );

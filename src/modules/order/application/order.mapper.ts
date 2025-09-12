@@ -21,6 +21,7 @@ import {
   PaymentMethodEnum,
   ShippingStatus,
 } from '../domain/order.constants';
+import { CustomerSnapshotOutput } from './graphql/outputs/customer-snapshot.output';
 
 export class OrderMapper {
   static toDomainInput(input: CreateOrderGraphQLInput): OrderModelInput {
@@ -61,6 +62,7 @@ export class OrderMapper {
         status: input.shippingSnapshot.status as ShippingStatus,
       },
       billingAddress: input.billingAddress,
+      customerSnapshot: input.customerSnapshot,
       customerId: input.customerId,
       paymentId: input.paymentId,
       notes: input.notes,
@@ -83,11 +85,19 @@ export class OrderMapper {
       active: order.active,
       deleted: order.deleted,
       deletedAt: order.deletedAt,
-      items: order.items.map((item) => OrderMapper.toOrderItemOutput(item)),
+      items: (order.items ?? []).map((item) =>
+        OrderMapper.toOrderItemOutput(item),
+      ),
+
       discount: OrderMapper.mapDiscount(order.discount),
       paymentSnapshot: OrderMapper.mapPayment(order.paymentSnapshot),
       shippingSnapshot: OrderMapper.mapShipping(order.shippingSnapshot),
       billingAddress: OrderMapper.mapBillingAddress(order.billingAddress),
+      ...(order.customerSnapshot && {
+        customerSnapshot: OrderMapper.mapCustomerSnapshot(
+          order.customerSnapshot,
+        ),
+      }),
     };
   }
 
@@ -99,7 +109,7 @@ export class OrderMapper {
       quantity: item.quantity,
       price: {
         amount: item.price.amount,
-        currency: item.price.currency.code,
+        currency: item.price.currency.code, // <-- transforma em string
       },
       discount: item.discount ? this.mapDiscount(item.discount) : undefined,
       seller: item.seller,
@@ -149,6 +159,14 @@ export class OrderMapper {
   ): BillingAddressOutput {
     return {
       ...address,
+    };
+  }
+
+  static mapCustomerSnapshot(
+    customer: OrderModelContract['customerSnapshot'],
+  ): CustomerSnapshotOutput {
+    return {
+      ...customer,
     };
   }
 }

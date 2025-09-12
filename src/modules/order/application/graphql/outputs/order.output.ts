@@ -1,10 +1,11 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { PaymentOutput } from './payment.output';
 import { ShippingOutput } from './shipping.output';
 import { BillingAddressOutput } from './billing-address.output';
 import { DiscountOutput } from './discount.output';
 import { OrderItemOutput } from './order-item.output';
 import { OrderStatusEnum } from '../../../domain/order.constants';
+import { CustomerSnapshotOutput } from './customer-snapshot.output';
 
 registerEnumType(OrderStatusEnum, {
   name: 'OrderStatus',
@@ -36,6 +37,9 @@ export class OrderOuput {
 
   @Field(() => BillingAddressOutput)
   billingAddress: BillingAddressOutput;
+
+  @Field(() => CustomerSnapshotOutput)
+  customerSnapshot: CustomerSnapshotOutput;
 
   @Field()
   customerId: string;

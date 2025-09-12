@@ -2,15 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { OrderTypeORMEntity } from './entities/order.entity';
 import { OrderModelContract, OrderModelInput } from '../../../domain/order';
-import { OrderReadableRepositoryContract } from '../order.readable-respository';
+import { OrderWritableRepositoryContract } from '../order.respository';
 
 @Injectable()
-export class OrderTypeORMRepository implements OrderReadableRepositoryContract {
+export class OrderTypeORMRepository implements OrderWritableRepositoryContract {
   private readonly logger = new Logger(OrderTypeORMRepository.name);
   private repo: Repository<OrderTypeORMEntity>;
   private transactionManager?: EntityManager;
 
-  constructor(private readonly dataSource: DataSource) {
+  constructor(dataSource: DataSource) {
     this.repo = dataSource.getRepository(OrderTypeORMEntity);
     this.logger.log('OrderTypeORMRepository initialized with default repo');
   }
@@ -25,11 +25,12 @@ export class OrderTypeORMRepository implements OrderReadableRepositoryContract {
     return this.repo;
   }
 
-  async createOne(order: OrderModelContract): Promise<void> {
-    // this.logger.log(`Saving order with id=${order.id}`);
+  async createOne(order: OrderModelContract): Promise<any> {
+    this.logger.log(`Saving order with id=${order.id}`);
     const orderEntity = this.toEntity(order);
     await this.getRepository().save(orderEntity);
     this.logger.log(`Order with id=${order.id} saved`);
+    return null;
   }
 
   private toEntity(order: OrderModelContract): OrderTypeORMEntity {
@@ -43,6 +44,7 @@ export class OrderTypeORMRepository implements OrderReadableRepositoryContract {
       paymentSnapshot: order.paymentSnapshot,
       shippingSnapshot: order.shippingSnapshot,
       billingAddress: order.billingAddress,
+      customerSnapshot: order.customerSnapshot,
       active: order.active,
       deleted: order.deleted,
       deletedAt: order.deletedAt,

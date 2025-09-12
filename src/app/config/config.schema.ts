@@ -49,4 +49,12 @@ export const ConfigSchema = z.object({
 
   KAFKA_BROKERS: z.string().nonempty(),
   KAFKA_CONSUMER_GROUP: z.string().nonempty(),
+
+  BULLMQ_HOST: z.string().nonempty(),
+  BULLMQ_PORT: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => !isNaN(val), {
+      message: 'BULLMQ_PORT must be a valid number',
+    }),
 });

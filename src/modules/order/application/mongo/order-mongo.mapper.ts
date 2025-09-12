@@ -18,16 +18,16 @@ import { DateUtils } from '@/shared/domain/date';
 export type OrderMongoProps = Omit<OrderMongoEntity, keyof Document>;
 
 export class OrderMongoMapper {
+  // Converte do domínio para o Mongo (persistência)
   static toPersistence(order: OrderModelContract): OrderMongoProps {
     return {
       _id: order.id,
-      status: order.status,
+      status: order.status, // salvo como string
       active: order.active,
       deleted: order.deleted,
       deletedAt: order.deletedAt
         ? DateUtils.getDate(order.deletedAt)
         : undefined,
-
       createdAt: order.createdAt
         ? DateUtils.getDate(order.createdAt)
         : undefined,
@@ -37,40 +37,43 @@ export class OrderMongoMapper {
       customerId: order.customerId,
       paymentId: order.paymentId,
       notes: order.notes,
-      currency: order.currency.code,
+      currency: order.currency.code, // salvo como string
       billingAddress: order.billingAddress,
       shippingSnapshot: order.shippingSnapshot,
+      customerSnapshot: order.customerSnapshot,
       paymentSnapshot: {
         ...order.paymentSnapshot,
         status: order.paymentSnapshot.status as PaymentStatusEnum,
       },
-      items: order.items.map((i) => ({
-        _id: i.id,
-        active: i.active,
-        deleted: i.deleted,
-        createdAt: i.createdAt,
-        updatedAt: i.updatedAt,
-        productId: i.productId,
-        quantity: i.quantity,
-        price: {
-          amount: i.price.amount,
-          currency: i.price.currency.code,
-        },
-        seller: i.seller,
-        title: i.title,
-        imageUrl: i.imageUrl,
-        description: i.description,
-        shippingId: i.shippingId,
-      })),
+      items:
+        order.items.map((i) => ({
+          _id: i.id,
+          active: i.active,
+          deleted: i.deleted,
+          createdAt: i.createdAt,
+          updatedAt: i.updatedAt,
+          productId: i.productId,
+          quantity: i.quantity,
+          price: {
+            amount: i.price.amount,
+            currency: i.price.currency.code, // string
+          },
+          seller: i.seller,
+          title: i.title,
+          imageUrl: i.imageUrl,
+          description: i.description,
+          shippingId: i.shippingId,
+        })) || [],
       discount: order.discount
         ? {
             ...order.discount,
-            currency: order.discount.currency.code,
+            currency: order.discount.currency.code, // string
           }
         : undefined,
     };
   }
 
+  // Converte do Mongo para o domínio
   static fromPersistence(raw: OrderMongoEntityProps): OrderModelContract {
     return OrderModel.create({
       id: raw._id,
@@ -87,21 +90,28 @@ export class OrderMongoMapper {
       billingAddress: raw.billingAddress,
       shippingSnapshot: raw.shippingSnapshot,
       paymentSnapshot: raw.paymentSnapshot,
-      items: raw.items.map((item: any) => ({
-        id: item._id,
-        active: item.active,
-        deleted: item.deleted,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        productId: item.productId,
-        quantity: item.quantity,
-        price: new Money(item.price.amount, new Currency(item.price.currency)),
-        seller: item.seller,
-        title: item.title,
-        imageUrl: item.imageUrl,
-        description: item.description,
-        shippingId: item.shippingId,
+      customerSnapshot: raw.customerSnapshot,
+      items: (raw.items ?? []).map((i: any) => ({
+        id: i._id ?? i.id,
+        active: i.active,
+        deleted: i.deleted,
+        createdAt: i.createdAt,
+        updatedAt: i.updatedAt,
+        productId: i.productId,
+        quantity: i.quantity,
+        price: new Money(
+          i.price.amount,
+          typeof i.price.currency === 'string'
+            ? new Currency(i.price.currency as CurrencyEnum)
+            : new Currency(i.price.currency.code as CurrencyEnum),
+        ),
+        seller: i.seller,
+        title: i.title,
+        imageUrl: i.imageUrl,
+        description: i.description,
+        shippingId: i.shippingId,
       })),
+
       discount: raw.discount
         ? {
             ...raw.discount,
@@ -112,10 +122,11 @@ export class OrderMongoMapper {
     });
   }
 
+  // Mapper genérico para reconstruir domínio a partir de qualquer "raw" (ex.: payload do evento)
   static toDomain(raw: any): OrderModelContract {
     return OrderModel.create({
-      id: raw._id,
-      status: raw.status,
+      id: raw._id ?? raw.id,
+      status: raw.status as OrderStatus,
       active: raw.active,
       deleted: raw.deleted,
       deletedAt: raw.deletedAt,
@@ -124,12 +135,17 @@ export class OrderMongoMapper {
       customerId: raw.customerId,
       paymentId: raw.paymentId,
       notes: raw.notes,
-      currency: new Currency(raw.currency.code as CurrencyEnum),
+      currency: new Currency(
+        typeof raw.currency === 'string'
+          ? (raw.currency as CurrencyEnum)
+          : raw.currency.code,
+      ),
       billingAddress: raw.billingAddress,
       shippingSnapshot: raw.shippingSnapshot,
       paymentSnapshot: raw.paymentSnapshot,
-      items: raw.items.map((i: any) => ({
-        id: i._id,
+      customerSnapshot: raw.customerSnapshot,
+      items: (raw.items ?? []).map((i: any) => ({
+        id: i._id ?? i.id,
         active: i.active,
         deleted: i.deleted,
         createdAt: i.createdAt,
@@ -138,7 +154,9 @@ export class OrderMongoMapper {
         quantity: i.quantity,
         price: new Money(
           i.price.amount,
-          new Currency(i.price.currency.code as CurrencyEnum),
+          typeof i.price.currency === 'string'
+            ? new Currency(i.price.currency as CurrencyEnum)
+            : new Currency(i.price.currency.code as CurrencyEnum),
         ),
         seller: i.seller,
         title: i.title,
@@ -146,10 +164,15 @@ export class OrderMongoMapper {
         description: i.description,
         shippingId: i.shippingId,
       })),
+
       discount: raw.discount
         ? {
             ...raw.discount,
-            currency: new Currency(raw.discount.currency),
+            type: raw.discount.type as DiscountTypeEnum,
+            currency:
+              typeof raw.discount.currency === 'string'
+                ? new Currency(raw.discount.currency as CurrencyEnum)
+                : new Currency(raw.discount.currency.code as CurrencyEnum),
           }
         : undefined,
     });

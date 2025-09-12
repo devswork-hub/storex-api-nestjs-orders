@@ -1,11 +1,10 @@
-import { DomainEventType } from '../../../../shared/domain/events/domain-event';
-import { UUID } from '../../../../shared/domain/value-objects/uuid.vo';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
+import { UUID } from '@/shared/domain/value-objects/uuid.vo';
 
 type OrderReminderPayload = {
   orderId: string;
   customerId: string;
   email: string;
-  reminderType: 'ORDER_PAYMENT';
 };
 
 export class OrderReminderEvent implements DomainEventType {

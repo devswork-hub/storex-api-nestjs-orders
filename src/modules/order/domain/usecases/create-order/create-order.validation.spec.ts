@@ -17,6 +17,11 @@ describe('CreateOrderSchema', () => {
       carrier: 'Correios',
       service: 'SEDEX',
     },
+    customerSnapshot: {
+      customerId: 'customer-1',
+      name: 'João Silva',
+      email: 'email@gmail.com',
+    },
     billingAddress: {
       street: 'Rua A',
       city: 'São Luís',

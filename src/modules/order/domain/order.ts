@@ -2,6 +2,7 @@ import { OrderItemModel, OrderItemModelContract } from './order-item';
 import { Currency } from '../../../shared/domain/value-objects/currency.vo';
 import {
   BillingAddress,
+  CustomerSnapshot,
   Discount,
   OrderStatus,
   OrderStatusEnum,
@@ -28,6 +29,7 @@ export type OrderModelContract = {
   paymentSnapshot: PaymentSnapshot; // Snapshot da informação de pagamento no momento da criação do pedido
   shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
   billingAddress: BillingAddress; // Endereço de cobrança
+  customerSnapshot: CustomerSnapshot;
   customerId: string; // ID do cliente na API de clientes
   paymentId?: string | null; // ID do pagamento na API de pagamentos
   notes?: string; // Observações feitas pelo cliente
@@ -45,11 +47,18 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   paymentId: string;
   notes?: string;
   discount?: Discount;
+  customerSnapshot: CustomerSnapshot;
 
   constructor(props: OrderModelInput) {
     const id = OrderID.generate(OrderID).getValue();
     super({ ...props, id });
-    Object.assign(this, props);
+
+    // Certifica que items sempre sejam OrderItemModel
+    this.items = (props.items ?? []).map((item) =>
+      item instanceof OrderItemModel ? item : new OrderItemModel(item),
+    );
+
+    Object.assign(this, props); // agora não sobrescreve this.items
     this.validateCurrencyEntry();
   }
 
@@ -124,7 +133,6 @@ export class OrderModel extends BaseModel implements OrderModelContract {
         customerId: this.customerId,
         // TODO: pegar o email do cliente no customerSnapshot que ainda nao construi
         email: '',
-        reminderType: 'ORDER_PAYMENT',
       }),
     );
   }
@@ -132,7 +140,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   static create(props: OrderModelInput): OrderModel {
     const order = new OrderModel({
       ...props,
-      items: props.items.map((item) => new OrderItemModel(item)),
+      items: (props.items ?? []).map((item) => new OrderItemModel(item)),
     });
     order.status = OrderStatusEnum.PENDING;
     order.addDomainEvent(new OrderCreatedEvent(order.toContract()));
@@ -150,6 +158,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
       billingAddress: this.billingAddress,
       customerId: this.customerId,
       paymentId: this.paymentId,
+      customerSnapshot: this.customerSnapshot,
       notes: this.notes,
       discount: this.discount,
       createdAt: this.createdAt,

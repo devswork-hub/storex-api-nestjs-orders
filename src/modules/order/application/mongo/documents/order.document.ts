@@ -6,6 +6,7 @@ import { PaymentSubdocument } from '../subdocuments/payment.subdocument';
 import { ShippingSubdocument } from '../subdocuments/shipping.subdocument';
 import { BillingAddressSubdocument } from '../subdocuments/billing-address.subdocument';
 import { OrderItemSubdocument, OrderItemSchema } from './order-item.document';
+import { CustomerSnapshotSubdocument } from '../subdocuments/customer-snapshot.subdocument';
 
 export type OrderMongoEntityProps = Omit<OrderDocument, 'id'> & {
   _id: string;
@@ -33,6 +34,9 @@ export class OrderMongoEntity {
 
   @Prop({ type: BillingAddressSubdocument, required: true })
   billingAddress: BillingAddressSubdocument;
+
+  @Prop({ type: CustomerSnapshotSubdocument, required: true })
+  customerSnapshot: CustomerSnapshotSubdocument;
 
   @Prop({ required: true })
   customerId: string;

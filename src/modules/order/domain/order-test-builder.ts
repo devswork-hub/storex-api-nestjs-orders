@@ -7,14 +7,16 @@ import {
 } from '@/shared/domain/value-objects/currency.vo';
 import { fakeId } from '@/shared/testing/fake-id';
 
-// export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {}
-
 export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
   protected defaults: Partial<OrderModelContract> = {
     id: fakeId,
     customerId: fakeId,
     currency: new Currency(CurrencyEnum.BRL),
     active: true,
+    customerSnapshot: {
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+    },
     billingAddress: {
       city: faker.location.city(),
       state: faker.location.state(),
@@ -55,15 +57,5 @@ export const orderTestData = new OrderTestBuilder()
     state: faker.location.state.toString(),
     street: faker.location.street.toString(),
     zipCode: faker.location.zipCode.toString(),
-  })
-  .build();
-
-const order = new OrderTestBuilder().build(); // já vem com defaults
-const orderWithDiscount = new OrderTestBuilder()
-  .with('discount', {
-    couponCode: 'BRL30',
-    currency: new Currency(CurrencyEnum.BRL),
-    type: 'percentage',
-    value: 150,
   })
   .build();

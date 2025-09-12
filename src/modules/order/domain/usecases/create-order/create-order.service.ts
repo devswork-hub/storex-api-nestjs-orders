@@ -1,8 +1,8 @@
+import { OrderWritableRepositoryContract } from '@/modules/order/application/persistence/order.respository';
 import { BaseUseCaseContract } from '../../../../../shared/domain/base/usecase.base';
 import { OrderModel, OrderModelContract } from '../../order';
 import { CreateOrderInput } from './create-order.input';
 import { DomainEventType } from '@/shared/domain/events/domain-event';
-import { OrderReadableRepositoryContract } from '../../../application/persistence/order.readable-respository';
 
 type Input = CreateOrderInput;
 type Output = { order: OrderModelContract; events: DomainEventType[] };
@@ -10,7 +10,7 @@ type Output = { order: OrderModelContract; events: DomainEventType[] };
 export class CreateOrderService
   implements BaseUseCaseContract<CreateOrderInput, Output>
 {
-  constructor(private readonly repository: OrderReadableRepositoryContract) {}
+  constructor(private readonly repository: OrderWritableRepositoryContract) {}
 
   async execute(dto: Input): Promise<Output> {
     const entity = OrderModel.create(dto);

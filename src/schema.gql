@@ -27,6 +27,9 @@ input CreateOrderGraphQLInput {
   """ID do cliente responsável pela compra."""
   customerId: String!
 
+  """Informações do cliente no momento da compra."""
+  customerSnapshot: CustomerSnapshotInput!
+
   """Desconto geral aplicado ao pedido."""
   discount: DiscountInput
 
@@ -60,6 +63,17 @@ type CursorPaginatedOrderResult {
 input CursorPaginationInput {
   after: String
   limit: Int = 10
+}
+
+input CustomerSnapshotInput {
+  email: String!
+  name: String!
+}
+
+"""Representa uma composição do Order"""
+type CustomerSnapshotOutput {
+  email: String!
+  name: String!
 }
 
 """
@@ -199,6 +213,7 @@ type OrderOuput {
   createdAt: DateTime
   currency: String!
   customerId: String!
+  customerSnapshot: CustomerSnapshotOutput!
   deleted: Boolean
   deletedAt: DateTime
   discount: DiscountOutput

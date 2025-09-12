@@ -22,7 +22,6 @@ export class ReminderHandler implements CommandHandler<OrderID, void> {
         orderId: order.id,
         customerId: order.customerId,
         email: order.customerId,
-        reminderType: 'ORDER_PAYMENT',
       }),
     );
   }
