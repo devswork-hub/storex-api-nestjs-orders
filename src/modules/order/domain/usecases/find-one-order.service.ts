@@ -1,14 +1,14 @@
 import { BaseUseCaseContract } from '@/shared/domain/base/usecase.base';
 import { OrderModelContract } from '../order';
-import { OrderRepositoryContract } from '../persistence/order.repository';
 import { OrderID } from '../order-id';
+import { OrderReadableRepositoryContract } from '../../application/persistence/order.respository';
 
 type Output = OrderModelContract;
 
 export class FindOneOrderService
   implements BaseUseCaseContract<OrderID, Output>
 {
-  constructor(private readonly repository: OrderRepositoryContract) {}
+  constructor(private readonly repository: OrderReadableRepositoryContract) {}
 
   async execute(id: OrderID): Promise<Output> {
     const order = await this.repository.findById(id.getValue());

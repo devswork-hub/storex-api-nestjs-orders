@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { OrderMongoEntity } from './mongo/documents/order.document';
-import { OrderRepositoryContract } from '../domain/persistence/order.repository';
 import { OrderModelContract } from '../domain/order';
 import { OrderMongoMapper } from './mongo/order-mongo.mapper';
 import { RepositoryException } from '../../../shared/domain/exceptions/repository.exception';
@@ -12,13 +11,14 @@ import {
   SearchResult,
 } from '@/shared/persistence/search/searchable.repository.contract';
 import { CriteriaOptions } from '@/shared/persistence/criteria.contract';
+import { OrderReadableRepositoryContract } from './persistence/order.respository';
 
 type FindByOptions = {
   orderBy?: { field: keyof OrderModelContract; direction: 'asc' | 'desc' };
 };
 
 @Injectable()
-export class OrderMongoRepository implements OrderRepositoryContract {
+export class OrderMongoRepository implements OrderReadableRepositoryContract {
   constructor(
     @InjectModel(OrderMongoEntity.name)
     private readonly orderModel: Model<OrderMongoEntity>,
@@ -114,8 +114,8 @@ export class OrderMongoRepository implements OrderRepositoryContract {
       return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
     } catch (error) {
       throw new RepositoryException(
-        `Fail to find orders by query: ${JSON.stringify(query, null, 2)}`,
-        error,
+        `Fail to find orders by query: ${JSON.stringify(query)}`,
+        error instanceof Error ? error.message : error,
       );
     }
   }

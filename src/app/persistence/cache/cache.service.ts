@@ -22,21 +22,13 @@ export class CacheService {
   private readonly logger = new Logger(CacheService.name); // É bom ter um logger aqui
   constructor(@Inject('CACHE_INSTANCE') private readonly cache: Cacheable) {}
 
-  async get<T>(key: string): Promise<T | undefined> {
+  async get<T>(key: string): Promise<T | null> {
+    const raw = await this.cache.get<string>(key);
+    if (!raw) return null;
     try {
-      const result = await this.cache.get<T>(key);
-      return result;
-    } catch (error) {
-      this.logger.error(
-        `Failed to get from cache for key: ${key}`,
-        error.stack,
-      );
-      // Lança uma exceção do NestJS que será capturada pelo filtro global
-      throw new InternalServerErrorException(
-        'Failed to retrieve data from cache.',
-      );
-      // Ou, se usasse a exceção customizada:
-      // throw new CacheServiceException('Failed to retrieve data from cache.', error);
+      return JSON.parse(raw) as T;
+    } catch {
+      return raw as unknown as T;
     }
   }
 

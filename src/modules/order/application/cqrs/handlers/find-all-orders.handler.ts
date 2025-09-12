@@ -1,10 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindAllOrderService } from '../../../domain/usecases/find-all-order.service';
-import { OrderOuput } from '../../graphql/outputs/order.output';
 import { OrderMapper } from '../../order.mapper';
-import { Inject, Logger } from '@nestjs/common';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { OrderOuput } from '../../graphql/outputs/order.output';
+import { CacheService } from '@/app/persistence/cache/cache.service';
 
 export class FindAllOrdersQuery {}
 
@@ -12,36 +11,52 @@ export class FindAllOrdersQuery {}
 export class FindAllOrdersHandler
   implements IQueryHandler<FindAllOrdersQuery, OrderOuput[]>
 {
-  private readonly logger = new Logger(FindAllOrdersHandler.name);
-
   constructor(
     private readonly findAllOrdersService: FindAllOrderService,
-    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(): Promise<OrderOuput[]> {
     const cacheKey = ORDER_CACHE_KEYS.FIND_ALL;
 
-    // const cached = await this.cacheManager.get<OrderOuput[]>(cacheKey);
+    // Log para indicar a verificação do cache.
+    console.log(`🔎 Verificando cache para a chave: ${cacheKey}`);
 
-    // if (cached) {
-    //   this.logger.log(`[CACHE HIT] Chave: ${cacheKey}`);
-    //   return cached;
-    // }
+    try {
+      const cached = await this.cacheService.get<OrderOuput[]>(cacheKey);
 
-    this.logger.log(`[CACHE MISS] Chave: ${cacheKey}`);
+      if (cached) {
+        // Log para indicar que os dados foram encontrados no cache.
+        console.log(`✅ Dados encontrados no cache para a chave: ${cacheKey}`);
+        return cached;
+      }
+    } catch (e) {
+      throw new Error(e);
+    }
 
-    // this.logger.log(
-    //   `CacheManager instance: ${JSON.stringify(this.cacheManager, null, 2)}`,
-    // );
-
+    // Log para indicar que os dados NÃO foram encontrados no cache e a busca na fonte original será realizada.
+    console.log(
+      `❌ Cache não encontrado para a chave: ${cacheKey}. Buscando dados na fonte original...`,
+    );
     const result = await this.findAllOrdersService.execute();
-    const output = result.map(OrderMapper.fromEntitytoGraphQLOrderOutput);
 
-    this.logger.log(`[CACHE SAVE] Salvando na chave ${cacheKey}`);
+    if (result.length > 0) {
+      const mapped = result.map(OrderMapper.fromEntitytoGraphQLOrderOutput);
 
-    // await this.cacheManager.set(cacheKey, output, 60);
+      // Log para indicar que os novos dados estão sendo armazenados no cache.
+      console.log(
+        `⏳ Armazenando ${mapped.length} resultados no cache para a chave: ${cacheKey} (TTL: 60s)`,
+      );
 
-    return output;
+      await this.cacheService.set(cacheKey, mapped, 60);
+
+      // Log para indicar o sucesso do armazenamento e o retorno dos dados.
+      console.log(`✔️  Dados armazenados e retornados com sucesso.`);
+      return mapped;
+    }
+
+    // Log para o caso de não haver resultados.
+    console.log(`🚫 Nenhuma ordem encontrada. Retornando um array vazio.`);
+    return [];
   }
 }

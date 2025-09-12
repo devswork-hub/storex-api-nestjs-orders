@@ -1,6 +1,12 @@
-import { BaseRepositoryContract } from './repository.contract.base';
+import {
+  ReadableRepositoryContract,
+  WritableRepositoryContract,
+} from './repository.contract.base';
 
 type StubModel = Record<string, any>;
+
+type BaseRepositoryContract<M> = ReadableRepositoryContract<StubModel> &
+  WritableRepositoryContract<StubModel>;
 
 export class InMemoryBaseRepository<M extends StubModel>
   implements BaseRepositoryContract<M>

@@ -59,13 +59,3 @@ export const orderTestData = new OrderTestBuilder()
     zipCode: faker.location.zipCode.toString(),
   })
   .build();
-
-const order = new OrderTestBuilder().build(); // já vem com defaults
-const orderWithDiscount = new OrderTestBuilder()
-  .with('discount', {
-    couponCode: 'BRL30',
-    currency: new Currency(CurrencyEnum.BRL),
-    type: 'percentage',
-    value: 150,
-  })
-  .build();

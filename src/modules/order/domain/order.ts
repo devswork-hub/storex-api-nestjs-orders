@@ -52,7 +52,13 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   constructor(props: OrderModelInput) {
     const id = OrderID.generate(OrderID).getValue();
     super({ ...props, id });
-    Object.assign(this, props);
+
+    // Certifica que items sempre sejam OrderItemModel
+    this.items = (props.items ?? []).map((item) =>
+      item instanceof OrderItemModel ? item : new OrderItemModel(item),
+    );
+
+    Object.assign(this, props); // agora não sobrescreve this.items
     this.validateCurrencyEntry();
   }
 
@@ -127,7 +133,6 @@ export class OrderModel extends BaseModel implements OrderModelContract {
         customerId: this.customerId,
         // TODO: pegar o email do cliente no customerSnapshot que ainda nao construi
         email: '',
-        reminderType: 'ORDER_PAYMENT',
       }),
     );
   }
@@ -135,7 +140,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   static create(props: OrderModelInput): OrderModel {
     const order = new OrderModel({
       ...props,
-      items: props.items.map((item) => new OrderItemModel(item)),
+      items: (props.items ?? []).map((item) => new OrderItemModel(item)),
     });
     order.status = OrderStatusEnum.PENDING;
     order.addDomainEvent(new OrderCreatedEvent(order.toContract()));

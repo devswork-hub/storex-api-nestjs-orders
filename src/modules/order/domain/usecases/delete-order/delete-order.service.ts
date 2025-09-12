@@ -1,12 +1,12 @@
 import { BaseUseCaseContract } from '@/shared/domain/base/usecase.base';
-import { OrderRepositoryContract } from '../../persistence/order.repository';
 import { OrderID } from '../../order-id';
 import { OrderModel } from '../../order';
 import { OrderMongoMapper } from '../../../application/mongo/order-mongo.mapper';
 import { GraphQLError } from 'graphql';
+import { OrderWritableRepositoryContract } from '@/modules/order/application/persistence/order.respository';
 
 export class DeleteOrderService implements BaseUseCaseContract<OrderID, void> {
-  constructor(private readonly repository: OrderRepositoryContract) {}
+  constructor(private readonly repository: OrderWritableRepositoryContract) {}
 
   async execute(id: OrderID): Promise<void> {
     /**

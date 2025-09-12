@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { PaymentOutput } from './payment.output';
 import { ShippingOutput } from './shipping.output';
 import { BillingAddressOutput } from './billing-address.output';

@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OrderMongoRepository } from '../order.mongo-repository';
+import { OrderMongoMapper } from '../mongo/order-mongo.mapper';
+import { OrderStatus } from '../../domain/order.constants';
 
 // TODO: resolver esse problema do ANY
 @Injectable()
@@ -13,7 +15,8 @@ export class OrdersProjectionService {
         this.logger.log(
           `Projecting OrderCreatedEvent for orderId: ${event.payload.id}`,
         );
-        await this.ordersRepository.createOne(event.payload);
+        const orderDomain = OrderMongoMapper.toDomain(event.payload);
+        await this.ordersRepository.createOne(orderDomain);
         break;
       default:
         console.warn(`⚠️ Evento não tratado: ${event.eventType}`);

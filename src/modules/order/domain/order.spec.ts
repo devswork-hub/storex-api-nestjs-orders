@@ -36,7 +36,7 @@ describe('Order', () => {
           zipCode: '',
         },
         customerId: '',
-        customerSnapshot: { customerId: '', name: '', email: '' },
+        customerSnapshot: { name: '', email: '' },
       }),
     );
   });
