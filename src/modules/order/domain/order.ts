@@ -32,8 +32,8 @@ export type OrderModelContract = {
   customerSnapshot: CustomerSnapshot;
   customerId: string; // ID do cliente na API de clientes
   paymentId?: string | null; // ID do pagamento na API de pagamentos
-  notes?: string; // Observações feitas pelo cliente
-  discount?: Discount; // Desconto aplicado ao pedido
+  notes?: string | null; // Observações feitas pelo cliente
+  discount?: Discount | null; // Desconto aplicado ao pedido
 } & BaseModelProps;
 
 export class OrderModel extends BaseModel implements OrderModelContract {
@@ -44,10 +44,10 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   shippingSnapshot: ShippingSnapshot;
   billingAddress: BillingAddress;
   customerId: string;
-  paymentId: string;
-  notes?: string;
-  discount?: Discount;
   customerSnapshot: CustomerSnapshot;
+  paymentId?: string | null;
+  notes?: string | null;
+  discount?: Discount | null;
 
   constructor(props: OrderModelInput) {
     const id = OrderID.generate(OrderID).getValue();
@@ -157,12 +157,12 @@ export class OrderModel extends BaseModel implements OrderModelContract {
       shippingSnapshot: this.shippingSnapshot,
       billingAddress: this.billingAddress,
       customerId: this.customerId,
-      paymentId: this.paymentId,
       customerSnapshot: this.customerSnapshot,
-      notes: this.notes,
-      discount: this.discount,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      paymentId: this.paymentId ?? null,
+      notes: this.notes ?? null,
+      discount: this.discount ?? null,
     };
   }
 }

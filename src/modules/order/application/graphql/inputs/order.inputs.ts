@@ -195,13 +195,13 @@ export class CreateOrderGraphQLInput {
   customerId: string;
 
   @Field({ description: 'ID do pagamento associado.' })
-  paymentId: string;
+  paymentId?: string | null;
 
   @Field({
     nullable: true,
     description: 'Observações adicionais fornecidas pelo cliente ou sistema.',
   })
-  notes?: string;
+  notes?: string | null;
 
   @Field(() => DiscountInput, {
     nullable: true,
@@ -238,11 +238,11 @@ export class UpdateOrderGraphQLInput {
   customerId?: string;
 
   @Field({ nullable: true })
-  paymentId?: string;
+  paymentId?: string | null;
 
   @Field({ nullable: true })
-  notes?: string;
+  notes?: string | null;
 
   @Field(() => DiscountInput, { nullable: true })
-  discount?: DiscountInput;
+  discount?: DiscountInput | null;
 }

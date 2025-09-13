@@ -24,10 +24,11 @@ import {
 import { CustomerSnapshotOutput } from './graphql/outputs/customer-snapshot.output';
 
 export class OrderMapper {
-  static toDomainInput(input: CreateOrderGraphQLInput): OrderModelInput {
+  static fromGraphqlInputToDomainInput(
+    input: CreateOrderGraphQLInput,
+  ): OrderModelInput {
     return {
       status: input.status as OrderStatus,
-      currency: new Currency(input.currency as CurrencyEnum),
       items: input.items.map(
         (item): OrderItemModelContract => ({
           ...item,
@@ -45,6 +46,7 @@ export class OrderMapper {
           }),
         }),
       ),
+      currency: new Currency(input.currency as CurrencyEnum),
       discount: input.discount
         ? {
             couponCode: input.discount.couponCode,
@@ -52,7 +54,8 @@ export class OrderMapper {
             type: input.discount.type,
             currency: new Currency(input.discount.currency as CurrencyEnum),
           }
-        : undefined,
+        : null,
+
       paymentSnapshot: {
         ...input.paymentSnapshot,
         method: input.paymentSnapshot.method as PaymentMethodEnum,
@@ -111,7 +114,7 @@ export class OrderMapper {
         amount: item.price.amount,
         currency: item.price.currency.code, // <-- transforma em string
       },
-      discount: item.discount ? this.mapDiscount(item.discount) : undefined,
+      discount: item.discount ? this.mapDiscount(item.discount) : null,
       seller: item.seller,
       title: item.title,
       imageUrl: item.imageUrl,
@@ -122,11 +125,10 @@ export class OrderMapper {
     };
   }
 
-  // Esses métodos privados também, pois são chamados com this.
   static mapDiscount(
     discount?: OrderModelContract['discount'],
-  ): DiscountOutput | undefined {
-    if (!discount) return undefined;
+  ): DiscountOutput | null {
+    if (!discount) return null;
     return {
       value: discount.value,
       type: discount.type,

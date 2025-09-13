@@ -7,7 +7,7 @@ import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
 import { CacheService } from '../../../../../app/persistence/cache/cache.service';
 import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { MailQueueService } from '@/app/integrations/mail/mail-queue.service';
 import { OrderWritableRepositoryContract } from '../../persistence/order.respository';
 
@@ -19,6 +19,10 @@ export class CreateOrderCommand {
 export class CreateOrderTransactionCommandHandler
   implements ICommandHandler<CreateOrderCommand>
 {
+  private readonly logger = new Logger(
+    CreateOrderTransactionCommandHandler.name,
+  );
+
   constructor(
     private readonly createOrderService: CreateOrderService,
     private readonly cacheService: CacheService,
@@ -39,34 +43,48 @@ export class CreateOrderTransactionCommandHandler
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<any> {
-    this.executeValidations(command);
-    // Passar o manager garante que tanto o insert do pedido quanto o save do outbox aconteçam na mesma transação.
-    return await this.uow.startTransaction(async (manager) => {
-      // Se eu remover o setTransactionManager, o repositório não vai usar o manager da transação atual, e sim o padrão do TypeORM.
-      // Logo, o pedido e o outbox não vão ser salvos na mesma transação, podendo gerar inconsistências.
-      this.orderRepository.setTransactionManager(manager);
+    this.logger.log(
+      `Iniciando a criação do pedido para o cliente: ${command.data.customerSnapshot.email}`,
+    );
 
-      const domainInput = OrderMapper.toDomainInput(command.data);
-      // Se não passar o manager, o TypeORM vai criar uma nova conexão para o repositório e não vai respeitar a transação atual, abrindo risco de inconsistência.
-      const { order, events } =
-        await this.createOrderService.execute(domainInput);
+    try {
+      this.executeValidations(command);
 
-      await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
+      const result = await this.uow.startTransaction(async (manager) => {
+        this.orderRepository.setTransactionManager(manager);
 
-      console.log(`✅ Cache invalidado`);
-      for (const event of events) {
-        await this.outboxService.save(event, manager);
-      }
-      await this.mailQueueService.dispatchTasks({
-        payload: {
-          to: order.customerSnapshot.email, // e-mail do cliente
-          subject: 'Confirmação do Pedido', // assunto fixo ou dinâmico
-          body: `Olá ${order.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
-        },
+        const domainInput = OrderMapper.fromGraphqlInputToDomainInput(
+          command.data,
+        );
+        const { order, events } =
+          await this.createOrderService.execute(domainInput);
+
+        await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
+
+        for (const event of events) {
+          await this.outboxService.save(event, manager);
+        }
+
+        await this.mailQueueService.dispatchTasks({
+          payload: {
+            to: order.customerSnapshot.email,
+            subject: 'Confirmação do Pedido',
+            body: `Olá ${order.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
+          },
+        });
+
+        return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
       });
 
-      return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
-    });
+      this.logger.log(`Pedido ${result.id} criado e processado com sucesso.`);
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `Falha ao processar o pedido: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
   }
 
   private executeValidations(command: CreateOrderCommand) {
