@@ -4,6 +4,7 @@ import { mailQueueName } from './mail.constants';
 import { MailQueueService } from './mail-queue.service';
 import { EmailsQueueProcessor } from './send-email.processor';
 import { NodemailerProvider } from './nodemailer.provider';
+import { MAIL_PROVIDER_TOKEN } from './mail-tokens';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { NodemailerProvider } from './nodemailer.provider';
   providers: [
     MailQueueService,
     EmailsQueueProcessor,
-    { provide: 'MAIL_PROVIDER', useClass: NodemailerProvider },
+    { provide: MAIL_PROVIDER_TOKEN, useClass: NodemailerProvider },
   ],
   exports: [MailQueueService],
 })

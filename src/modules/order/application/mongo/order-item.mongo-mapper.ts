@@ -8,34 +8,24 @@
 // import { OrderItemSubdocument } from './documents/order-item.document';
 // import { CreateOrderGraphQLInput } from '../graphql/inputs/order.inputs';
 
+import {
+  Currency,
+  CurrencyEnum,
+} from '@/shared/domain/value-objects/currency.vo';
+import { OrderItemModelContract } from '../../domain/order-item';
+import { Money } from '@/shared/domain/value-objects/money.vo';
+import { DiscountTypeEnum } from '../../domain/order.constants';
+import { OrderItemInput } from '../graphql/inputs/order.inputs';
+import { OrderItemSubdocument } from './documents/order-item.document';
+import { MoneySubdocument } from './subdocuments/money.subdocument';
+
 // export class OrderItemMongoMapper {
 //   static fromGraphQLInput(
-//     input: CreateOrderGraphQLInput,
-//   ): OrderItemModelContract {
-//     return {
-//       id: input.id ?? crypto.randomUUID(), // ou algum outro gerador
-//       productId: input.productId,
-//       quantity: input.quantity,
-//       price: new Money(
-//         input.price.amount,
-//         new Currency(input.price.currency as CurrencyEnum),
-//       ),
-//       discount: input.discount
-//         ? {
-//             couponCode: input.discount.couponCode,
-//             value: input.discount.value,
-//             type: input.discount.type as DiscountTypeEnum,
-//             currency: new Currency(input.discount.currency as CurrencyEnum),
-//           }
-//         : undefined,
-//       seller: input.seller,
-//       title: input.title,
-//       imageUrl: input.imageUrl,
-//       description: input.description,
-//       shippingId: input.shippingId,
-//       createdAt: new Date(),
-//       updatedAt: new Date(),
-//     };
+//     input: OrderItemI['items'],
+//   ): OrderItemModelContract[] {
+//     return input.map((in) =>({
+//       in.
+//     }));
 //   }
 
 //   static toDocument(doc: OrderItemModelContract): OrderItemSubdocument {
@@ -74,3 +64,45 @@
 //     };
 //   }
 // }
+
+export class OrderItemMongoMapper {
+  static fromGraphlInputToDomain(
+    input: OrderItemInput,
+  ): OrderItemModelContract {
+    return {
+      productId: input.productId,
+      quantity: input.quantity,
+      seller: input.seller,
+      title: input.title,
+      imageUrl: input.imageUrl,
+      description: input.description,
+      shippingId: input.shippingId,
+      price: new Money(
+        input.price.amount,
+        new Currency(input.price.currency as CurrencyEnum),
+      ),
+      ...(input.discount && {
+        discount: {
+          couponCode: input.discount.couponCode,
+          value: input.discount.value,
+          type: input.discount.type as DiscountTypeEnum,
+          currency: new Currency(input.discount.currency as CurrencyEnum),
+        },
+      }),
+    };
+  }
+
+  static fromDomainToDocument(
+    domain: OrderItemModelContract,
+  ): OrderItemSubdocument {
+    return {
+      _id: domain.id,
+      price: {
+        amount: domain.price.amount,
+        currency: domain.price.currency.code,
+      },
+      productId: domain.productId,
+      quantity: domain.quantity,
+    };
+  }
+}

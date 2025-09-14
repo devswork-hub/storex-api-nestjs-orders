@@ -3,6 +3,7 @@ import { Job } from 'bullmq';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { mailQueueName } from './mail.constants';
 import { MailProvider } from './mail-provider.interface';
+import { MAIL_PROVIDER_TOKEN } from './mail-tokens';
 
 @Processor(mailQueueName)
 @Injectable()
@@ -10,7 +11,7 @@ export class EmailsQueueProcessor extends WorkerHost {
   private readonly logger = new Logger(EmailsQueueProcessor.name);
 
   constructor(
-    @Inject('MailProvider') private readonly mailProvider: MailProvider,
+    @Inject(MAIL_PROVIDER_TOKEN) private readonly mailProvider: MailProvider,
   ) {
     super();
   }

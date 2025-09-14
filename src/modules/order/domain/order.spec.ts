@@ -5,39 +5,19 @@ import {
 import { OrderModel } from './order';
 import { Money } from '@/shared/domain/value-objects/money.vo';
 import { PaymentMethodEnum } from './order.constants';
+import { OrderTestBuilder } from './order-test-builder';
 
+/**
+ * Test specs
+ * - deve criar e retornar um produto com as atributos essenciais
+ * - deve criar e retornar um produto com disconto
+ * - deve criar e retornar um produto com 1 item
+ * - deve criar e retornar um produto com mais de 1 item (3 para exemplificar)
+ * - deve criar e retornar um produto com varios items e validar se cada item esta associado corretamente ao pedido
+ */
 describe('Order', () => {
   it('should return a valid order aggregate', () => {
-    console.log(
-      OrderModel.create({
-        status: 'PENDING',
-        items: [
-          {
-            productId: 'sample-product-id',
-            quantity: 1,
-            price: new Money(100, new Currency(CurrencyEnum.BRL)),
-          },
-        ],
-        currency: new Currency(CurrencyEnum.BRL),
-        paymentSnapshot: {
-          method: PaymentMethodEnum.CREDIT_CARD,
-          status: '',
-          amount: 0,
-        },
-        shippingSnapshot: {
-          status: 'SHIPPED',
-          carrier: '',
-          service: '',
-        },
-        billingAddress: {
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
-        },
-        customerId: '',
-        customerSnapshot: { name: '', email: '' },
-      }),
-    );
+    console.log(new OrderTestBuilder());
+    console.log(OrderTestBuilder.withDiscount());
   });
 });

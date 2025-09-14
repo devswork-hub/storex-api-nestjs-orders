@@ -26,14 +26,14 @@ export type OrderModelContract = {
   status: OrderStatus;
   items: OrderItemModelContract[];
   currency: Currency;
-  paymentSnapshot: PaymentSnapshot; // Snapshot da informação de pagamento no momento da criação do pedido
-  shippingSnapshot: ShippingSnapshot; // Snapshot da informação de entrega no momento da criação do pedido
-  billingAddress: BillingAddress; // Endereço de cobrança
+  paymentSnapshot: PaymentSnapshot;
+  shippingSnapshot: ShippingSnapshot;
+  billingAddress: BillingAddress;
   customerSnapshot: CustomerSnapshot;
-  customerId: string; // ID do cliente na API de clientes
-  paymentId?: string | null; // ID do pagamento na API de pagamentos
-  notes?: string | null; // Observações feitas pelo cliente
-  discount?: Discount | null; // Desconto aplicado ao pedido
+  customerId: string;
+  paymentId?: string | null;
+  notes?: string | null;
+  discount?: Discount | null;
 } & BaseModelProps;
 
 export class OrderModel extends BaseModel implements OrderModelContract {

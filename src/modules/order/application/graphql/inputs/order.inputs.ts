@@ -30,7 +30,7 @@ class DiscountInput {
 
 // Reutilizável: Order Item input
 @InputType({ description: 'Item que compõe o pedido.' })
-class OrderItemInput {
+export class OrderItemInput {
   @Field({ description: 'ID do produto.' })
   productId: string;
 

@@ -36,26 +36,11 @@ export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
       .build();
   }
 
+  static withPayment(): OrderModelContract {
+    return new OrderTestBuilder().with('paymentId', fakeId).build();
+  }
+
   static paidOrder(): OrderModelContract {
     return new OrderTestBuilder().with('status', 'PAID' as any).build();
   }
 }
-
-export const orderTestData = new OrderTestBuilder()
-  .with('id', fakeId)
-  .with('customerId', fakeId)
-  .with('discount', {
-    couponCode: 'BRL30',
-    currency: new Currency(CurrencyEnum.BRL),
-    type: 'percentage',
-    value: 150,
-  })
-  .with('currency', new Currency(CurrencyEnum.BRL))
-  .with('active', true)
-  .with('billingAddress', {
-    city: faker.location.city.toString(),
-    state: faker.location.state.toString(),
-    street: faker.location.street.toString(),
-    zipCode: faker.location.zipCode.toString(),
-  })
-  .build();
