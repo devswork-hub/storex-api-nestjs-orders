@@ -26,7 +26,6 @@
     "@faker-js/faker": "^9.9.0",
     "@golevelup/nestjs-rabbitmq": "^6.0.2",
     "@keyv/redis": "^4.6.0",
-    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/apollo": "^13.1.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/bullmq": "^11.0.3",

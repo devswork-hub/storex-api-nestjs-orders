@@ -33,6 +33,21 @@ services:
     env_file:
       - .env
 
+  # Alternativa: Servidor SMTP simples
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    restart: always
+    ports:
+      # Bind to localhost only for security
+      - '127.0.0.1:5000:80' # Web interface
+      - '127.0.0.1:2525:25' # SMTP server (using non-standard port)
+      - '127.0.0.1:1143:143' # IMAP server (using non-standard port)
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    environment:
+      # Container configuration (this binds within the container)
+      - ServerOptions__Urls=http://*:80
+      - ServerOptions__HostName=smtp4dev
   # nestjs-c:
   #   build: .
   #   env_file:
@@ -52,3 +67,4 @@ volumes:
   redis:
     driver: local
   rabbitmq_data:
+  smtp4dev-data:

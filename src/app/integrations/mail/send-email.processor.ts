@@ -1,16 +1,25 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
 import { mailQueueName } from './mail.constants';
+import * as nodemailer from 'nodemailer';
 
 @Processor(mailQueueName)
 @Injectable()
 export class EmailsQueueProcessor extends WorkerHost {
   private readonly logger = new Logger(EmailsQueueProcessor.name);
+  private transporter: nodemailer.Transporter;
 
-  constructor(private readonly mailerService: MailerService) {
+  constructor() {
     super();
+    this.transporter = nodemailer.createTransport({
+      host: '127.0.0.1',
+      port: 2525,
+      secure: false,
+      auth: {},
+      ignoreTLS: true,
+      requireTLS: false,
+    });
   }
 
   async process(job: Job): Promise<void> {
@@ -20,7 +29,7 @@ export class EmailsQueueProcessor extends WorkerHost {
     this.logger.debug(`Payload recebido: ${JSON.stringify(payload, null, 2)}`);
 
     try {
-      await this.mailerService.sendMail({
+      await this.transporter.sendMail({
         to: payload.to,
         subject: payload.subject,
         text: payload.body,
