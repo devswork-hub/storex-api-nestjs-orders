@@ -8,6 +8,8 @@ include:
   # - ./docker/postgres/docker-compose.pg.yml
 services:
   redis:
+    networks:
+      - app
     container_name: cache
     image: redis
     ports:
@@ -15,6 +17,8 @@ services:
     volumes:
       - redis:/data
   redis-bullmq:
+    networks:
+      - app
     container_name: redis-bullmq
     image: redis
     ports:
@@ -22,6 +26,8 @@ services:
     volumes:
       - redis:/data
   mongodb:
+    networks:
+      - app
     image: mongo:latest
     restart: always
     container_name: storex_mongodb_orders
@@ -35,6 +41,8 @@ services:
 
   # Alternativa: Servidor SMTP simples
   smtp4dev:
+    networks:
+      - app
     image: rnwood/smtp4dev:v3
     restart: always
     ports:
@@ -48,20 +56,25 @@ services:
       # Container configuration (this binds within the container)
       - ServerOptions__Urls=http://*:80
       - ServerOptions__HostName=smtp4dev
-  # nestjs-c:
-  #   build: .
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - redis
-  #     - mongodb
-  #   networks:
-  #     - app
-  #   labels:
-  #     filebeat_collector: true
 
+  nestjs:
+    build: .
+    env_file:
+      - .env.docker
+    ports:
+      - '3000:3000'
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+    labels:
+      filebeat_collector: true
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
 volumes:
   postgres_data:
   redis:

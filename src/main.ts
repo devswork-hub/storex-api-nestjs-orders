@@ -17,9 +17,9 @@ async function bootstrap() {
   //   credentials: true,
   // });
   const isProd = process.env.NODE_ENV === 'production';
+  app.set('trust proxy', 'loopback');
 
   app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
-
   const configService = app
     .select(AppModule)
     .get(ConfigService<ConfigSchemaType>);

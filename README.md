@@ -66,6 +66,66 @@
   - Test Data Builder
   - Integration Tests com Testcontainers
 
+### Explicando o modulo `App`
+
+Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outros topicos que vao contribuir pra atender o meu modulo de trabalho (que por hora, so tem um, que é o Order Management) .
+
+`Config` - Contem tudo relacionado a variaveis de ambiente
+
+- Possui validacao de env com Zod;
+- Leitura de envs por ambiente (dev, staging e outros que eu definir);
+- Custom service para buscar as variaveis de forma mais simplificado, usando o ConfigValues;
+- TODO: falta incluir parametros de entrada de validacao por fora, pra eu pode externalizar esse module nest, como lib.
+
+`Guards` - São classes que decidem se uma requisição pode ou não prosseguir para o para o controller da rota.
+
+- ThrollerGuard para ativacao de rate limit;
+
+`Integrations` - Modulo responsavel por se comunicar com fontes externas.
+
+- Integracao com servico de email;
+
+  - Atualmente usando smtp4dev como fonte para desenvolvimento, e nodemailer como provider de comunicacao;
+  - Contem suporte e integracao a filas do BullMQ
+
+`Interceptors` - Permeite interceptar o fluxo de execução de requisições e respostas para adicionar lógica personalizada antes ou depois de uma rota ser executada.
+
+- Suportando logging;
+- Suportanto timeout.
+
+`Messaging` - Modulo responsavel por toda configuracao voltada a mensageria
+
+- Suportando RabbitMQ
+  - Uso da lib GoLevelUp;
+  - Simulacao em memoria do broker;
+  - Contratos do broker;
+  - Modulo e configuracoes de exchanges, routings e outras definicoes;
+  - Filtro de erros para subscribers, usando interceptor;
+    - Logica de retry;
+    - Delayed messages;
+    - Backoffice exponencial.
+
+`Persistence` - Modulo responsável por tudo que envolve persistir e consumir dados da aplicacao.
+
+- Cache
+  - Custom cache com Keyv (Conforme documentacao), usando uma instancia de Redis dedicada;
+  - Custom service com logica de serializacao e descerializacao;
+- Outbox - Processamento de eventos de saida
+  - TODO: faltar criar uma logica pra definir melhor o entrypoint de outbox, pra nao deixar confuso a implementacao;
+  - Suportando Mongo com Mongoose;
+    - Definicoes do document base;
+    - Defincao do modulo;
+    - Definicao do service com as logicas necessarias.
+  - Suportando Postgres com TypeORM;
+    - Definicoes do document base;
+    - Defincao do modulo;
+    - Definicao do service com as logicas necessarias.
+
+### Explicando o Order Managament Module
+
+- ## Application
+- Domain
+
 ### API Terms
 
 - Resource

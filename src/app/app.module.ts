@@ -12,9 +12,27 @@ import { KafkaModule } from './messaging/kafka/kafka.module';
 import { ConfigValues } from './config/config.values';
 import { BullModule } from '@nestjs/bullmq';
 import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000,
+        limit: 3,
+      },
+      {
+        name: 'medium',
+        ttl: 10000,
+        limit: 20,
+      },
+      {
+        name: 'long',
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
     CustomCacheModule.forRoot({ isGlobal: true }),
     BullModule.forRootAsync({
       inject: [ConfigValues],

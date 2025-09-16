@@ -35,6 +35,7 @@ import { FindOrderByIdQuery } from '../cqrs/handlers/find-order-by-id.handler';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../orders-cache-keys';
 import { CreateOrderCommand } from '../cqrs/handlers/create-order-transaction.command';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -55,6 +56,7 @@ export class OrderResolver {
   // @UseInterceptors(LoggingInterceptor, CacheInterceptor) // Automatically cache the response for this endpoint
   // @CacheKey(ORDER_CACHE_KEYS.FIND_ALL)
   // @CacheTTL(60000) // now in milliseconds (1 minute === 60000)
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Query(() => [OrderOuput])
   async findAllOrders() {
     try {
@@ -70,6 +72,7 @@ export class OrderResolver {
     );
   }
 
+  @SkipThrottle()
   @Mutation(() => OrderOuput)
   async createOrder(
     @Args('input') data: CreateOrderGraphQLInput,
