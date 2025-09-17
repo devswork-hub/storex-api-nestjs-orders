@@ -13,6 +13,7 @@ import { ConfigValues } from './config/config.values';
 import { BullModule } from '@nestjs/bullmq';
 import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     DomainsModule,
     KafkaModule,
     RabbitmqWrapperModule.forRoot(),
+    UploadModule,
   ],
 })
 export class AppModule {}

@@ -1,9 +1,7 @@
-// import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { UploadController } from './upload.controller';
 
-// import { UploadGraphQLModule } from './graphql/upload-graphql.module';
-// import { UploadRestModule } from './rest/upload-rest.module';
-
-// @Module({
-//   imports: [UploadRestModule, UploadGraphQLModule],
-// })
-// export class UploadModule {}
+@Module({
+  controllers: [UploadController],
+})
+export class UploadModule {}
