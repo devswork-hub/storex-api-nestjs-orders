@@ -120,6 +120,18 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
     - Definicoes do document base;
     - Defincao do modulo;
     - Definicao do service com as logicas necessarias.
+- TypeORM
+  - Entidade base;
+  - Arrays de entidades (conecta todas as entidades criadas em todo projeto);
+  - Custom migration class;
+  - Data source;
+  - Custom transaction interceptor;
+  - Unit of Work Service;
+  - Mongo & Mongoose Custom Module.
+
+`Upload` - Custom module para trabalhar com upload de arquivos
+
+- TODO: precisa ser finalizado
 
 ### Explicando o Order Managament Module
 
