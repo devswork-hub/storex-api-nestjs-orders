@@ -1,5 +1,4 @@
-import { DomainEventType } from '@/shared/domain/events/domain-event';
-import { UUID } from '@/shared/domain/value-objects/uuid.vo';
+import { DomainEvent } from './domain-event';
 
 type OrderPaidPayload = {
   id: string;
@@ -8,18 +7,8 @@ type OrderPaidPayload = {
   amount: number;
 };
 
-export class OrderPaidEvent implements DomainEventType {
-  readonly eventId: string;
-  readonly eventType: string;
-  readonly aggregateId: string;
-  readonly occurredOn: Date;
-  readonly payload: OrderPaidPayload;
-
+export class OrderPaidEvent extends DomainEvent<OrderPaidPayload> {
   constructor(payload: OrderPaidPayload) {
-    this.eventId = new UUID().toString();
-    this.eventType = OrderPaidEvent.name;
-    this.aggregateId = payload.id;
-    this.occurredOn = new Date();
-    this.payload = payload;
+    super(OrderPaidEvent.name, payload.id, payload);
   }
 }

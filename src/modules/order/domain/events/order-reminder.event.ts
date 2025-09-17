@@ -1,5 +1,4 @@
-import { DomainEventType } from '@/shared/domain/events/domain-event';
-import { UUID } from '@/shared/domain/value-objects/uuid.vo';
+import { DomainEvent } from './domain-event';
 
 type OrderReminderPayload = {
   orderId: string;
@@ -7,18 +6,8 @@ type OrderReminderPayload = {
   email: string;
 };
 
-export class OrderReminderEvent implements DomainEventType {
-  readonly eventId: string;
-  readonly eventType: string;
-  readonly aggregateId: string;
-  readonly occurredOn: Date;
-  readonly payload: OrderReminderPayload;
-
+export class OrderReminderEvent extends DomainEvent<OrderReminderPayload> {
   constructor(payload: OrderReminderPayload) {
-    this.eventId = new UUID().toString();
-    this.eventType = OrderReminderEvent.name;
-    this.aggregateId = payload.orderId;
-    this.occurredOn = new Date();
-    this.payload = payload;
+    super(OrderReminderEvent.name, payload.orderId, payload);
   }
 }

@@ -1,19 +1,8 @@
-import { DomainEventType } from '@/shared/domain/events/domain-event';
 import { OrderModelContract } from '../order';
-import { UUID } from '@/shared/domain/value-objects/uuid.vo';
+import { DomainEvent } from './domain-event';
 
-export class OrderCreatedEvent implements DomainEventType {
-  readonly eventId: string;
-  readonly eventType: string;
-  readonly aggregateId: string;
-  readonly occurredOn: Date;
-  readonly payload: OrderModelContract;
-
+export class OrderCreatedEvent extends DomainEvent<OrderModelContract> {
   constructor(payload: OrderModelContract) {
-    this.eventId = new UUID().toString();
-    this.eventType = OrderCreatedEvent.name;
-    this.aggregateId = payload.id;
-    this.occurredOn = new Date();
-    this.payload = payload;
+    super(OrderCreatedEvent.name, payload.id, payload);
   }
 }
