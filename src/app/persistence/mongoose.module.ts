@@ -18,7 +18,9 @@ import { ConfigValues } from '../config/config.values';
           ssl: false,
           connectionFactory: (connection) => {
             if (connection.readyState === 1) {
-              console.log(`Connected to database ${dbName} at ${host}:${port}`);
+              console.info(
+                `Connected to database ${dbName} at ${host}:${port}`,
+              );
             }
             return connection;
           },

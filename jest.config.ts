@@ -1,3 +1,4 @@
+import { domainCoverageConfig } from '@/domain-coverage.config';
 import type { Config } from 'jest';
 
 const config: Config = {
@@ -48,6 +49,7 @@ const config: Config = {
     '!**/*.dto.ts',
     '!**/*.entity.ts',
     '!**/*.d.ts',
+    ...domainCoverageConfig,
   ],
   coverageThreshold: {
     global: {

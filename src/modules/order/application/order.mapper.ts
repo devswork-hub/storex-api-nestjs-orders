@@ -91,7 +91,6 @@ export class OrderMapper {
       items: (order.items ?? []).map((item) =>
         OrderMapper.toOrderItemOutput(item),
       ),
-
       discount: OrderMapper.mapDiscount(order.discount),
       paymentSnapshot: OrderMapper.mapPayment(order.paymentSnapshot),
       shippingSnapshot: OrderMapper.mapShipping(order.shippingSnapshot),

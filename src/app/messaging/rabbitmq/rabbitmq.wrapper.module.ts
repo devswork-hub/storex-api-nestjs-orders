@@ -100,7 +100,7 @@ export class RabbitmqWrapperModule {
       module: RabbitmqWrapperModule,
       imports: [
         GoLevelupRabbitMQModule.forRoot({
-          uri: 'amqp://admin:admin@rabbitmq:5672',
+          uri: 'amqp://admin:admin@localhost:5672',
           connectionInitOptions: { wait: true, timeout: 30000 },
           registerHandlers:
             process.env.NODE_ENV !== 'production'

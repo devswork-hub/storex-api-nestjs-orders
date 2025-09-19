@@ -147,19 +147,22 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     return order;
   }
 
-  toContract(): OrderModelContract {
+  public toContract(): OrderModelContract {
     return {
       id: this.id,
+      active: this.active,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      deleted: this.deleted,
+      deletedAt: this.deletedAt,
       status: this.status,
-      items: this.items.map((item) => item.toContract?.() ?? item),
+      items: this.items.map((i) => i.toContract()),
       currency: this.currency,
       paymentSnapshot: this.paymentSnapshot,
       shippingSnapshot: this.shippingSnapshot,
       billingAddress: this.billingAddress,
       customerId: this.customerId,
       customerSnapshot: this.customerSnapshot,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
       paymentId: this.paymentId ?? null,
       notes: this.notes ?? null,
       discount: this.discount ?? null,

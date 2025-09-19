@@ -9,8 +9,8 @@ import { getMethod, getOrigin, getPath } from './request.utils';
 export interface ICorsOptions {
   allowed_origins: string[];
   allowed_methods: string[];
-  allowed_paths: string[];
   credentials: boolean;
+  allowed_paths?: string[];
 }
 
 export const CorsMiddleware =
@@ -22,39 +22,43 @@ export const CorsMiddleware =
       origin: false,
     };
 
-    let error: Error | null = new Error('CORS_NOT_ALLOWED');
-
     const origin = getOrigin(req);
+
+    // if (!origin || whiteList.indexOf(origin) !== -1) {
+    //   callback(null, { preflightContinue: true }); // Allow the request
+    // } else {
+    //   callback(new Error('Not allowed by CORS')); // Deny the request
+    // }
+
     const method = getMethod(req);
     const path = getPath(req);
 
-    if (
+    const originAllowed =
       !origin ||
-      !options.allowed_origins.length ||
-      options.allowed_origins.includes(origin)
-    ) {
+      options.allowed_origins.length === 0 ||
+      options.allowed_origins.includes(origin);
+
+    const methodAllowed =
+      options.allowed_methods.length === 0 ||
+      options.allowed_methods.includes(method);
+
+    const pathAllowed =
+      options.allowed_paths.length === 0 ||
+      options.allowed_paths.includes(path);
+
+    if (originAllowed && methodAllowed && pathAllowed) {
       cors_options.origin = true;
-      error = null;
-    } else if (
-      options.allowed_methods.length &&
-      options.allowed_methods.includes(method)
-    ) {
-      cors_options.origin = true;
-      error = null;
-    } else if (
-      options.allowed_paths.length &&
-      options.allowed_paths.includes(path)
-    ) {
-      cors_options.origin = true;
-      error = null;
+      return callback(null, cors_options);
     }
 
-    callback(error, cors_options);
-  };
+    // erro mais descritivo
+    const reasons = [];
+    if (!originAllowed) reasons.push(`Origin "${origin}" not allowed`);
+    if (!methodAllowed) reasons.push(`Method "${method}" not allowed`);
+    if (!pathAllowed) reasons.push(`Path "${path}" not allowed`);
 
-// CorsMiddleware({
-//   allowed_origins: ['http://localhost:3000', 'https://storex.vercel.app'],
-//   allowed_methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-//   allowed_paths: ['/api/orders/notify'],
-//   credentials: true,
-// });
+    return callback(
+      new Error(`CORS_NOT_ALLOWED: ${reasons.join(', ')}`),
+      cors_options,
+    );
+  };

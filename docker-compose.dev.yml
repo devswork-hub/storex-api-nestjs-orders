@@ -57,20 +57,20 @@ services:
       - ServerOptions__Urls=http://*:80
       - ServerOptions__HostName=smtp4dev
 
-  nestjs:
-    build: .
-    env_file:
-      - .env.docker
-    ports:
-      - '3000:3000'
-    depends_on:
-      - rabbitmq
-    links:
-      - rabbitmq
-    labels:
-      filebeat_collector: true
-    networks:
-      - app
+  # nestjs:
+  #   build: .
+  #   env_file:
+  #     - .env.docker
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - rabbitmq
+  #   links:
+  #     - rabbitmq
+  #   labels:
+  #     filebeat_collector: true
+  #   networks:
+  #     - app
 
 networks:
   app:

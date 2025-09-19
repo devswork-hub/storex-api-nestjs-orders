@@ -70,6 +70,9 @@ export class OrderItemModel
       imageUrl: this.imageUrl,
       description: this.description,
       shippingId: this.shippingId,
+      active: this.active,
+      deleted: this.deleted,
+      deletedAt: this.deletedAt,
     };
   }
 }

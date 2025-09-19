@@ -4,34 +4,65 @@ import { AppModule } from './app/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
+import { CorsMiddleware } from './app/utils/cors';
+import { isProd } from './process-env';
+
+const allowedDomains = ['https://storex.vercel.app'];
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const env = app.select(AppModule).get(ConfigService<ConfigSchemaType>);
 
-  // app.enableCors({
-  //   origin: [
-  //     'http://localhost:3000',
-  //     'https://outra-origin.com',
-  //     'https://mais-uma.com',
-  //   ],
-  //   credentials: true,
-  // });
-  const isProd = process.env.NODE_ENV === 'production';
+  const allowedOrigins = isProd
+    ? ['https://storex.vercel.app']
+    : ['http://localhost:3000/*'];
+
+  app.enableCors({
+    ...CorsMiddleware({
+      allowed_origins: allowedOrigins,
+      allowed_methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      // allowed_paths: ['/graphql'], // opcional, já que tudo passa por aqui
+
+      /**
+       * Define se a API permite o envio de credenciais em requisições cross-origin.
+       *
+       * 🔑 Quando `true`:
+       * - O navegador envia cookies, cabeçalhos de autenticação (`Authorization`) e cabeçalhos definidos pelo cliente em requisições CORS.
+       * - Necessário quando a autenticação da aplicação é baseada em **cookies/sessão**.
+       * - Requer que o `Access-Control-Allow-Origin` seja configurado com uma **origem explícita** (não pode usar `*`).
+       * - No frontend, é obrigatório configurar `{ credentials: "include" }` (fetch/axios) ou `credentials: "include"` (Apollo Client).
+       *
+       * 🚫 Quando `false`:
+       * - O navegador **não envia cookies** nem headers de autenticação automaticamente em requisições cross-origin.
+       * - Adequado para cenários onde a autenticação é feita via **JWT no header `Authorization`**,
+       *   já que o token pode ser adicionado manualmente pelo cliente.
+       *
+       * 👉 Resumo:
+       * - Use `true` se autenticação via cookies.
+       * - Use `false` se autenticação via header JWT.
+       */
+      credentials: isProd ?? true,
+    }),
+    // allowedHeaders: 'Content-Type, Authorization',
+    // preflightContinue: false,
+    // optionsSuccessStatus: 204,
+  });
+
+  // Trust proxy para rodar atrás de load balancer / reverse proxy
   app.set('trust proxy', 'loopback');
 
+  // Logger mais restritivo em produção
   app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
-  const configService = app
-    .select(AppModule)
-    .get(ConfigService<ConfigSchemaType>);
 
   // TODO: corrigir servico de criacao de dados fakes
   // if (process.env.RUN_SEED === 'true') {
   //   const seeder = app.get(DomainSeeders);
   //   await seeder.run();
-  //   await app.close(); // encerra após o seed
+  //   await app.close();
   //   return;
   // }
 
-  await app.listen(configService.get('APP_PORT'));
+  await app.listen(env.get('APP_PORT'));
 }
+
 bootstrap();
