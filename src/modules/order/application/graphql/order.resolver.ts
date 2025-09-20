@@ -36,6 +36,10 @@ import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../orders-cache-keys';
 import { CreateOrderCommand } from '../cqrs/handlers/create-order-transaction.command';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import {
+  DeleteOrderCommand,
+  DeleteOrderCommandHandler,
+} from '../cqrs/handlers/delete-order.handler';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -92,8 +96,8 @@ export class OrderResolver {
 
   @Mutation(() => Boolean)
   async deleteOrder(@Args('id') id: string): Promise<boolean> {
-    await this.deleteOrderService.execute(new OrderID(id));
-    return true;
+    const command = new DeleteOrderCommand(new OrderID(id));
+    return await this.commandBus.execute(command);
   }
 
   @Subscription(() => OrderStatusUpdateType, {

@@ -7,8 +7,6 @@ import { ConfigSchemaType } from './app/config/config.values';
 import { CorsMiddleware } from './app/utils/cors';
 import { isProd } from './process-env';
 
-const allowedDomains = ['https://storex.vercel.app'];
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const env = app.select(AppModule).get(ConfigService<ConfigSchemaType>);
@@ -21,7 +19,6 @@ async function bootstrap() {
     ...CorsMiddleware({
       allowed_origins: allowedOrigins,
       allowed_methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      // allowed_paths: ['/graphql'], // opcional, já que tudo passa por aqui
 
       /**
        * Define se a API permite o envio de credenciais em requisições cross-origin.

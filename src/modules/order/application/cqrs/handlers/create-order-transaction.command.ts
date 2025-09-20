@@ -10,6 +10,7 @@ import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service
 import { Inject, Logger } from '@nestjs/common';
 import { MailQueueService } from '@/app/integrations/mail/mail-queue.service';
 import { OrderWritableRepositoryContract } from '../../persistence/order.respository';
+import { OutboxDomainEventPublisher } from '@/app/persistence/outbox/outbox-domain-events.publisher';
 
 export class CreateOrderCommand {
   constructor(public readonly data: CreateOrderGraphQLInput) {}
@@ -25,7 +26,6 @@ export class CreateOrderTransactionCommandHandler
 
   constructor(
     private readonly createOrderService: CreateOrderService,
-    private readonly cacheService: CacheService,
     private readonly outboxService: OutboxTypeORMService,
     private readonly uow: TypeORMUnitOfWork,
     /**
@@ -40,43 +40,49 @@ export class CreateOrderTransactionCommandHandler
     @Inject('OrderWritableRepositoryContract')
     private readonly orderRepository: OrderWritableRepositoryContract,
     private readonly mailQueueService: MailQueueService,
+    private readonly domainPublisher: OutboxDomainEventPublisher,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<any> {
-    this.logger.log(
-      `Iniciando a criação do pedido para o cliente: ${command.data.customerSnapshot.email}`,
-    );
-
     try {
       this.executeValidations(command);
 
+      this.logger.debug('[CreateOrder] Iniciando transação...');
       const result = await this.uow.startTransaction(async (manager) => {
+        this.logger.debug('[CreateOrder] Dentro da transação (before service)');
+
         this.orderRepository.setTransactionManager(manager);
 
         const domainInput = OrderMapper.fromGraphqlInputToDomainInput(
           command.data,
         );
+
         const { order, events } =
           await this.createOrderService.execute(domainInput);
 
-        await this.cacheService.delete(ORDER_CACHE_KEYS.FIND_ALL);
+        this.logger.debug('[CreateOrder] Pedido criado, eventos capturados');
 
-        for (const event of events) {
-          await this.outboxService.save(event, manager);
-        }
+        await this.domainPublisher.publishAll(events, manager);
 
-        await this.mailQueueService.dispatchTasks({
-          payload: {
-            to: order.customerSnapshot.email,
-            subject: 'Confirmação do Pedido',
-            body: `Olá ${order.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
-          },
-        });
+        this.logger.debug('[CreateOrder] Eventos publicados no outbox');
 
         return OrderMapper.fromEntitytoGraphQLOrderOutput(order);
       });
 
-      this.logger.log(`Pedido ${result.id} criado e processado com sucesso.`);
+      this.logger.debug(
+        '[CreateOrder] Transação finalizada, antes da invalidação do cache',
+      );
+      this.logger.debug('[CreateOrder] Cache invalidado com sucesso');
+
+      await this.mailQueueService.dispatchTasks({
+        payload: {
+          to: result.customerSnapshot.email,
+          subject: 'Confirmação do Pedido',
+          body: `Olá ${result.customerSnapshot.name}, seu pedido foi recebido com sucesso!`,
+        },
+      });
+      this.logger.debug('[CreateOrder] Email enfileirado');
+
       return result;
     } catch (error) {
       this.logger.error(

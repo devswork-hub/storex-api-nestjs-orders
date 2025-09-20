@@ -1,2 +1,0 @@
-# o TypeORM CLI não respeita paths do tsconfig, então ele não consegue resolver @/**
-npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/app/persistence/typeorm/typeorm-datasource.ts

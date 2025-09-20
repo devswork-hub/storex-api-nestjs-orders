@@ -100,7 +100,9 @@ export class CacheService {
 
   async delete(key: string): Promise<void> {
     try {
-      await this.cache.delete(key);
+      this.logger.debug(`[CacheService] Deletando chave: ${key}`);
+      const result = await this.cache.delete(key);
+      this.logger.debug(`[CacheService] Resultado delete: ${result}`);
     } catch (error) {
       this.logger.error(
         `Failed to delete from cache for key: ${key}`,

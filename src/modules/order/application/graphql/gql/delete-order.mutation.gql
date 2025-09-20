@@ -1,4 +1,4 @@
 // TODO: quando tento deletar um pedido, eu recebo um erro no MongoRepository
 mutation DeleteOrder {
-  deleteOrder(id: "6c315560-4f52-4655-bc6b-caae694e3912")
+  deleteOrder(id: "e66c8bda-9277-4902-8bb6-f0e0311e6d05")
 }

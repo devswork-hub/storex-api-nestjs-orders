@@ -2,10 +2,6 @@ query FindAllOrders {
   findAllOrders {
     id
     status
-    total
-    subTotal
-    customerId
-    currency
     items {
       productId
       quantity
@@ -20,12 +16,9 @@ query FindAllOrders {
         currency
       }
     }
-    discount {
-      couponCode
-      value
-      type
-      currency
-    }
+    subTotal
+    total
+    currency
     paymentSnapshot {
       method
       status
@@ -49,10 +42,23 @@ query FindAllOrders {
       state
       zipCode
     }
+    customerSnapshot {
+      name
+      email
+    }
+    customerId
+    paymentId
     notes
+    discount {
+      couponCode
+      value
+      type
+      currency
+    }
     active
     createdAt
     updatedAt
     deleted
+    deletedAt
   }
 }

@@ -2,9 +2,9 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OutboxTypeORMEntity } from './outbox-typeorm.entity';
 import { OutboxTypeORMService } from './outbox-typeorm.service';
-import { TypeORMOutboxCronProcessorService } from './typeorm-outbox-processor.service';
-import { TypeORMOutboxIntervalProcessorService } from './typeorm-relay.interval';
-import { IntervalEventHandler } from './typeorm.event-handler';
+// import { TypeORMOutboxCronProcessorService } from './typeorm-outbox-processor.service';
+// import { TypeORMOutboxIntervalProcessorService } from './typeorm-relay.interval';
+// import { IntervalEventHandler } from './typeorm.event-handler';
 import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({

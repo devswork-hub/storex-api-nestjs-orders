@@ -19,15 +19,10 @@ describe('SearchableHandler', () => {
         billingAddress: {} as any, // replace with a valid BillingAddress object
         customerId: 'customer-id', // replace with a valid customerId
         paymentId: 'payment-id', // replace with a valid paymentId
+        customerSnapshot: null,
       }),
     ]);
 
-    const result = await handler.handle({
-      filter: { status: 'PENDING' },
-      sort: { field: 'createdAt', direction: 'desc' },
-      pagination: { type: 'offset', page: 1, limit: 20 },
-    });
-
-    console.log(null);
+    handler.handle({ filter: { active: true } });
   });
 });

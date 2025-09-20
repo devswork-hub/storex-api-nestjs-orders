@@ -15,10 +15,11 @@ import {
 } from '../../../shared/domain/base/model.base';
 import { Money } from '../../../shared/domain/value-objects/money.vo';
 import { calculateDiscountAmount } from './utils/discount-calculator';
-import { OrderID } from './order-id';
 import { OrderCreatedEvent } from './events/order-created.event';
 import { OrderPaidEvent } from './events/order-paid.event';
 import { OrderReminderEvent } from './events/order-reminder.event';
+import { OrderDeletedEvent } from './events/order-deleted.event';
+import { OrderID } from './order-id';
 
 export type OrderModelInput = Omit<OrderModelContract, 'subTotal' | 'total'>;
 
@@ -50,14 +51,7 @@ export class OrderModel extends BaseModel implements OrderModelContract {
   discount?: Discount | null;
 
   constructor(props: OrderModelInput) {
-    const id = OrderID.generate(OrderID).getValue();
-    super({ ...props, id });
-
-    // Certifica que items sempre sejam OrderItemModel
-    this.items = (props.items ?? []).map((item) =>
-      item instanceof OrderItemModel ? item : new OrderItemModel(item),
-    );
-
+    super(props);
     Object.assign(this, props); // agora não sobrescreve this.items
     this.validateCurrencyEntry();
   }
@@ -108,6 +102,11 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     this.items.push(newItem);
   }
 
+  markAsDeleted(orderId: OrderID) {
+    this.softDelete();
+    this.addDomainEvent(new OrderDeletedEvent(orderId));
+  }
+
   markAsPaid(paymentId: string) {
     if (this.status !== OrderStatusEnum.PENDING) {
       throw new Error(
@@ -147,14 +146,16 @@ export class OrderModel extends BaseModel implements OrderModelContract {
     return order;
   }
 
+  static restore(props: OrderModelContract): OrderModel {
+    return new OrderModel({
+      ...props,
+      items: (props.items ?? []).map((item) => new OrderItemModel(item)),
+    });
+  }
+
   public toContract(): OrderModelContract {
     return {
-      id: this.id,
-      active: this.active,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      deleted: this.deleted,
-      deletedAt: this.deletedAt,
+      ...super.toContract(),
       status: this.status,
       items: this.items.map((i) => i.toContract()),
       currency: this.currency,

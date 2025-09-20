@@ -27,7 +27,7 @@ describe('InMemoryBroker', () => {
       occurredOn: undefined,
     };
 
-    const handler = jest.fn(async (event) => {});
+    const handler = jest.fn(async (_event) => {});
 
     broker.subscribe(
       class UserCreatedEvent {

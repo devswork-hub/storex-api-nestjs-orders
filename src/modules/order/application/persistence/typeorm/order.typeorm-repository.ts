@@ -3,6 +3,7 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { OrderTypeORMEntity } from './entities/order.entity';
 import { OrderModelContract, OrderModelInput } from '../../../domain/order';
 import { OrderWritableRepositoryContract } from '../order.respository';
+import { OrderStatusEnum } from '@/modules/order/domain/order.constants';
 
 @Injectable()
 export class OrderTypeORMRepository implements OrderWritableRepositoryContract {
@@ -31,6 +32,31 @@ export class OrderTypeORMRepository implements OrderWritableRepositoryContract {
     await this.getRepository().save(orderEntity);
     this.logger.log(`Order with id=${order.id} saved`);
     return null;
+  }
+
+  async findById?(id: string): Promise<OrderModelContract | null> {
+    const foundedOrder = await this.repo.findOneBy({ id });
+    if (!foundedOrder) return null;
+    return this.toContract(foundedOrder);
+  }
+
+  async update(order: OrderModelInput): Promise<void> {
+    const repo = this.getRepository();
+    const existing = await repo.findOne({
+      where: { id: order.id },
+      relations: ['items'], // garantir que vem com items
+    });
+
+    if (!existing) {
+      throw new Error(`Order with id=${order.id} not found`);
+    }
+
+    // Mesclar os campos (evitar sobrescrever createdAt/deletedAt se não vierem no input)
+    const updatedEntity = repo.merge(existing, this.toEntity(order));
+
+    await repo.save(updatedEntity);
+
+    this.logger.log(`Order with id=${order.id} updated`);
   }
 
   private toEntity(order: OrderModelContract): OrderTypeORMEntity {
@@ -67,7 +93,38 @@ export class OrderTypeORMRepository implements OrderWritableRepositoryContract {
     };
   }
 
-  update: (order: OrderModelInput) => Promise<void>;
+  private toContract(entity: OrderTypeORMEntity): OrderModelContract {
+    return {
+      id: entity.id,
+      status: entity.status as OrderStatusEnum,
+      customerId: entity.customerId,
+      paymentId: entity.paymentId,
+      notes: entity.notes ?? null,
+      discount: entity.discount ?? null,
+      paymentSnapshot: entity.paymentSnapshot,
+      shippingSnapshot: entity.shippingSnapshot,
+      billingAddress: entity.billingAddress,
+      customerSnapshot: entity.customerSnapshot,
+      active: entity.active,
+      deleted: entity.deleted,
+      deletedAt: entity.deletedAt ?? null,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      items: entity.items.map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+        discount: item.discount,
+        seller: item.seller,
+        title: item.title,
+        imageUrl: item.imageUrl,
+        description: item.description,
+        shippingId: item.shippingId,
+      })),
+      currency: entity.items[0]?.price.currency || { code: 'BRL' }, // ⚠️ aqui depende de como você salva currency
+    };
+  }
 
   setTransactionManager(manager: EntityManager) {
     this.logger.log('Setting transaction manager');

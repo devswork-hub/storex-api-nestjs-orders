@@ -38,7 +38,7 @@ export class RmqPublisherService implements MessageBrokerContract {
 
     await this.amqp.publish(exchange, routingKey, event, {
       headers: {
-        ...(customOptions?.headers || {}),
+        ...customOptions?.headers,
         ...(customOptions?.withDelay
           ? { 'x-delay': customOptions.withDelay.delay }
           : {}),

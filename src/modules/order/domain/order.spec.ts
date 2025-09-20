@@ -1,12 +1,4 @@
-import {
-  Currency,
-  CurrencyEnum,
-} from '@/shared/domain/value-objects/currency.vo';
-import { OrderModel } from './order';
-import { Money } from '@/shared/domain/value-objects/money.vo';
-import { PaymentMethodEnum } from './order.constants';
 import { OrderTestBuilder } from './order-test-builder';
-
 /**
  * Test specs
  * - deve criar e retornar um produto com as atributos essenciais

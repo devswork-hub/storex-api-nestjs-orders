@@ -1,9 +1,15 @@
+// delete-order.command-handler.ts
+
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { OrderMongoRepository } from '../../order.mongo-repository';
-import { Inject } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { OrderID } from '../../../domain/order-id';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
+import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-typeorm.service';
+import { OrderWritableRepositoryContract } from '../../persistence/order.respository';
+import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
+import { DeleteOrderService } from '@/modules/order/domain/usecases/delete-order/delete-order.service';
+import { CacheService } from '@/app/persistence/cache/cache.service';
+import { OutboxDomainEventPublisher } from '@/app/persistence/outbox/outbox-domain-events.publisher';
 
 export class DeleteOrderCommand {
   constructor(public readonly orderId: OrderID) {}
@@ -13,20 +19,43 @@ export class DeleteOrderCommand {
 export class DeleteOrderCommandHandler
   implements ICommandHandler<DeleteOrderCommand>
 {
+  private readonly logger = new Logger(DeleteOrderCommandHandler.name);
+
   constructor(
-    private readonly repo: OrderMongoRepository,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject('OrderWritableRepositoryContract')
+    private readonly repo: OrderWritableRepositoryContract,
+    private readonly deleteOrderUseCase: DeleteOrderService,
+    private readonly uow: TypeORMUnitOfWork,
+    private readonly outboxEventPublisher: OutboxDomainEventPublisher,
   ) {}
 
   async execute(command: DeleteOrderCommand): Promise<boolean> {
-    await this.repo.delete(command.orderId.getValue()); // Ou o método que você usa para deletar
-    // Invalida o cache de "todos os pedidos"
-    await this.cacheManager.del(ORDER_CACHE_KEYS.FIND_ALL);
-    // Invalida o cache do pedido específico
-    await this.cacheManager.del(`order_${command.orderId.getValue()}`);
-    console.log(
-      `Caches de pedido ${command.orderId.getValue()} e "all_orders" invalidados.`,
+    this.logger.log(
+      `Iniciando a deleção do pedido: ${command.orderId.getValue()}`,
     );
-    return true;
+
+    try {
+      await this.uow.startTransaction(async (manager) => {
+        this.repo.setTransactionManager(manager);
+
+        const { events } = await this.deleteOrderUseCase.execute(
+          command.orderId,
+        );
+
+        await this.outboxEventPublisher.publishAll(events, manager);
+      });
+
+      this.logger.log(
+        `Pedido ${command.orderId.getValue()} deletado com sucesso. Caches invalidados.`,
+      );
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Falha ao deletar o pedido: ${command.orderId.getValue()}`,
+        error.stack,
+      );
+      throw error; // Re-lança o erro para o GraphQL
+    }
   }
 }

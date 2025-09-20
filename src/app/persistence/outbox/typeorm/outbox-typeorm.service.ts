@@ -15,7 +15,7 @@ export class OutboxTypeORMService {
     event: E,
     manager?: EntityManager,
   ): Promise<void> {
-    if (!event.payload || typeof event.payload !== 'object') {
+    if (typeof event.payload !== 'object' && event.payload !== null) {
       throw new Error('Payload inválido para evento do Outbox');
     }
 

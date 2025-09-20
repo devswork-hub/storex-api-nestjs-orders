@@ -1,39 +1,31 @@
 import { BaseUseCaseContract } from '@/shared/domain/base/usecase.base';
 import { OrderID } from '../../order-id';
-import { OrderModel } from '../../order';
-import { OrderMongoMapper } from '../../../application/mongo/order-mongo.mapper';
-import { GraphQLError } from 'graphql';
+import { OrderModel, OrderModelContract } from '../../order';
 import { OrderWritableRepositoryContract } from '@/modules/order/application/persistence/order.respository';
+import { DomainEventType } from '@/shared/domain/events/domain-event';
 
-export class DeleteOrderService implements BaseUseCaseContract<OrderID, void> {
-  constructor(private readonly repository: OrderWritableRepositoryContract) {}
+type Output = { order: OrderModelContract; events: DomainEventType[] };
 
-  async execute(id: OrderID): Promise<void> {
-    /**
-     * O retorno de findById já traz os itens como instâncias de OrderItemModel,
-     * já construídas (ex: via OrderMongoMapper.fromPersistence() ou similar).
-     *
-     * Resultado: ao fazer new OrderItemModel(item) dentro do create, o construtor
-     * interno pode estar esperando propriedades puras (price, quantity, etc.), mas
-     * está recebendo métodos e estrutura interna de uma instância — o que leva a erros como:
-     * - campos undefined
-     * - chamada de métodos que não existem
-     * - falhas de validação (como o validateCurrencyEntry())
-     */
-    const order = await this.repository.findById(id.getValue());
-    if (!order)
-      throw new GraphQLError(`Order with id ${id} not found`, {
-        extensions: {
-          code: 'NOT_FOUND',
-          domain: 'Order',
-        },
-      });
+export class DeleteOrderService
+  implements BaseUseCaseContract<OrderID, Output>
+{
+  constructor(private readonly repo: OrderWritableRepositoryContract) {}
 
-    const orderDomain = OrderModel.create({ ...order });
-    orderDomain.softDelete();
-    await this.repository.update({
-      ...orderDomain,
-      id: id.getValue(),
-    });
+  async execute(id: OrderID): Promise<Output> {
+    const foundOrder = await this.repo.findById(id.getValue());
+    if (!foundOrder) throw new Error(`Order with id ${id} not found`);
+
+    // Não usa .create (isso é só para novos pedidos)
+    const order = OrderModel.restore(foundOrder); // ou OrderModel.restore(foundedOrder) se criar um método
+
+    order.markAsDeleted(new OrderID(order.id));
+    await this.repo.update(order.toContract()); // usa o contrato atualizado
+
+    const events = order.pullDomainEvents();
+
+    return {
+      order: order.toContract(),
+      events,
+    };
   }
 }

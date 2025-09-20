@@ -57,4 +57,15 @@ export class BaseModel extends AggregateRoot implements BaseModelProps {
   isDeleted(): boolean {
     return this.deleted === true;
   }
+
+  toContract(): BaseModelProps {
+    return {
+      id: this.id,
+      active: this.active,
+      createdAt: this.createdAt,
+      deleted: this.deleted,
+      deletedAt: this.deletedAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

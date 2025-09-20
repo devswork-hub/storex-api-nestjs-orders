@@ -37,12 +37,6 @@ mutation CreateOrder {
   ) {
     id
     status
-    customerId
-    paymentId
-    notes
-    currency
-    subTotal
-    total
     items {
       productId
       quantity
@@ -50,13 +44,27 @@ mutation CreateOrder {
         amount
         currency
       }
-      seller
-      title
+      discount {
+        couponCode
+        value
+        type
+        currency
+      }
     }
+    subTotal
+    total
+    currency
     paymentSnapshot {
       method
       status
       amount
+      installments {
+        number
+        value
+        interestRate
+        totalValue
+        dueDate
+      }
     }
     shippingSnapshot {
       status
@@ -73,5 +81,19 @@ mutation CreateOrder {
       name
       email
     }
+    customerId
+    paymentId
+    notes
+    discount {
+      couponCode
+      value
+      type
+      currency
+    }
+    active
+    createdAt
+    updatedAt
+    deleted
+    deletedAt
   }
 }

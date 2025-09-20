@@ -28,8 +28,6 @@ export class FindAllOrdersHandler
 
     const result = await this.findAllOrdersService.execute();
 
-    if (result.length <= 0) return [];
-
     const mapped = result.map((m) =>
       OrderMapper.fromEntitytoGraphQLOrderOutput(m),
     );

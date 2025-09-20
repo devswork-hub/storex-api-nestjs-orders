@@ -13,6 +13,16 @@ export interface ICorsOptions {
   allowed_paths?: string[];
 }
 
+// app.enableCors({
+//   origin: (origin, callback) => {
+//     if (!origin || whiteList.indexOf(origin) !== -1) {
+//       callback(null, true); // Allow the request
+//     } else {
+//       callback(new Error('Not allowed by CORS')); // Deny the request
+//     }
+//   },
+// });
+
 export const CorsMiddleware =
   (options: ICorsOptions): CorsOptionsDelegate<Request> =>
   (req, callback) => {

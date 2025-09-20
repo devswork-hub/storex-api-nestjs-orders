@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { OutboxMongoModule } from './mongo/outbox-mongo.module';
 import { OutboxTypeORMModule } from './typeorm/typeorm-outbox.module';
 import { OutboxCronExecutorService } from './outbox-cron-executor.service';
+import { OutboxDomainEventPublisher } from './outbox-domain-events.publisher';
 
 type OutboxProviderType = 'mongoose' | 'typeorm';
 
@@ -21,8 +22,12 @@ export class OutboxModule {
     return {
       module: OutboxModule,
       imports: resolvedModules,
-      providers: [OutboxCronExecutorService],
-      exports: [...resolvedModules, OutboxCronExecutorService],
+      providers: [OutboxCronExecutorService, OutboxDomainEventPublisher],
+      exports: [
+        ...resolvedModules,
+        OutboxCronExecutorService,
+        OutboxDomainEventPublisher,
+      ],
     };
   }
 
