@@ -102,6 +102,7 @@ export const OrderUseCasesProviders: Provider[] = [
     OrdersOutboxRelayService,
     OrdersProjectionService,
     OrdersProjectionCronService,
+    OrderMongoRepository,
   ],
   exports: [...OrderRepositoryProvider, ...OrderUseCasesProviders],
 })

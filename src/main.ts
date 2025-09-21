@@ -5,12 +5,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
 import { CorsMiddleware } from './app/utils/cors';
-import { isProd } from './process-env';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const env = app.select(AppModule).get(ConfigService<ConfigSchemaType>);
+
+  const isProd = env.get('NODE_ENV') === 'production';
 
   const allowedOrigins = isProd
     ? ['https://storex.vercel.app']

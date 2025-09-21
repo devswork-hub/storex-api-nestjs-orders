@@ -40,14 +40,10 @@ const config: Config = {
   // O engine V8 (mesmo do Chrome/Node.js) é usado para medir cobertura de forma nativa.
   coverageProvider: 'v8',
   collectCoverageFrom: [
-    'src/**/*.spec.ts',
-    'src/!main.ts',
-    'src/!**/index.ts',
-    'src/!**/*.module.ts',
-    'src/!**/*.service.ts',
-    'src/!**/*.dto.ts',
-    'src/!**/*.entity.ts',
-    'src/!**/*.d.ts',
+    'src/**/*.ts',
+    '!src/*',
+    '!src/**/*.d.ts',
+    '!jest.config.ts',
   ],
   coverageThreshold: {
     global: {
