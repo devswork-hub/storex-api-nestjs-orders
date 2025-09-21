@@ -1,0 +1,11 @@
+FROM sonarqube:10.4.0-community
+
+# Instala o wget
+USER root
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+
+# Baixa o plugin
+RUN wget -O /opt/sonarqube/extensions/plugins/sonar-secrets-plugin.jar \
+    https://github.com/cxuesong/sonar-secrets-plugin/releases/download/v1.4.0/sonar-secrets-plugin-1.4.0.jar
+
+USER sonarqube

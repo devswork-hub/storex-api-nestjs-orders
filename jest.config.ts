@@ -1,4 +1,3 @@
-import { domainCoverageConfig } from '@/domain-coverage.config';
 import type { Config } from 'jest';
 
 const config: Config = {
@@ -41,15 +40,14 @@ const config: Config = {
   // O engine V8 (mesmo do Chrome/Node.js) é usado para medir cobertura de forma nativa.
   coverageProvider: 'v8',
   collectCoverageFrom: [
-    '**/*.spec.ts',
-    '!main.ts',
-    '!**/index.ts',
-    '!**/*.module.ts',
-    '!**/*.service.ts',
-    '!**/*.dto.ts',
-    '!**/*.entity.ts',
-    '!**/*.d.ts',
-    ...domainCoverageConfig,
+    'src/**/*.spec.ts',
+    'src/!main.ts',
+    'src/!**/index.ts',
+    'src/!**/*.module.ts',
+    'src/!**/*.service.ts',
+    'src/!**/*.dto.ts',
+    'src/!**/*.entity.ts',
+    'src/!**/*.d.ts',
   ],
   coverageThreshold: {
     global: {

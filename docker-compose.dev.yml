@@ -4,6 +4,7 @@ include:
   # - docker-compose.kafka.yml
   # - docker-compose.keycloak.yml
   - docker-compose.pg.yml
+  - docker-compose.sonarqube.yml
   # - docker-compose.elk.yml
   # - ./docker/postgres/docker-compose.pg.yml
 services:

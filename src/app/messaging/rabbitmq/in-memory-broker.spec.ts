@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { InMemoryBroker } from './in-memory-broker';
 import { DomainEventType } from '@/shared/domain/events/domain-event';
+import { OrderCreatedEvent } from '@/modules/order/domain/events/order-created.event';
 
 describe('InMemoryBroker', () => {
   let broker: InMemoryBroker;
@@ -20,7 +21,7 @@ describe('InMemoryBroker', () => {
 
   it('should call the subscribed handler when event is published', async () => {
     const eventMock: DomainEventType = {
-      eventType: 'UserCreated',
+      eventType: 'OrderCreatedEvent',
       payload: { userId: '123' },
       eventId: '',
       aggregateId: '',
@@ -29,13 +30,7 @@ describe('InMemoryBroker', () => {
 
     const handler = jest.fn(async (_event) => {});
 
-    broker.subscribe(
-      class UserCreatedEvent {
-        eventType = 'UserCreated';
-        payload = { userId: '123' };
-      },
-      handler,
-    );
+    broker.subscribe(OrderCreatedEvent, handler);
 
     await broker.publish(eventMock);
 

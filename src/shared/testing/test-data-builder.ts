@@ -12,6 +12,7 @@ export abstract class TestDataBuilder<T> {
   }
 
   build(): T {
+    console.log(this.data);
     return this.data as T;
   }
 }

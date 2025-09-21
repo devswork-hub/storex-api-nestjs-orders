@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
 import { CorsMiddleware } from './app/utils/cors';
 import { isProd } from './process-env';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -58,6 +59,28 @@ async function bootstrap() {
   //   await app.close();
   //   return;
   // }
+
+  app.use(
+    helmet({
+      crossOriginEmbedderPolicy: false,
+      // Especificacoes para GraphQL conforme documentacao
+      contentSecurityPolicy: {
+        directives: {
+          imgSrc: [
+            `'self'`,
+            'data:',
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+          manifestSrc: [
+            `'self'`,
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          frameSrc: [`'self'`, 'sandbox.embed.apollographql.com'],
+        },
+      },
+    }),
+  );
 
   await app.listen(env.get('APP_PORT'));
 }

@@ -43,3 +43,7 @@ coverage/
 
 # Test results
 test-results/
+
+
+.scannerwork
+.scaner*

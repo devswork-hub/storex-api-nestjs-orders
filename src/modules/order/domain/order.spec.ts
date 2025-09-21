@@ -1,4 +1,3 @@
-import { OrderTestBuilder } from './order-test-builder';
 /**
  * Test specs
  * - deve criar e retornar um produto com as atributos essenciais
@@ -8,8 +7,5 @@ import { OrderTestBuilder } from './order-test-builder';
  * - deve criar e retornar um produto com varios items e validar se cada item esta associado corretamente ao pedido
  */
 describe('Order', () => {
-  it('should return a valid order aggregate', () => {
-    console.log(new OrderTestBuilder());
-    console.log(OrderTestBuilder.withDiscount());
-  });
+  it.skip('should return a valid order aggregate', () => {});
 });

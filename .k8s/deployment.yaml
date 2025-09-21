@@ -23,3 +23,22 @@ spec:
                 name: storex-nestjs-api-orders-configmap
             - secretRef:
                 name: storex-nestjs-api-orders-secrets
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nestjs-app
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: nestjs-app
+#   template:
+#     metadata:
+#       labels:
+#         app: nestjs-app
+#     spec:
+#       containers:
+#         - name: nestjs
+#           image: ghcr.io/ORG/nestjs-app:sha-PLACEHOLDER
+#           ports:
+#             - containerPort: 3000

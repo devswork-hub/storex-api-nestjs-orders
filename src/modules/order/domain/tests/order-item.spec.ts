@@ -41,7 +41,6 @@ describe('OrderItemModel', () => {
 
     const discount = item.getDiscountAmount();
     expect(discount.amount).toBe(30);
-    console.log(JSON.stringify(item, null, 2));
   });
 
   it('deve calcular o desconto percentual corretamente', () => {

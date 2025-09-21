@@ -8,7 +8,7 @@ import {
 import { fakeId } from '@/shared/testing/fake-id';
 
 export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
-  protected defaults: Partial<OrderModelContract> = {
+  static defaults: Partial<OrderModelContract> = {
     id: fakeId,
     customerId: fakeId,
     currency: new Currency(CurrencyEnum.BRL),
@@ -26,7 +26,7 @@ export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
   };
 
   static withDiscount(): OrderModelContract {
-    return new OrderTestBuilder()
+    const order = new OrderTestBuilder()
       .with('discount', {
         couponCode: 'BRL30',
         currency: new Currency(CurrencyEnum.BRL),
@@ -34,6 +34,8 @@ export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
         value: 150,
       })
       .build();
+
+    return { ...order, ...OrderTestBuilder.defaults };
   }
 
   static withPayment(): OrderModelContract {
@@ -44,3 +46,5 @@ export class OrderTestBuilder extends TestDataBuilder<OrderModelContract> {
     return new OrderTestBuilder().with('status', 'PAID' as any).build();
   }
 }
+
+export const orderTestData = new OrderTestBuilder().build();
