@@ -1,0 +1,11 @@
+global:
+  # // quanto em quanto tempo ele vai buscar as informacoes
+  scrape_interval: "6s"
+
+scrape_configs:
+  - job_name: "jobs-api"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["host.docker.internal:8080"]
+        labels:
+          application: jobs-api
