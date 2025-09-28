@@ -2,18 +2,19 @@ filebeat:
   autodiscover:
     providers:
       - type: docker
-        hints.enabled: true
         labels.dedot: true
         templates:
-          - condition.equals:
-              docker.container.image: "storex-api-nestjs-orders"
+          - condition:
+              contains:
+                containers.labels.filebeat_collector: "true"
             config:
               - type: container
                 paths:
-                  - /var/lib/docker/containers/${data.docker.container.id}/*.log
+                  - "/var/lib/docker/containers/${data.docker.container.id}/*.log"
                 processors:
-                  - add_docker_metadata: ~
                   - decode_json_fields:
+                      when.equals:
+                        docker.container.labels.decode_log_events_to_json_object: "true"
                       fields: ["message"]
                       target: ""
                       overwrite_keys: true

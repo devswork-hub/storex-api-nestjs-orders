@@ -1,0 +1,4 @@
+- Todo repositório deve implementar uma interface localizada no domínio.
+- Repositórios in-memory são usados apenas para testes ou protótipos.
+- Nome do arquivo deve seguir o padrão: <nome>.repository.ts
+- Métodos obrigatórios: save, findById, findAll.

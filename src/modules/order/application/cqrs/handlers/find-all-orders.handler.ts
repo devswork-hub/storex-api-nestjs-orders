@@ -13,25 +13,25 @@ export class FindAllOrdersHandler
 {
   constructor(
     private readonly findAllOrdersService: FindAllOrderService,
-    private readonly cacheService: CacheService,
+    // private readonly cacheService: CacheService,
   ) {}
 
   async execute(): Promise<OrderOuput[]> {
-    const cacheKey = ORDER_CACHE_KEYS.FIND_ALL;
+    // const cacheKey = ORDER_CACHE_KEYS.FIND_ALL;
+    console.log('Entrei no FindAllOrdersQuery');
 
-    try {
-      const cached = await this.cacheService.get<OrderOuput[]>(cacheKey);
-      if (cached) return cached;
-    } catch (e) {
-      throw new Error(e);
-    }
+    // const cached = await this.cacheService.get<OrderOuput[]>(cacheKey);
+    // console.log('Bati no cache', JSON.stringify(cached, null, 2));
+    // if (cached) return cached;
 
-    const result = await this.findAllOrdersService.execute();
+    const result = await this.findAllOrdersService.execute(); // repository deve usar .lean()
 
+    console.log('Bati no service', JSON.stringify(result, null, 2));
     const mapped = result.map((m) =>
       OrderMapper.fromEntitytoGraphQLOrderOutput(m),
     );
-    await this.cacheService.set(cacheKey, mapped, 60);
+
+    // await this.cacheService.set(cacheKey, mapped, 60); // plain objects
     return mapped;
   }
 }

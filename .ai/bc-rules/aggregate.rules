@@ -1,0 +1,4 @@
+- Um agregado é a unidade de consistência transacional.
+- Deve possuir uma entidade raiz identificada por ID.
+- Métodos de mutação devem sempre disparar Domain Events.
+- Nunca expor setters públicos nos atributos internos.

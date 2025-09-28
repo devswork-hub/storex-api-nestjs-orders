@@ -41,8 +41,8 @@ export class OrderMongoRepository implements OrderReadableRepositoryContract {
 
   async findAll(): Promise<OrderModelContract[]> {
     try {
-      const docs = await this.orderModel.find().exec();
-      return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
+      const docs = await this.orderModel.find().lean();
+      return docs.map((doc) => OrderMongoMapper.toDomain(doc));
     } catch (error) {
       throw new RepositoryException('Fail to find all orders', error);
     }
@@ -96,12 +96,36 @@ export class OrderMongoRepository implements OrderReadableRepositoryContract {
     }
   }
 
+  // async findBy(
+  //   query: Partial<OrderModelContract>,
+  //   options?: FindByOptions,
+  // ): Promise<OrderModelContract[]> {
+  //   try {
+  //     const queryBuilder = this.orderModel.find(query);
+
+  //     if (options?.orderBy) {
+  //       const sort: Record<string, 1 | -1> = {
+  //         [options.orderBy.field]: options.orderBy.direction === 'asc' ? 1 : -1,
+  //       };
+  //       queryBuilder.sort(sort);
+  //     }
+
+  //     const docs = await queryBuilder.exec();
+  //     return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
+  //   } catch (error) {
+  //     throw new RepositoryException(
+  //       `Fail to find orders by query: ${JSON.stringify(query)}`,
+  //       error instanceof Error ? error.message : error,
+  //     );
+  //   }
+  // }
+
   async findBy(
     query: Partial<OrderModelContract>,
     options?: FindByOptions,
   ): Promise<OrderModelContract[]> {
     try {
-      const queryBuilder = this.orderModel.find(query);
+      const queryBuilder = this.orderModel.find(query).lean();
 
       if (options?.orderBy) {
         const sort: Record<string, 1 | -1> = {
@@ -111,7 +135,7 @@ export class OrderMongoRepository implements OrderReadableRepositoryContract {
       }
 
       const docs = await queryBuilder.exec();
-      return docs.map((doc) => OrderMongoMapper.toDomain(doc.toObject()));
+      return docs.map((doc) => OrderMongoMapper.toDomain(doc));
     } catch (error) {
       throw new RepositoryException(
         `Fail to find orders by query: ${JSON.stringify(query)}`,

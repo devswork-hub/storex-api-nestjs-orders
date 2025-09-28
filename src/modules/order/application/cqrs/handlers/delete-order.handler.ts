@@ -1,14 +1,9 @@
-// delete-order.command-handler.ts
-
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
 import { OrderID } from '../../../domain/order-id';
-import { ORDER_CACHE_KEYS } from '../../orders-cache-keys';
-import { OutboxTypeORMService } from '@/app/persistence/outbox/typeorm/outbox-typeorm.service';
 import { OrderWritableRepositoryContract } from '../../persistence/order.respository';
 import { TypeORMUnitOfWork } from '@/app/persistence/typeorm/typeorm-uow.service';
 import { DeleteOrderService } from '@/modules/order/domain/usecases/delete-order/delete-order.service';
-import { CacheService } from '@/app/persistence/cache/cache.service';
 import { OutboxDomainEventPublisher } from '@/app/persistence/outbox/outbox-domain-events.publisher';
 
 export class DeleteOrderCommand {

@@ -1,7 +1,7 @@
-import { PrimaryGeneratedColumn } from 'typeorm';
+import { PrimaryColumn } from 'typeorm';
 
 export class AbstractEntity<T> {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: number;
 
   constructor(entity: Partial<T>) {

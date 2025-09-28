@@ -1,8 +1,16 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { AbstractEntity } from '../../typeorm/abstract.entity';
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity('outbox')
-export class OutboxTypeORMEntity extends AbstractEntity<OutboxTypeORMEntity> {
+export class OutboxTypeORMEntity {
+  @PrimaryColumn()
+  id: string;
+
   @Column()
   aggregateType: string;
 

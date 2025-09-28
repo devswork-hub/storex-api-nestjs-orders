@@ -24,9 +24,13 @@ export class CacheService {
 
   async get<T>(key: string): Promise<T | null> {
     const raw = await this.cache.get<any>(key);
-    if (raw == null) return null;
+    if (raw == null) {
+      this.logger.log('Sem dados no cache');
+      return null;
+    }
 
     let parsed: any = raw;
+    this.logger.log('Busquei os dados no cache');
 
     // Se veio como string, tente parsear JSON (padrão quando armazenamos como string)
     if (typeof raw === 'string') {
@@ -50,6 +54,7 @@ export class CacheService {
       // normaliza e armazena sempre como string JSON para comportamento consistente
       const payload = JSON.stringify(value);
       await this.cache.set(key, payload, ttl ? `${ttl}s` : undefined);
+      this.logger.log('Inseri os dados no cache');
     } catch (error) {
       this.logger.error(`Failed to set cache for key: ${key}`, error.stack);
       throw new InternalServerErrorException('Failed to store data in cache.');
@@ -65,31 +70,16 @@ export class CacheService {
   private rehydrateDates(obj: any): any {
     const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
-    if (obj === null || obj === undefined) return obj;
-
-    if (Array.isArray(obj)) {
-      return obj.map((item) => this.rehydrateDates(item));
-    }
+    if (Array.isArray(obj)) return obj.map((item) => this.rehydrateDates(item));
 
     if (typeof obj === 'object') {
       for (const key of Object.keys(obj)) {
         const value = obj[key];
 
         if (typeof value === 'string' && isoRegex.test(value)) {
-          // converte strings ISO em Date
-          const d = new Date(value);
-          obj[key] = isNaN(d.getTime()) ? value : d;
+          obj[key] = new Date(value);
         } else if (typeof value === 'object') {
           obj[key] = this.rehydrateDates(value);
-        }
-        // opcional: forçar campos que terminem com "At" caso estejam em outro formato
-        else if (
-          (key.toLowerCase().endsWith('at') ||
-            key.toLowerCase().includes('date')) &&
-          typeof value === 'string'
-        ) {
-          const d = new Date(value);
-          obj[key] = isNaN(d.getTime()) ? value : d;
         }
       }
       return obj;
@@ -100,7 +90,6 @@ export class CacheService {
 
   async delete(key: string): Promise<void> {
     try {
-      this.logger.debug(`[CacheService] Deletando chave: ${key}`);
       const result = await this.cache.delete(key);
       this.logger.debug(`[CacheService] Resultado delete: ${result}`);
     } catch (error) {

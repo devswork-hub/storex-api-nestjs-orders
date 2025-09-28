@@ -20,7 +20,7 @@ export class RabbitmqWrapperModule {
             registerHandlers:
               cfg.get('NODE_ENV') !== 'production'
                 ? false
-                : (options.enableHandlers ?? true), // standalone mode, sem auto-discovery
+                : (options?.enableHandlers ?? true), // standalone mode, sem auto-discovery
             exchanges: [
               { name: 'dlx.exchange', type: 'topic' },
               {
