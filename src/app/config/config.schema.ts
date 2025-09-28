@@ -27,11 +27,11 @@ export const ConfigSchema = z.object({
   MONGODB_REPLICA_SET: z.string().optional().nullable(),
 
   // Redis
-  REDIS_URI: z.string().optional().nullable(),
-  REDIS_PORT: z.string().optional().nullable(),
-  REDIS_HOST: z.string().optional().nullable(),
-  REDIS_USER: z.string().optional().nullable(),
-  REDIS_PASSWORD: z.string().optional().nullable(),
+  REDIS_URL: z.string().nullable(),
+  REDIS_PORT: z.string().nullable(),
+  REDIS_HOST: z.string().nullable(),
+  // REDIS_USER: z.string().nullable(),
+  // REDIS_PASSWORD: z.string().nullable(),
 
   PG_USERNAME: z.string().nonempty({ message: 'PG_USERNAME is required' }),
   PG_PASSWORD: z.string().nonempty({ message: 'PG_PASSWORD is required' }),

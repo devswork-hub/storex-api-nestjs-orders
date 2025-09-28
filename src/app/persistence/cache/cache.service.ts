@@ -1,3 +1,4 @@
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   Inject,
   Injectable,
@@ -5,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Cacheable } from 'cacheable';
+import { Cache } from '@nestjs/cache-manager';
 
 // Opcional: Criar uma exceção mais específica para problemas de cache
 // class CacheServiceException extends InternalServerErrorException {
@@ -23,16 +25,15 @@ export class CacheService {
   constructor(@Inject('CACHE_INSTANCE') private readonly cache: Cacheable) {}
 
   async get<T>(key: string): Promise<T | null> {
-    const raw = await this.cache.get<any>(key);
+    const raw = await this.cache.get(key);
     if (raw == null) {
       this.logger.log('Sem dados no cache');
       return null;
     }
 
-    let parsed: any = raw;
-    this.logger.log('Busquei os dados no cache');
+    this.logger.log(`Valor bruto do cache:`, raw);
 
-    // Se veio como string, tente parsear JSON (padrão quando armazenamos como string)
+    let parsed: any;
     if (typeof raw === 'string') {
       try {
         parsed = JSON.parse(raw);
@@ -40,21 +41,33 @@ export class CacheService {
         this.logger.warn(
           `Failed to parse cache value for key: ${key}. Error: ${err.message}`,
         );
-        parsed = raw;
+        return null; // não dá pra usar o dado corrompido
       }
+    } else {
+      parsed = raw; // já é objeto
     }
 
-    // Re-hidrata datas (recursivo)
     const hydrated = this.rehydrateDates(parsed);
     return hydrated as T;
   }
 
+  // async set<T>(key: string, value: T, ttl?: number): Promise<void> {
+  //   try {
+  //     // normaliza e armazena sempre como string JSON para comportamento consistente
+  //     const payload = JSON.stringify(value);
+  //     await this.cache.set(key, payload, ttl);
+  //     this.logger.log('Inseri os dados no cache');
+  //   } catch (error) {
+  //     this.logger.error(`Failed to set cache for key: ${key}`, error.stack);
+  //     throw new InternalServerErrorException('Failed to store data in cache.');
+  //   }
+  // }
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
-      // normaliza e armazena sempre como string JSON para comportamento consistente
       const payload = JSON.stringify(value);
-      await this.cache.set(key, payload, ttl ? `${ttl}s` : undefined);
-      this.logger.log('Inseri os dados no cache');
+      // cacheable/Keyv espera número (ms), não string tipo "60s"
+      await this.cache.set(key, payload, ttl ? ttl * 1000 : undefined);
+      this.logger.log(`[CacheService] Inseri os dados no cache: ${key}`);
     } catch (error) {
       this.logger.error(`Failed to set cache for key: ${key}`, error.stack);
       throw new InternalServerErrorException('Failed to store data in cache.');
@@ -70,7 +83,11 @@ export class CacheService {
   private rehydrateDates(obj: any): any {
     const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
-    if (Array.isArray(obj)) return obj.map((item) => this.rehydrateDates(item));
+    if (obj == null) return obj; // <- evita erro com null/undefined
+
+    if (Array.isArray(obj)) {
+      return obj.map((item) => this.rehydrateDates(item));
+    }
 
     if (typeof obj === 'object') {
       for (const key of Object.keys(obj)) {
@@ -78,7 +95,7 @@ export class CacheService {
 
         if (typeof value === 'string' && isoRegex.test(value)) {
           obj[key] = new Date(value);
-        } else if (typeof value === 'object') {
+        } else if (typeof value === 'object' && value !== null) {
           obj[key] = this.rehydrateDates(value);
         }
       }

@@ -13,8 +13,6 @@ async function bootstrap() {
 
   const isProd = env.get('NODE_ENV') === 'production';
 
-  console.log(JSON.stringify(env, null, 2));
-
   const allowedOrigins = isProd
     ? ['https://storex.vercel.app']
     : ['http://localhost:3000/*'];
@@ -53,7 +51,7 @@ async function bootstrap() {
   app.set('trust proxy', 'loopback');
 
   // Logger mais restritivo em produção
-  app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
+  // app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
 
   // TODO: corrigir servico de criacao de dados fakes
   // if (process.env.RUN_SEED === 'true') {
