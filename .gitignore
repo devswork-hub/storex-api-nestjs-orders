@@ -48,4 +48,4 @@ test-results/
 .scannerwork
 .scaner*
 
-docker/elk/filebeatdata/*
+./docker/elk/filebeatdata/*

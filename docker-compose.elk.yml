@@ -31,7 +31,7 @@ services:
       # - ./logstash/pipeline:/usr/share/logstash/pipeline
       - ./docker/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     ports:
-      - "5000:5000"
+      - "5044:5044"
     depends_on:
       - elasticsearch
     networks:

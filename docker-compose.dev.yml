@@ -68,6 +68,10 @@ services:
       filebeat_collector: true
     networks:
       - app
+    depends_on:
+      - db
+      - rabbitmq
+      - mongodb
 
 networks:
   app:
