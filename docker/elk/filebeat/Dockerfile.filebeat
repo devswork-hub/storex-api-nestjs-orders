@@ -2,8 +2,3 @@ FROM docker.elastic.co/beats/filebeat:8.10.2
 
 # Copia a configuração principal
 COPY --chown=root:filebeat ./filebeat.yml /usr/share/filebeat/filebeat.yml
-
-# Habilita o módulo logstash
-RUN filebeat modules enable logstash \
-  filebeat setup \
-  filebeat -e
