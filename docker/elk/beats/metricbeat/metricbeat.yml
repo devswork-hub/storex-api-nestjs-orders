@@ -1,6 +1,7 @@
 metricbeat.modules:
+  # Módulo Docker: Permanece o mesmo
   - module: docker
-    metrics:
+    metricsets:
       [
         "container",
         "cpu",
@@ -15,13 +16,20 @@ metricbeat.modules:
     hosts: ["unix:///var/run/docker.sock"]
     period: 10s
 
+  # Elasticsearch module (se usar module elasticsearch)
   - module: elasticsearch
-    metrics: ["node", "node_stats", "cluster_stats", "index"]
+    metricsets: ["node", "node_stats", "cluster_stats", "index"]
     period: 10s
-    hosts: ["elasticsearch:9200"]
+    hosts: ["http://elasticsearch:9200"]
+    username: "elastic"
+    password: "ChangeMeElastic123!"
 
-ouput.elasticsearch:
-  hosts: ["elasticsearch:9200"]
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
 setup.kibana:
-  hosts: ["kibana:5601"]
-setup.dashboard.enabled: true
+  host: "http://kibana:5601"
+
+setup.dashboards.enabled: true

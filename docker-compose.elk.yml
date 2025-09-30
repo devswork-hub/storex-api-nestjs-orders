@@ -1,6 +1,6 @@
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4
     container_name: elasticsearch
     restart: on-failure
     environment:
@@ -23,12 +23,11 @@ services:
       - elk
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.10.2
+    image: docker.elastic.co/logstash/logstash:9.1.4
     container_name: logstash
     environment:
       - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
     volumes:
-      # - ./logstash/pipeline:/usr/share/logstash/pipeline
       - ./docker/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     ports:
       - "5044:5044"
@@ -38,7 +37,7 @@ services:
       - elk
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.10.2
+    image: docker.elastic.co/kibana/kibana:9.1.4
     environment:
       ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
       XPACK_ENCRYPTED_SAVED_OBJECTS_ENCRYPTIONKEY: "3f7d9a8b2c4e6f1g0h5j9k2l8m0n4p7q"
@@ -52,16 +51,58 @@ services:
 
   filebeat:
     build:
-      context: ./docker/elk/filebeat
+      context: ./docker/elk/beats/filebeat
       dockerfile: Dockerfile.filebeat
     user: root
     restart: on-failure
+    environment:
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=ChangeMeElastic123!
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./docker/elk/filebeatdata:/usr/share/filebeat/data:rw
+      - ./docker/elk/beats/filebeat/filebeatdata:/usr/share/filebeat/data:rw
     depends_on:
       - logstash
+    networks:
+      - elk
+
+  metricbeat:
+    container_name: metricbeat
+    build:
+      context: ./docker/elk/beats/metricbeat
+      dockerfile: Dockerfile.metricbeat
+    user: root
+    environment:
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=ChangeMeElastic123!
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  heartbeat:
+    container_name: heartbeat
+    build:
+      context: ./docker/elk/beats/heartbeat
+      dockerfile: Dockerfile.heartbeat
+    restart: on-failure
+    environment:
+      - setup.kibana.host:kibana:5601
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+  apm:
+    build:
+      context: ./docker/elk/apm
+      dockerfile: Dockerfile.apm
+    ports:
+      - 8200:8200
+    restart: on-failure
     networks:
       - elk
 
