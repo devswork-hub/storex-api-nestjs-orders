@@ -1,0 +1,41 @@
+fleet:
+  enabled: true
+  server:
+    host: "0.0.0.0:8220"
+    service_token: "your-service-token-here"
+  output:
+    elasticsearch:
+      hosts: ["elasticsearch:9200"]
+      username: "elastic"
+      password: "ChangeMeElastic123!"
+
+kibana:
+  enabled: true
+  host: "kibana:5601"
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+logging.level: info
+logging.to_files: false
+logging.to_stderr: true
+
+# Performance settings
+fleet.server.timeout: 30s
+fleet.server.read_timeout: 30s
+fleet.server.write_timeout: 30s
+
+# Memory settings
+fleet.server.max_concurrent_connections: 0
+fleet.server.max_concurrent_connections_per_ip: 0
+
+# Thread settings
+fleet.server.max_concurrent_connections: 0
+fleet.server.max_concurrent_connections_per_ip: 0
+
+# Connection settings
+fleet.server.timeout: 30s
+fleet.server.read_timeout: 30s
+
+# Performance settings
+fleet.server.timeout: 30s
+fleet.server.read_timeout: 30s

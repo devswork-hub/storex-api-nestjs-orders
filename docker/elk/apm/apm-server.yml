@@ -1,12 +1,53 @@
 apm-server:
-  host: "localhost:8200"
+  host: "0.0.0.0:8200"
+  rum:
+    enabled: true
+    source_mapping:
+      elasticsearch:
+        hosts: ["elasticsearch:9200"]
+        username: "elastic"
+        password: "ChangeMeElastic123!"
   source_mappings:
     enabled: true
     elasticsearch:
-      hosts: ["localhost:9200"]
+      hosts: ["elasticsearch:9200"]
       username: "elastic"
-      password: "changeme"
+      password: "ChangeMeElastic123!"
     index_pattern: "apm-*-sourcemap"
 
 output.elasticsearch:
-  hosts: ["localhost:9200"]
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+kibana:
+  enabled: true
+  host: "kibana:5601"
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+logging.level: info
+logging.to_files: false
+logging.to_stderr: true
+
+# Performance settings
+apm-server.max_event_size: 307200
+apm-server.max_header_size: 1048576
+apm-server.read_timeout: 30s
+apm-server.write_timeout: 30s
+
+# Memory settings
+apm-server.max_concurrent_connections: 0
+apm-server.max_concurrent_connections_per_ip: 0
+
+# Thread settings
+apm-server.max_concurrent_connections: 0
+apm-server.max_concurrent_connections_per_ip: 0
+
+# Connection settings
+apm-server.max_event_size: 307200
+apm-server.max_header_size: 1048576
+
+# Performance settings
+apm-server.max_event_size: 307200
+apm-server.max_header_size: 1048576
