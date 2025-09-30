@@ -7,9 +7,9 @@ services:
     networks:
       - jobs-api
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
-      - '9090:9090'
+      - "9090:9090"
 
   grafana:
     image: grafana/grafana:latest
@@ -18,7 +18,7 @@ services:
     networks:
       - jobs-api
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -28,4 +28,4 @@ services:
     depends_on:
       - prometheus
     healthcheck:
-      test: ['CMD', 'nc', '-z', 'localhost', '8080']
+      test: ["CMD", "nc", "-z", "localhost", "8080"]

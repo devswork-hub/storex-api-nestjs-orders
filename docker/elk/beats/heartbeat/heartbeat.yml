@@ -17,6 +17,4 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: "elasticsearch:9200"
-  user: "elastic"
-  passwor: "changeme"
+  hosts: "http://elasticsearch:9200"
