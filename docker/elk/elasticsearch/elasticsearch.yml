@@ -1,10 +1,47 @@
-cluster.name: "elastic-cluster"
-node.name: "es01"
+cluster.name: "docker-cluster"
+node.name: "elasticsearch"
+network.host: "0.0.0.0"
+discovery.type: "single-node"
+bootstrap.memory_lock: true
 
-network.host: 0.0.0.0
-http.port: 9200
-
-# Segurança obrigatória a partir da 9.x
+# Security settings
 xpack.security.enabled: true
-xpack.security.http.ssl.enabled: false # pode deixar SSL off se for ambiente local
 xpack.security.transport.ssl.enabled: false
+xpack.security.http.ssl.enabled: false
+
+# Performance settings
+indices.memory.index_buffer_size: 20%
+indices.queries.cache.size: 10%
+indices.fielddata.cache.size: 20%
+
+# Logging
+logger.level: INFO
+
+# Thread pools
+thread_pool.write.queue_size: 1000
+thread_pool.search.queue_size: 1000
+
+# Index settings
+action.auto_create_index: true
+action.destructive_requires_name: false
+
+# Memory settings
+indices.breaker.total.use_real_memory: false
+indices.breaker.fielddata.limit: 40%
+indices.breaker.request.limit: 60%
+indices.breaker.total.limit: 95%
+
+# Cluster settings
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 85%
+cluster.routing.allocation.disk.watermark.high: 90%
+cluster.routing.allocation.disk.watermark.flood_stage: 95%
+
+# Connection settings
+http.max_content_length: 100mb
+http.max_initial_line_length: 4kb
+http.max_header_size: 8kb
+
+# Thread settings
+thread_pool.write.queue_size: 1000
+thread_pool.search.queue_size: 1000

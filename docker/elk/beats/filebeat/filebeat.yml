@@ -9,11 +9,39 @@ filebeat.autodiscover:
             - type: container
               paths:
                 - /var/log/containers/*.log
+              processors:
+                - add_docker_metadata:
+                    host: "unix:///var/run/docker.sock"
 
 output.logstash:
-  hosts: ["http://logstash:5044"]
+  hosts: ["logstash:5044"]
 
 setup.kibana:
-  host: "http://kibana:5601"
+  host: "kibana:5601"
+  username: "elastic"
+  password: "ChangeMeElastic123!"
 
 logging.metrics.enabled: true
+logging.level: info
+logging.to_files: false
+logging.to_stderr: true
+
+# Performance settings
+filebeat.max_procs: 1
+filebeat.config.reload.period: 10s
+filebeat.shutdown_timeout: 30s
+
+# Memory settings
+filebeat.max_concurrent_connections: 0
+
+# Thread settings
+filebeat.max_procs: 1
+filebeat.config.reload.period: 10s
+
+# Connection settings
+filebeat.max_procs: 1
+filebeat.config.reload.period: 10s
+
+# Performance settings
+filebeat.max_procs: 1
+filebeat.config.reload.period: 10s

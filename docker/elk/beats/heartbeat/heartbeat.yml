@@ -5,6 +5,8 @@ heartbeat.monitors:
       - http://elasticsearch:9200
       - http://kibana:5601
       - http://nestjs:5231
+    username: "elastic"
+    password: "ChangeMeElastic123!"
   - type: icmp
     schedule: "@every 5s"
     hosts:
@@ -17,4 +19,35 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: "http://elasticsearch:9200"
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+setup.kibana:
+  host: "kibana:5601"
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+logging.level: info
+logging.to_files: false
+logging.to_stderr: true
+
+# Performance settings
+heartbeat.max_procs: 1
+heartbeat.config.reload.period: 10s
+heartbeat.shutdown_timeout: 30s
+
+# Memory settings
+heartbeat.max_concurrent_connections: 0
+
+# Thread settings
+heartbeat.max_procs: 1
+heartbeat.config.reload.period: 10s
+
+# Connection settings
+heartbeat.max_procs: 1
+heartbeat.config.reload.period: 10s
+
+# Performance settings
+heartbeat.max_procs: 1
+heartbeat.config.reload.period: 10s

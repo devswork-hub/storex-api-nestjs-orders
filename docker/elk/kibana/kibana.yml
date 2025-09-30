@@ -1,11 +1,49 @@
-server.name: kibana
-server.host: 0.0.0.0
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
 elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.username: "elastic"
+elasticsearch.password: "ChangeMeElastic123!"
 
+# Monitoring
 monitoring.ui.container.elasticsearch.enabled: true
+monitoring.ui.container.logstash.enabled: true
 
-## X-Pack security credentials
-elasticsearch.username: elastic
-elasticsearch.password: changeme
+# Security
+xpack.security.enabled: true
+xpack.encryptedSavedObjects.encryptionKey: "3f7d9a8b2c4e6f1g0h5j9k2l8m0n4p7q"
 
-xpack.encryptedSavedObjects.encryptionKey: "12345678901234567890123456789012"
+# Logging
+logging.appenders:
+  console:
+    type: console
+    layout:
+      type: pattern
+      pattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+logging.loggers:
+  - name: "org.elasticsearch.deprecation"
+    level: "warn"
+
+# Performance
+optimize.bundleSize: true
+optimize.useBundleCache: true
+
+# Features
+xpack.reporting.enabled: true
+xpack.security.encryptionKey: "3f7d9a8b2c4e6f1g0h5j9k2l8m0n4p7q"
+
+# Memory settings
+server.maxPayloadBytes: 1048576
+server.maxPayloadBytes: 1048576
+
+# Thread settings
+server.maxConcurrentConnections: 0
+server.maxConcurrentConnectionsPerIp: 0
+
+# Connection settings
+server.maxPayloadBytes: 1048576
+server.maxConcurrentConnections: 0
+
+# Performance settings
+optimize.bundleSize: true
+optimize.useBundleCache: true

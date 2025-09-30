@@ -1,0 +1,4 @@
+FROM docker.elastic.co/beats/elastic-agent:9.1.4
+
+# Copia configuração
+COPY --chown=root:root ./fleet-server.yml /usr/share/elastic-agent/fleet-server.yml

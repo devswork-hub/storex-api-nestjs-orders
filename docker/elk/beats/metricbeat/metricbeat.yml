@@ -1,5 +1,8 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
 metricbeat.modules:
-  # Módulo Docker: Permanece o mesmo
   - module: docker
     metricsets:
       - "container"
@@ -19,10 +22,56 @@ metricbeat.modules:
       - node
       - node_stats
     period: 10s
-    hosts: ["http://elasticsearch:9200"]
+    hosts: ["elasticsearch:9200"]
+    username: "elastic"
+    password: "ChangeMeElastic123!"
+
+  - module: system
+    metricsets:
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - socket_summary
+    enabled: true
+    period: 10s
+    processes: ['.*']
+    process.include_top_n:
+      by_cpu: 5
+      by_memory: 5
 
 output.elasticsearch:
-  hosts: ["http://elasticsearch:9200"]
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "ChangeMeElastic123!"
 
 setup.kibana:
-  host: "http://kibana:5601"
+  host: "kibana:5601"
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+logging.level: info
+logging.to_files: false
+logging.to_stderr: true
+
+# Performance settings
+metricbeat.max_procs: 1
+metricbeat.config.reload.period: 10s
+
+# Memory settings
+metricbeat.shutdown_timeout: 30s
+metricbeat.max_concurrent_connections: 0
+
+# Thread settings
+metricbeat.max_procs: 1
+metricbeat.config.reload.period: 10s
+
+# Connection settings
+metricbeat.max_procs: 1
+metricbeat.config.reload.period: 10s
+
+# Performance settings
+metricbeat.max_procs: 1
+metricbeat.config.reload.period: 10s
