@@ -1,0 +1,4 @@
+FROM docker.elastic.co/beats/metricbeat:9.1.4
+
+# Copia a configuração principal
+COPY --chown=root:metricbeat ./metricbeat.yml /usr/share/metricbeat/metricbeat.yml

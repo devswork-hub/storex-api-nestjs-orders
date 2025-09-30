@@ -1,0 +1,4 @@
+FROM docker.elastic.co/beats/heartbeat:9.1.4
+
+# Copia a configuração principal
+COPY --chown=root:heartbeat ./heartbeat.yml /usr/share/heartbeat/heartbeat.yml

@@ -1,0 +1,16 @@
+FROM debian:bullseye-slim
+
+# Instala dependências
+RUN apt-get update && apt-get install -y curl tar && rm -rf /var/lib/apt/lists/*
+
+# Baixa e extrai o apm-server
+RUN curl -L -O https://artifacts.elastic.co/downloads/apm-server/apm-server-9.1.4-linux-x86_64.tar.gz \
+    && tar -xvzf apm-server-9.1.4-linux-x86_64.tar.gz \
+    && mv apm-server-9.1.4-linux-x86_64 /usr/share/apm-server \
+    && rm apm-server-9.1.4-linux-x86_64.tar.gz
+
+# Copia configuração
+COPY --chown=root:root ./apm-server.yml /usr/share/apm-server/apm-server.yml
+
+WORKDIR /usr/share/apm-server
+ENTRYPOINT ["./apm-server", "-e", "-c", "apm-server.yml"]
