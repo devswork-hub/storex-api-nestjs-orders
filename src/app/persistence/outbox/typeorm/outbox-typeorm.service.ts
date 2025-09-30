@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager, LessThan } from 'typeorm';
 import { OutboxTypeORMEntity } from './outbox-typeorm.entity';
 import { DomainEventType } from '@/shared/domain/events/domain-event';
+import { UUID } from '@/shared/domain/value-objects/uuid.vo';
 
 @Injectable()
 export class OutboxTypeORMService {
@@ -24,6 +25,7 @@ export class OutboxTypeORMService {
       : this.repo;
 
     await repo.save({
+      id: new UUID().toString(),
       aggregateType: event.constructor.name.replace('Event', ''),
       aggregateId: event.aggregateId,
       eventType: event.eventType,

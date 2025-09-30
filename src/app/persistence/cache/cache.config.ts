@@ -1,5 +1,5 @@
 export interface CustomCacheModuleOptions {
   redisUrl?: string;
-  ttl?: string;
+  ttl?: number;
   isGlobal?: boolean;
 }

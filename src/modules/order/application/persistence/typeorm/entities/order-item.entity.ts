@@ -9,13 +9,13 @@ export class OrderItemTypeORMEntity {
   @ManyToOne(() => OrderTypeORMEntity, (order) => order.items, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'orderId' })
+  @JoinColumn({ name: 'order_id' })
   order: OrderTypeORMEntity;
 
-  @Column()
+  @Column({ name: 'order_id' })
   orderId: string;
 
-  @Column()
+  @Column({ name: 'product_id' })
   productId: string;
 
   @Column()
@@ -33,12 +33,12 @@ export class OrderItemTypeORMEntity {
   @Column({ nullable: true })
   title?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'image_url' })
   imageUrl?: string;
 
   @Column({ nullable: true })
   description?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'shipping_id' })
   shippingId?: string;
 }

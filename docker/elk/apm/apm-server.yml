@@ -1,0 +1,12 @@
+apm-server:
+  host: "localhost:8200"
+  source_mappings:
+    enabled: true
+    elasticsearch:
+      hosts: ["localhost:9200"]
+      username: "elastic"
+      password: "changeme"
+    index_pattern: "apm-*-sourcemap"
+
+output.elasticsearch:
+  hosts: ["localhost:9200"]

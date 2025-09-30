@@ -23,23 +23,22 @@ export class FindOrderByIdHandler
   async execute(query: FindOrderByIdQuery): Promise<OrderOuput | null> {
     const cacheKey = `order_${query.id}`;
 
+    let order = await this.cacheService.get<OrderOuput>(cacheKey);
+
+    if (order) {
+      this.logger.log(`Pedido ${query.id} encontrado no cache!`);
+      return order;
+    }
+
+    const result = await this.findOneOrderService.execute(
+      new OrderID(query.id),
+    );
+
+    if (result) {
+      order = OrderMapper.fromEntitytoGraphQLOrderOutput(result);
+      await this.cacheService.set(cacheKey, order, 60);
+      return order;
+    }
     return null;
-    // let order = await this.cacheService.get<OrderOuput>(cacheKey);
-
-    // if (order) {
-    //   this.logger.log(`Pedido ${query.id} encontrado no cache!`);
-    //   return order;
-    // }
-
-    // const result = await this.findOneOrderService.execute(
-    //   new OrderID(query.id),
-    // );
-
-    // if (result) {
-    //   order = OrderMapper.fromEntitytoGraphQLOrderOutput(result);
-    //   await this.cacheService.set(cacheKey, order, 60);
-    //   return order;
-    // }
-    // return null;
   }
 }

@@ -1,38 +1,39 @@
-# Development
+# --- Estágio 1: Build ---
+FROM node:20 AS builder
 
-FROM node:alpine AS development
-
+# Define o diretório de trabalho
 WORKDIR /usr/src/app
 
-# Install dependencies (including devDependencies for build)
+# Copia package.json e package-lock.json
 COPY package*.json ./
+
+# Instala dependências
 RUN npm ci
 
+# Copia todo o código-fonte
 COPY . .
-USER node
 
-# Build
-FROM node:alpine AS build
-WORKDIR /usr/src/app
-COPY package*.json ./
-COPY --from=development /usr/src/app/node_modules ./node_modules
-COPY . .
+# Compila TypeScript para JavaScript
 RUN npm run build
-ENV NODE_ENV production
-RUN npm ci --only=production && npm cache clean --force
-RUN npm ci --omit=dev && npm cache clean --force
-USER node
 
-# Production
-FROM node:alpine AS production
-WORKDIR /usr/src/app
+# --- Estágio 2: Produção ---
+FROM node:20-alpine AS production
 
-RUN wget -O /bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-RUN chmod +x /bin/wait-for-it.sh
+# Diretório de trabalho
+WORKDIR /app
 
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/dist ./dist
-COPY package*.json ./
+# Instala apenas dependências de produção
+COPY package.json ./
+RUN npm install --omit=dev
 
-CMD ["/bin/sh", "-c", "/bin/wait-for-it.sh rabbitmq:5672 -- node dist/src/main.js"]
+# Instala ferramentas necessárias (Postgres client e curl, se precisar)
+RUN apk --no-cache add postgresql-client curl
 
+# Copia código compilado do builder
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Expõe a porta da aplicação
+EXPOSE 5321
+
+# Roda migrations e depois inicia a aplicação
+CMD npx typeorm migration:run -d dist/src/app/persistence/typeorm/typeorm-datasource.js && node dist/src/main.js

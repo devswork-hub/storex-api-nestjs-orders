@@ -1,0 +1,64 @@
+# # Configuração atualizada para Filebeat 9.1.4
+
+filebeat.autodiscover:
+  providers:
+    - type: container # Mudança: 'docker' foi substituído por 'container'
+      # Os filtros e templates foram movidos para a seção 'templates'
+      templates:
+        - condition:
+            contains:
+              container.labels.filebeat_collector: "true" # Alterado de docker.container.labels para container.labels
+          config:
+            # O input 'container' em 'autodiscover' foi substituído por 'filestream'
+            - type: filestream
+              id: ${data.container.id}-logs # Adicionando um ID único
+
+              # paths deve ser removido, pois o provedor 'container' (antigo 'docker')
+              # já cuida de descobrir e mapear o caminho do log.
+              # paths:
+              #   - "/var/lib/docker/containers/${data.container.id}/*.log" # Removido
+
+              # Para o processamento de JSON, usamos a nova estrutura de 'parsers'
+              parsers:
+                - ndjson: # Parser NDJSON (JSON de nova linha delimitada)
+                    # A condição 'when.equals' do processador v8.x é implementada
+                    # com uma condição no template, mas para a decodificação JSON
+                    # no parser, a melhor prática é:
+
+                    # 1. Usar um segundo processador global se a checagem de label
+                    # precisar ser dinâmica.
+
+                    # 2. OU, se a label 'decode_log_events_to_json_object' for uma
+                    # simples flag 'true', aplique o parser NDJSON **somente no
+                    # template condicional** que já filtra por 'filebeat_collector: true'.
+
+                    # Se você quer o mesmo comportamento do 8.x (decodificar o campo 'message'
+                    # e sobrescrever):
+                    message_key: message
+                    keys_under_root: true # Mapeia campos para o nível raiz
+                    overwrite_keys: true # Sobrescreve campos existentes (como o 'message' original)
+
+              # Processadores adicionais se a decodificação JSON for condicional
+              processors:
+                - drop_fields: # Exemplo: Remove o campo 'message' após a decodificação
+                    fields: ["message"]
+                    ignore_missing: true
+                    # Nota: O 'decode_json_fields' do 8.x é agora 'ndjson' no 9.x.
+                    # A lógica de decodificação condicional é mais complexa e geralmente
+                    # é feita no Logstash ou em um pipeline do Elasticsearch.
+                    # Mantenha o ndjson simples aqui e confie no filtro do template.
+
+# Configuração de Output e Setup (permanece a mesma)
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "ChangeMeElastic123!"
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+logging.metrics.enabled: false

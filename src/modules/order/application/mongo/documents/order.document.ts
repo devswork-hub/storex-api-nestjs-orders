@@ -17,7 +17,7 @@ export class OrderMongoEntity {
   @Prop({ type: String, required: true })
   _id: string;
 
-  @Prop({ required: true, enum: OrderStatusEnum })
+  @Prop({ required: true, enum: OrderStatusEnum, index: true })
   status: string;
 
   @Prop({ type: [OrderItemSchema], required: true })
@@ -38,7 +38,7 @@ export class OrderMongoEntity {
   @Prop({ type: CustomerSnapshotSubdocument, required: true })
   customerSnapshot: CustomerSnapshotSubdocument;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   customerId: string;
 
   @Prop()
@@ -51,8 +51,11 @@ export class OrderMongoEntity {
   discount?: DiscountSubdocument;
 
   @Prop() active?: boolean;
-  @Prop() createdAt?: Date;
-  @Prop() updatedAt?: Date;
+  @Prop({ index: true })
+  createdAt?: Date;
+
+  @Prop({ index: true })
+  updatedAt?: Date;
   @Prop() deleted?: boolean;
   @Prop() deletedAt?: Date;
 

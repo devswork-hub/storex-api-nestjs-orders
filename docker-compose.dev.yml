@@ -5,7 +5,7 @@ include:
   # - docker-compose.keycloak.yml
   - docker-compose.pg.yml
   - docker-compose.sonarqube.yml
-  # - docker-compose.elk.yml
+  - docker-compose.elk.yml
   # - ./docker/postgres/docker-compose.pg.yml
 services:
   redis:
@@ -36,7 +36,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS}
     ports:
-      - '27017:27017'
+      - "27017:27017"
     env_file:
       - .env
 
@@ -48,9 +48,9 @@ services:
     restart: always
     ports:
       # Bind to localhost only for security
-      - '127.0.0.1:5000:80' # Web interface
-      - '127.0.0.1:2525:25' # SMTP server (using non-standard port)
-      - '127.0.0.1:1143:143' # IMAP server (using non-standard port)
+      - "127.0.0.1:5001:80" # Web interface
+      - "127.0.0.1:2525:25" # SMTP server (using non-standard port)
+      - "127.0.0.1:1143:143" # IMAP server (using non-standard port)
     volumes:
       - smtp4dev-data:/smtp4dev
     environment:
@@ -58,20 +58,20 @@ services:
       - ServerOptions__Urls=http://*:80
       - ServerOptions__HostName=smtp4dev
 
-  # nestjs:
-  #   build: .
-  #   env_file:
-  #     - .env.docker
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - rabbitmq
-  #   links:
-  #     - rabbitmq
-  #   labels:
-  #     filebeat_collector: true
-  #   networks:
-  #     - app
+  nestjs:
+    build: .
+    env_file:
+      - .env.docker
+    ports:
+      - "5231:5321"
+    labels:
+      filebeat_collector: true
+    networks:
+      - app
+    depends_on:
+      - db
+      - rabbitmq
+      - mongodb
 
 networks:
   app:

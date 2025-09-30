@@ -16,22 +16,22 @@ export class OrderTypeORMEntity {
   @Column({ type: 'varchar', length: 50 })
   status: string; // Usar enum ou string
 
-  @Column({ type: 'jsonb' }) // Armazena snapshots como JSON
+  @Column({ type: 'jsonb', name: 'payment_snapshot' }) // Armazena snapshots como JSON
   paymentSnapshot: any;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'jsonb', name: 'shipping_snapshot' })
   shippingSnapshot: any;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'jsonb', name: 'billing_address' })
   billingAddress: any;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'jsonb', name: 'customer_snapshot' })
   customerSnapshot: any;
 
-  @Column()
+  @Column({ name: 'customer_id' })
   customerId: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'payment_id' })
   paymentId: string;
 
   @Column({ nullable: true, type: 'text' })
@@ -52,12 +52,12 @@ export class OrderTypeORMEntity {
   @Column({ default: false })
   deleted: boolean;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'deleted_at' })
   deletedAt?: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
