@@ -24,7 +24,7 @@ WORKDIR /app
 
 # Instala apenas dependências de produção
 COPY package.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev --legacy-peer-deps --force
 
 # Instala ferramentas necessárias (Postgres client e curl, se precisar)
 RUN apk --no-cache add postgresql-client curl

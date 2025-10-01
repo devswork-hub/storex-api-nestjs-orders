@@ -5,8 +5,39 @@ apm-server:
     elasticsearch:
       hosts: ["localhost:9200"]
       username: "elastic"
-      password: "changeme"
+      password: "senhadoelastic"
     index_pattern: "apm-*-sourcemap"
+  indices:
+    - index: "apm-%{[observer.version]}-sourcemap"
+      when.contains:
+        processor.event: "sourcemap"
+
+    - index: "apm-%{[observer.version]}-error-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "error"
+
+    - index: "apm-%{[observer.version]}-transaction-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "transaction"
+
+    - index: "apm-%{[observer.version]}-span-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "span"
+
+    - index: "apm-%{[observer.version]}-metric-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "metric"
+
+    - index: "apm-%{[observer.version]}-onboarding-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "onboarding"
 
 output.elasticsearch:
-  hosts: ["localhost:9200"]
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "senhadoelastic"
+
+setup.kibana:
+  host: "http://kibana:5601"
+  username: "kibana_system"
+  password: "KibanaSys123!"

@@ -1,19 +1,18 @@
-filebeat.autodiscover:
-  providers:
-    - type: docker
-      templates:
-        - condition:
-            contains:
-              container.labels.filebeat_collector: "true"
-          config:
-            - type: container
-              paths:
-                - /var/log/containers/*.log
+filebeat.inputs:
+  - type: filestream
+    id: my-docker-logs
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log # Path inside the Filebeat container
+    processors:
+      - add_docker_metadata: ~
 
 output.logstash:
-  hosts: ["http://logstash:5044"]
+  hosts: ["logstash:5044"]
 
 setup.kibana:
-  host: "http://kibana:5601"
+  host: "kibana:5601"
+  username: "kibana_system"
+  password: "KibanaSys123!"
 
 logging.metrics.enabled: true

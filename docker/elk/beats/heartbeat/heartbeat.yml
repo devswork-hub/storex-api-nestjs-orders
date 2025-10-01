@@ -4,7 +4,9 @@ heartbeat.monitors:
     urls:
       - http://elasticsearch:9200
       - http://kibana:5601
-      - http://nestjs:5231
+      - http://app:5231
+      - http://metricbeat:5044
+
   - type: icmp
     schedule: "@every 5s"
     hosts:
@@ -17,4 +19,6 @@ processors:
   - add_cloud_metadata: ~
 
 output.elasticsearch:
-  hosts: "http://elasticsearch:9200"
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "senhadoelastic"

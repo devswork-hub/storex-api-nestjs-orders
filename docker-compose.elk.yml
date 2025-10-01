@@ -1,5 +1,7 @@
 services:
   elasticsearch:
+    env_file:
+      - .env.docker
     image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4
     container_name: elasticsearch
     restart: on-failure
@@ -9,8 +11,9 @@ services:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
+      - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - ELASTIC_PASSWORD=senhadoelastic
     ulimits:
       memlock:
         soft: -1
@@ -22,30 +25,53 @@ services:
     networks:
       - elk
 
+  # es-init:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.es-init
+  #   volumes:
+  #     - ./.env.docker:/tmp/.env.docker:ro
+  #   depends_on:
+  #     - elasticsearch
+  #   networks:
+  #     - elk
+
+  kibana:
+    build:
+      context: ./docker/elk/kibana
+      dockerfile: Dockerfile.kibana
+    env_file:
+      - .env.docker
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+      ELASTICSEARCH_USERNAME: "kibana_system"
+      ELASTICSEARCH_PASSWORD: "${KIBANA_SYSTEM_PASSWORD}"
+      XPACK_ENCRYPTED_SAVED_OBJECTS_ENCRYPTIONKEY: "3f7d9a8b2c4e6f1g0h5j9k2l8m0n4p7q"
+      XPACK_REPORTING_ENCRYPTIONKEY: "9g8h7f6d5s4a3q2w1e0r9t8y7u6i5o4p"
+      XPACK_SECURITY_ENCRYPTIONKEY: "m1n2b3v4c5x6z7a8s9d0f1g2h3j4k5l6"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+      # - es-init
+    networks:
+      - elk
   logstash:
     image: docker.elastic.co/logstash/logstash:9.1.4
     container_name: logstash
     environment:
       - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+      - ELASTIC_USERNAME=logstash_system
+      - ELASTIC_PASSWORD=LogstashSys123!
     volumes:
       - ./docker/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     ports:
       - "5044:5044"
     depends_on:
       - elasticsearch
-    networks:
-      - elk
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:9.1.4
-    environment:
-      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
-      XPACK_ENCRYPTED_SAVED_OBJECTS_ENCRYPTIONKEY: "3f7d9a8b2c4e6f1g0h5j9k2l8m0n4p7q"
-    container_name: kibana
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
+      - kibana
+      # - es-init
+    restart: on-failure
     networks:
       - elk
 
@@ -56,55 +82,48 @@ services:
     user: root
     restart: on-failure
     environment:
-      - ELASTIC_USERNAME=elastic
-      - ELASTIC_PASSWORD=ChangeMeElastic123!
+      ELASTIC_USERNAME: "beats_system"
+      ELASTIC_PASSWORD: "BeatsSys123!"
     volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro.
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./docker/elk/beats/filebeat/filebeatdata:/usr/share/filebeat/data:rw
     depends_on:
       - logstash
+
     networks:
       - elk
 
   metricbeat:
-    container_name: metricbeat
     build:
       context: ./docker/elk/beats/metricbeat
       dockerfile: Dockerfile.metricbeat
     user: root
     environment:
-      - ELASTIC_USERNAME=elastic
-      - ELASTIC_PASSWORD=ChangeMeElastic123!
+      ELASTIC_USERNAME: "beats_system"
+      ELASTIC_PASSWORD: "BeatsSys123!"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: on-failure
-    networks:
-      - elk
     depends_on:
       - elasticsearch
+      # - es-init
+    networks:
+      - elk
 
   heartbeat:
-    container_name: heartbeat
     build:
       context: ./docker/elk/beats/heartbeat
       dockerfile: Dockerfile.heartbeat
     restart: on-failure
     environment:
-      - setup.kibana.host:kibana:5601
+      ELASTIC_USERNAME: "beats_system"
+      ELASTIC_PASSWORD: "BeatsSys123!"
     networks:
       - elk
     depends_on:
       - elasticsearch
-  apm:
-    build:
-      context: ./docker/elk/apm
-      dockerfile: Dockerfile.apm
-    ports:
-      - 8200:8200
-    restart: on-failure
-    networks:
-      - elk
+      # - es-init
 
 volumes:
   esdata:

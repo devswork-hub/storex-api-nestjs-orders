@@ -4,7 +4,7 @@ include:
   # - docker-compose.kafka.yml
   # - docker-compose.keycloak.yml
   - docker-compose.pg.yml
-  - docker-compose.sonarqube.yml
+  # - docker-compose.sonarqube.yml
   - docker-compose.elk.yml
   # - ./docker/postgres/docker-compose.pg.yml
 services:
@@ -65,11 +65,10 @@ services:
     ports:
       - "5231:5321"
     labels:
-      filebeat_collector: true
+      filebeat_collector: "true"
     networks:
       - app
     depends_on:
-      - db
       - rabbitmq
       - mongodb
 

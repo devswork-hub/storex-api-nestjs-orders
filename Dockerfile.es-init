@@ -1,0 +1,31 @@
+# ---> Outro
+# FROM alpine:3.20
+
+# # instala bash e curl
+# RUN apk add --no-cache bash curl
+
+# # copia os arquivos
+# COPY init-kibana.sh /usr/local/bin/init-kibana.sh
+# COPY .env.docker /usr/local/bin/.env.docker
+
+# # dá permissão de execução
+# RUN chmod +x /usr/local/bin/init-kibana.sh
+
+# # executa o script
+# ENTRYPOINT ["/usr/local/bin/init-kibana.sh"]
+
+
+# Use uma imagem leve que contenha Bash e Curl
+FROM curlimages/curl:latest
+
+# Defina o diretório de trabalho
+WORKDIR /usr/src/app
+
+# Copie o script de inicialização para dentro da imagem
+COPY init-kibana.sh .
+
+# Verifique se o script é executável
+RUN chmod +x init-kibana.sh
+
+# O entrypoint do container
+ENTRYPOINT ["./init-kibana.sh"]

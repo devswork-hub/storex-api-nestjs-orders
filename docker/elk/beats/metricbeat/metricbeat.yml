@@ -19,10 +19,18 @@ metricbeat.modules:
       - node
       - node_stats
     period: 10s
-    hosts: ["http://elasticsearch:9200"]
+    hosts: ["elasticsearch:9200"]
 
 output.elasticsearch:
-  hosts: ["http://elasticsearch:9200"]
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "senhadoelastic"
 
+# Ele serve para configurar o Kibana com os artefatos que o Beat precisa para visualizar os dados corretamente
+# Criar index patterns no Kibana (ex: filebeat-*, metricbeat-*).
+# Criar dashboards pré-configurados para visualizar os dados coletados.
+# O kibana_system é um usuário padrão do Elasticsearch/Kibana para que Beats façam o setup sem precisar de permissões de superusuário.
 setup.kibana:
-  host: "http://kibana:5601"
+  host: "kibana:5601"
+  username: "kibana_system"
+  password: "KibanaSys123!"

@@ -6,6 +6,6 @@ monitoring.ui.container.elasticsearch.enabled: true
 
 ## X-Pack security credentials
 elasticsearch.username: elastic
-elasticsearch.password: changeme
+elasticsearch.password: senhadoelastic
 
 xpack.encryptedSavedObjects.encryptionKey: "12345678901234567890123456789012"
