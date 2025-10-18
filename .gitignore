@@ -44,11 +44,12 @@ coverage/
 # Test results
 test-results/
 
-
 .scannerwork
 .scaner*
 
-./docker/elk/beats/filebeat/filebeatdata/*
-./docker/elk/beats/filebeat/filebeatdata
-./docker/**/filebeat/filebeatdata/*
-./docker/**/filebeat/filebeatdata
+/docker/elk/beats/filebeat/filebeatdata
+/docker/elk/beats/filebeat/registry/filebeat/
+
+# git rm -r --cached docker/elk/beats/filebeat/registry/filebeat
+
+git commit -m "Remove filebeatdata from git"

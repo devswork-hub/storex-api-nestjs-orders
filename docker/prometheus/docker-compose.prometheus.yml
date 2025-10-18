@@ -1,22 +1,52 @@
+# References
+# https://prometheus.io/docs/prometheus/latest/installation/
+# https://github.com/prometheus/prometheus/blob/main/Dockerfile
+
 services:
   prometheus:
     image: prom/prometheus:latest
-    volumes:
-      - .:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    networks:
-      - jobs-api
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+    container_name: prometheus
     ports:
       - "9090:9090"
+    volumes:
+      # - prometheus_data:/prometheus
+      # Compartilho o arquivo de configuração do Prometheus, que está na raiz do projeto, e vou
+      # substituí-lo pelo meu arquivo de configuração la no container
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+    restart: unless-stopped
+    depends_on:
+      - cadvisor
+
+  # container para monitorar recursos do sistema e containers docker
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - 8085:8080
+    volumes:
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    depends_on:
+      - redis-prometheus
+
+  redis-prometheus:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6381:6379
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     restart: unless-stopped
-    networks:
-      - jobs-api
     ports:
       - "3000:3000"
     environment:
@@ -29,3 +59,5 @@ services:
       - prometheus
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "8080"]
+volumes:
+  prometheus_data:

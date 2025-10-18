@@ -1,1 +1,2 @@
-https://github.com/elastic/beats/blob/9.1/metricbeat/metricbeat.yml
+- https://github.com/elastic/beats/blob/9.1/metricbeat/metricbeat.yml
+- https://github.com/elastic/elasticsearch/blob/main/docs/reference/setup/install/docker/docker-compose.yml
