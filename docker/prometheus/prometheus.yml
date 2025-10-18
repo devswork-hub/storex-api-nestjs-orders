@@ -1,11 +1,17 @@
 global:
-  # // quanto em quanto tempo ele vai buscar as informacoes
-  scrape_interval: "6s"
+  scrape_interval: "6s" # quanto em quanto tempo ele vai buscar as informacoes
+  evaluation_interval: "15s" # quanto em quanto tempo ele vai avaliar as regras
+
+rule_files:
 
 scrape_configs:
-  - job_name: "jobs-api"
-    metrics_path: /actuator/prometheus
+  - job_name: "prometheus"
+    scrape_interval: 5s
     static_configs:
-      - targets: ["host.docker.internal:8080"]
-        labels:
-          application: jobs-api
+      # - targets: ["host.docker.internal:9090", "localhost:9090"]
+      - targets: ["host.docker.internal:9090"] # o proprio prometheus vai monitorar a si mesmo
+  - job_name: cadvisor
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - host.docker.internal:8085
