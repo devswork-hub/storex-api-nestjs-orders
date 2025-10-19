@@ -15,3 +15,8 @@ scrape_configs:
     static_configs:
       - targets:
           - host.docker.internal:8085
+
+  - job_name: nestjs-app
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["host.docker.internal:5231"]

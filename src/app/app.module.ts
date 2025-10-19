@@ -13,6 +13,9 @@ import { ConfigValues } from './config/config.values';
 import { BullModule } from '@nestjs/bullmq';
 import { RabbitmqWrapperModule } from './messaging/rabbitmq/rabbitmq.wrapper.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { HealthModule } from './health/health.module';
+import { ObservabilityModule } from './observability/observability.module';
+import { PrometheusModule } from './integrations/prometheus/prometheus.module';
 
 @Module({
   imports: [
@@ -47,6 +50,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
     DomainsModule,
     KafkaModule,
     RabbitmqWrapperModule.forRoot(),
+    PrometheusModule,
+    // HealthModule,
+    // ObservabilityModule,
   ],
 })
 export class AppModule {}

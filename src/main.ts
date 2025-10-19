@@ -4,18 +4,22 @@ import { AppModule } from './app/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { ConfigSchemaType } from './app/config/config.values';
-// import { CorsMiddleware } from './app/utils/cors';
-// import helmet from 'helmet';
+import { CorsMiddleware } from './app/utils/cors';
+import helmet from 'helmet';
+import { connect as connectToEventStore } from './eventstore';
+import { GraphqlMetricsInterceptor } from './app/interceptors/graphql-metrics.interceptor';
+import { PrometheusService } from './app/integrations/prometheus/prometheus.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const env = app.select(AppModule).get(ConfigService<ConfigSchemaType>);
+  const prometheus = app.get(PrometheusService);
 
-  const isProd = env.get('NODE_ENV') === 'production';
+  // const isProd = env.get('NODE_ENV') === 'production';
 
-  const allowedOrigins = isProd
-    ? ['https://storex.vercel.app']
-    : ['http://localhost:3000/*'];
+  // const allowedOrigins = isProd
+  //   ? ['https://storex.vercel.app']
+  //   : ['http://localhost:3000/*'];
 
   // app.enableCors({
   //   ...CorsMiddleware({
@@ -47,10 +51,9 @@ async function bootstrap() {
   //   // optionsSuccessStatus: 204,
   // });
 
-  // Trust proxy para rodar atrás de load balancer / reverse proxy
-  app.set('trust proxy', 'loopback');
+  // // Trust proxy para rodar atrás de load balancer / reverse proxy
+  // app.set('trust proxy', 'loopback');
 
-  // Logger mais restritivo em produção
   // app.useLogger(isProd ? ['error', 'warn'] : ['log', 'error', 'warn', 'debug']);
 
   // TODO: corrigir servico de criacao de dados fakes
@@ -83,6 +86,9 @@ async function bootstrap() {
   //   }),
   // );
 
+  // connectToEventStore();
+  console.log(`Connect in port ${env.get('APP_PORT')}`);
+  app.useGlobalInterceptors(new GraphqlMetricsInterceptor(prometheus));
   await app.listen(env.get('APP_PORT'));
 }
 

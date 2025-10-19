@@ -5,9 +5,28 @@ include:
   # - docker-compose.keycloak.yml
   - docker-compose.pg.yml
   # - docker-compose.sonarqube.yml
-  - docker-compose.elk.yml
+  # - docker-compose.elk.yml
+  - ./docker/prometheus/docker-compose.prometheus.yml
   # - ./docker/postgres/docker-compose.pg.yml
 services:
+  # proxy:
+  #   image: nginx:alpine
+  #   restart: always
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   command: [nginx-debug, "-g", "daemon off;"]
+
+  # localstack:
+  #   container_name: "localstack"
+  #   image: localstack/localstack
+  #   ports:
+  #     - "127.0.0.1:4566:4566" # LocalStack Gateway
+  #     - "127.0.0.1:4510-4559:4510-4559" # external services port range
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock" #required for some services
+  #     - ./setup.sh:/etc/localstack/init/ready.d/start-localstack.sh
   redis:
     networks:
       - app

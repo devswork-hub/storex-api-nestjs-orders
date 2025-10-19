@@ -21,9 +21,9 @@ export class CustomCacheModule {
             options?.redisUrl ?? cfg.get('REDIS_URL') ?? 'redis://cache:6379';
 
           const redis = new KeyvRedis(redisUrl);
-          redis.on('error', (err) => {
-            console.error('[Cache] Redis connection error:', err);
-          });
+          // redis.on('error', (err) => {
+          //   console.error('[Cache] Redis connection error:', err);
+          // });
 
           const memory = new Keyv({ store: new CacheableMemory() });
 
