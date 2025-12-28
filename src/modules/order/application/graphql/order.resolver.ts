@@ -6,6 +6,7 @@ import {
   Subscription,
   ObjectType,
   Field,
+  Context,
 } from '@nestjs/graphql';
 import { OrderOuput } from './outputs/order.output';
 import { CreateOrderGraphQLInput } from './inputs/order.inputs';
@@ -13,7 +14,7 @@ import { UpdateOrderService } from '../../domain/usecases/update-order.service';
 import { DeleteOrderService } from '../../domain/usecases/delete-order/delete-order.service';
 import { OrderID } from '../../domain/order-id';
 import { OrderMapper } from '../order.mapper';
-import { UseInterceptors } from '@nestjs/common';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { LoggingInterceptor } from '@/app/interceptors/logging.interceptor';
 import { OrderStatus, OrderStatusEnum } from '../../domain/order.constants';
 import { PaginatedOrderResult } from './outputs/search.output';
@@ -40,6 +41,8 @@ import {
   DeleteOrderCommand,
   DeleteOrderCommandHandler,
 } from '../cqrs/handlers/delete-order.handler';
+import { IdempotencyGuard } from '@/app/idempotency/idempotency.guard';
+import { Idempotent } from '@/app/idempotency/idempotent.decorator';
 
 @Resolver(() => OrderOuput)
 export class OrderResolver {
@@ -78,9 +81,14 @@ export class OrderResolver {
 
   @SkipThrottle()
   @Mutation(() => OrderOuput)
+  @UseGuards(IdempotencyGuard)
+  @Idempotent()
   async createOrder(
     @Args('input') data: CreateOrderGraphQLInput,
+    @Context() ctx: any,
   ): Promise<OrderOuput> {
+    const idempotencyKey = ctx.req.headers['idempotency-key'];
+    console.log({ ik: idempotencyKey });
     return await this.commandBus.execute(new CreateOrderCommand(data));
   }
 
