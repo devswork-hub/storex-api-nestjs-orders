@@ -27,7 +27,6 @@
 ### Sobre esse projeto
 
 - Inclui
-
   - Analise e formatacao estatica de codigo com Eslint e Prettier
   - Custom Exceptions, Error Handling
   - Documentacao do proprio GraphQL
@@ -42,7 +41,6 @@
     - Consistencia eventual em casos especificos
 
 - A nivel de aplicacao
-
   - Uso de libs externas criadas com os mecanismos do Nest.js
   - Custom Configuration
   - Interceptors
@@ -56,7 +54,6 @@
   - E modulos compartilhados (Shared)
 
 - A nivel de conversao de logica de dominio para requisitos de software
-
   - Separacao por modulos (geralmente representam os Bounded Contexts)
   - Mescla de abordagens com Package By Feature e Vertical Slice Design
   - Domain Drive Design adaptado a nivel de codigo
@@ -84,7 +81,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
 `Integrations` - Modulo responsavel por se comunicar com fontes externas.
 
 - Integracao com servico de email;
-
   - Atualmente usando smtp4dev como fonte para desenvolvimento, e nodemailer como provider de comunicacao;
   - Contem suporte e integracao a filas do BullMQ
 
@@ -163,19 +159,16 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
 - ✅| Yep
 
 - API Gateway
-
   - ⬜️| unified entry point
   - ⬜️| request routing, load balancing, SSL termination, caching, rate limiting, and sometimes authentication
   - ⬜️| Kong, AWS API Gateway, NGINX, and Spring Cloud Gateway
 
 - Service Registry and Discovery
-
   - ⬜️| Consul
   - ⬜️| Eureka
   - ⬜️| Apache Zookeeper
 
 - Authentication & Authorization
-
   - ⬜️| Manage identity (users, roles, scopes)
   - ⬜️| Issue and validate access tokens (JWT, OAuth2)
   - ⬜️| Enforce access control policies
@@ -185,7 +178,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
   - ⬜️| Azure AD
 
 - Data Storage
-
   - ✅| MongoDB
   - ⬜️| Redis
     - ⬜️|Frequently accessed data (e.g., product catalogs, access tokens)
@@ -194,7 +186,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
       - Usei o algoritmo token bucket para proteger as rotas públicas contra abusos de alguns IPs com alto volume de requisições.
 
 - Asynchronous Communication
-
   - ⬜️| Amazon SNS/SQS
   - ⬜️| Kafka
     - ⬜️|Sending notifications
@@ -202,7 +193,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
     - ⬜️|Processing transactions in stages
 
 - Metrics Collection and Visualization
-
   - ⬜️| Prometheus (metrics collection)
   - ⬜️| Grafana (dashboards and alerts)
     - ⬜️|Sending notifications
@@ -210,7 +200,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
     - ⬜️|Processing transactions in stages
 
 - Log Aggregation and Visualization
-
   - ⬜️| Logstash (collects and processes logs)
   - ⬜️| Elasticsearch (stores them)
   - ⬜️| Kibana (visualizes logs)
@@ -218,7 +207,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
 ### Referencias
 
 - `Frontend`
-
   - https://github.com/kyprogramming/shoes-store/tree/master
   - https://github.com/ethanniser/NextFaster/blob/main/src/lib/actions.ts
   - https://github.com/dkrasnovdev/nextjs-app-router-keycloak-example
@@ -238,7 +226,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
 - https://github.com/henriqueweiand/nestjs-typeorm-multi-tenancy?source=post_page-----a7f6176e8319---------------------------------------
 
 - `Kafka`
-
   - https://mosy.tech/spring-boot-kafka-config/
 
 - `Others`
@@ -261,7 +248,6 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
 ### Arquitetura de Eventos
 
 - `Rabbit`
-
   - Configuracao de DLQ
   - Reprocessamento de mensagens:
     - Uso de delayed messages, exponential backoffice retry, retries;
@@ -272,3 +258,87 @@ Contem tudo que pertence o contexto do Nest.js. Suas features, conceitos e outro
   - Utilitária para reset global;
   - Facilitacao de scripts no package.json;
   - Dockfiler modular;
+
+## Atualizacoes sobre a arquitetura
+
+### Package By Feature
+
+```txt
+domain/
+ └── usecases/
+     ├── create-order/
+     ├── delete-order/
+     ├── update-order/
+
+```
+
+> Isso é Package by Feature no domínio.
+
+Cada pasta:
+
+- Representa uma feature de negócio
+- Agrupa regras, inputs, validações e testes
+
+👉 Isso é exatamente o espírito do padrão.
+
+```txt
+application/
+ ├── cqrs/
+ ├── graphql/
+ ├── messaging/
+ ├── integrations/
+```
+
+> Aqui você volta a `Package by Layer`.
+
+Ou seja:
+
+- Domain = feature-first
+- Application = layer-first
+
+👉 Daí nasce o “híbrido”.
+
+### Vertical Slice
+
+Cada slice representa uma intenção de negócio única, porém minha implementação é dividida entre domínio e aplicação para preservar a independência do domínio.
+
+> Esse é o modelo tradicional
+
+```txt
+create-appointment/
+ ├── controller.ts
+ ├── use-case.ts
+ ├── input.ts
+ ├── validation.ts
+ ├── repository.ts
+```
+
+> Esse é o meu modelo
+
+- Domínio independente
+- Regras centralizadas
+- Mais camadas
+- Mais custo cognitivo
+- Mais robustez
+
+👉 Trade-off consciente.
+
+```txt
+application/
+ └── create-order.handler.ts
+
+domain/
+ └── usecases/
+     └── create-order.service.ts
+```
+
+### Clean Arch
+
+Por fim, utilizei princípios da Clean Architecture, separando a lógica de domínio da lógica de aplicação que integra o domínio ao framework.
+
+Essa separação valida a decisão de não aplicar Vertical Slice físico, preservando a independência do domínio.
+
+- a nivel de dominio, o create order trabalha em cima do agregado;
+- a nivel de application, eu uso o create order pra aplicar os recursos do framework
+
+Assim, eu tenho um projeto limpo, organizado, e sem criar dependencias.
